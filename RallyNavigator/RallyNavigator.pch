@@ -1,0 +1,17 @@
+//
+//  RallyNavigator.pch
+//  RallyNavigator
+//
+//  Created by C205 on 22/12/17.
+//  Copyright © 2017 C205. All rights reserved.
+//
+
+#ifndef RallyNavigator_pch
+#define RallyNavigator_pch
+
+#import "Headers.h"
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* RallyNavigator_pch */

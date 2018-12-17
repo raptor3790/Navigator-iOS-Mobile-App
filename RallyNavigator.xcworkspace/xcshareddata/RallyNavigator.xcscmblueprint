@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "3a83f26d-8b41-5844-941b-b53cfb82fcd3++181",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "3a83f26d-8b41-5844-941b-b53cfb82fcd3++181" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "3a83f26d-8b41-5844-941b-b53cfb82fcd3++181" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "0CE1FCF0-8B5E-4427-AF71-5A03A0C397DF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "3a83f26d-8b41-5844-941b-b53cfb82fcd3++181" : "SVN_Code\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "RallyNavigator",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "RallyNavigator\/RallyNavigator.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/192.168.1.11\/svn_iOS",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3a83f26d-8b41-5844-941b-b53cfb82fcd3++181"
+    }
+  ]
+}
