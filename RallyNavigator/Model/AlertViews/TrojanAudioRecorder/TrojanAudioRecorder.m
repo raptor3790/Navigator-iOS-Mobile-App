@@ -232,19 +232,19 @@
     
     [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
         if (granted) {
-            [_btnRecord setTitle:isRecording ? @"Start" : @"Stop" forState:UIControlStateNormal];
+            [self.btnRecord setTitle:self->isRecording ? @"Start" : @"Stop" forState:UIControlStateNormal];
             
-            isRecording = !isRecording;
-            isAnimate = isRecording;
+            self->isRecording = !self->isRecording;
+            self->isAnimate = self->isRecording;
             
-            if (isRecording)
+            if (self->isRecording)
             {
                 [self animateRecordButton];
                 [self startRecording];
             }
             else
             {
-                isManual = YES;
+                self->isManual = YES;
                 [self stopRecording];
                 [self btnOkClicked:nil];
             }
@@ -270,21 +270,21 @@
     [UIView animateWithDuration:0.3f
                           delay:0
                         options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                            _vwContainer.transform = CGAffineTransformMakeScale(1.2, 1.2);
+                            self.vwContainer.transform = CGAffineTransformMakeScale(1.2, 1.2);
                         } completion:^(BOOL finished) {
-                            if (!isAnimate)
+                            if (!self->isAnimate)
                             {
-                                _vwContainer.transform = CGAffineTransformIdentity;
+                                self.vwContainer.transform = CGAffineTransformIdentity;
                                 return;
                             }
                             [UIView animateWithDuration:0.3f
                                                   delay:0
                                                 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                                                    _vwContainer.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                                                    self.vwContainer.transform = CGAffineTransformMakeScale(1.0, 1.0);
                                                 } completion:^(BOOL finished) {
-                                                    if (!isAnimate)
+                                                    if (!self->isAnimate)
                                                     {
-                                                        _vwContainer.transform = CGAffineTransformIdentity;
+                                                        self.vwContainer.transform = CGAffineTransformIdentity;
                                                         return;
                                                     }
                                                     [self animateRecordButton];

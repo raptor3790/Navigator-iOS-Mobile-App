@@ -28,7 +28,7 @@ PODS:
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.0)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.2.0)"
   - GTMSessionFetcher/Core (1.2.1)
-  - Mapbox-iOS-SDK (4.6.0)
+  - Mapbox-iOS-SDK (4.7.1)
   - MJRefresh (3.1.15.7)
   - SDWebImage (4.4.3):
     - SDWebImage/Core (= 4.4.3)
@@ -74,11 +74,11 @@ SPEC CHECKSUMS:
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
-  Mapbox-iOS-SDK: 204c04713477cf2a88c52c5a8eed1790eb75a02a
+  Mapbox-iOS-SDK: f9292a75e8cd5eb828f4432623bfc48aac42146a
   MJRefresh: 697f8ec75ebdbe9207767bb682cf0f51b0d8a41f
   SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: f4a3e51c353cda48a9d401f5965a1eb360d51ff5
+PODFILE CHECKSUM: 0cc39b104b2ed5599e5db8396ad45fb23a11eff0
 
 COCOAPODS: 1.6.0.beta.2
