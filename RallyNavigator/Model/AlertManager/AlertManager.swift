@@ -10,11 +10,29 @@ import Foundation
 import UIKit
 import SwiftEntryKit
 
+@objc @objcMembers class AlertButton: NSObject {
+    var title: String!
+    var action: (() -> Void)?
+    var isDefault = true
+
+    public init(title: String, action: (() -> Void)? = nil, isDefault: Bool = false) {
+        super.init()
+
+        self.title = title.uppercased()
+        self.action = action
+        self.isDefault = isDefault
+    }
+
+    public static func with(title: String, action: (() -> Void)? = nil, isDefault: Bool = false) -> AlertButton {
+        return AlertButton(title: title, action: action, isDefault: isDefault)
+    }
+}
+
 @objc @objcMembers class AlertManager: NSObject {
     private var isDarkTheme: Bool = false
 
     private static var buttonFont: UIFont {
-        return messageFont.withSize(messageFont.pointSize)
+        return messageFont
     }
     private static var titleFont: UIFont {
         return messageFont.withSize(messageFont.pointSize + 4)
@@ -144,6 +162,36 @@ import SwiftEntryKit
             SwiftEntryKit.dismiss()
         }
         let buttonsBarContent = EKProperty.ButtonBarContent(with: cancelButton, okButton, separatorColor: .red, expandAnimatedly: false)
+
+        let alertMessage = EKAlertMessage(simpleMessage: simpleMessage, buttonBarContent: buttonsBarContent)
+        let contentView = EKAlertMessageView(with: alertMessage)
+
+        var attributes = ekAttributes
+        attributes.screenInteraction = .absorbTouches
+        attributes.entryInteraction = .absorbTouches
+
+        SwiftEntryKit.display(entry: contentView, using: attributes)
+    }
+
+    public static func choose(_ message: String, title: String? = nil, buttons: [AlertButton]) {
+        let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: titleFont, color: .white, alignment: .center))
+        let description = EKProperty.LabelContent(text: message.uppercased(), style: .init(font: messageFont, color: .lightGray, alignment: .center))
+
+        let simpleMessage = EKSimpleMessage(title: title, description: description)
+
+        let tempButtonLabel = EKProperty.LabelContent(text: "", style: .init(font: buttonFont, color: .lightGray))
+        let tempButton = EKProperty.ButtonContent(label: tempButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
+            SwiftEntryKit.dismiss()
+        }
+
+        var buttonsBarContent = EKProperty.ButtonBarContent(with: tempButton, separatorColor: .red, expandAnimatedly: false)
+        buttonsBarContent.content = buttons.map { button in
+            let buttonLabel = EKProperty.LabelContent(text: button.title!, style: .init(font: buttonFont, color: button.isDefault ? .white : .lightGray))
+            return EKProperty.ButtonContent(label: buttonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
+                button.action?()
+                SwiftEntryKit.dismiss()
+            }
+        }
 
         let alertMessage = EKAlertMessage(simpleMessage: simpleMessage, buttonBarContent: buttonsBarContent)
         let contentView = EKAlertMessageView(with: alertMessage)

@@ -30,6 +30,8 @@
 #import "ReachabilityManager.h"
 #import "LocationArrayHandler.h"
 #import "SettingsVC.h"
+#import "RoadBooksVC.h"
+#import "AddRoadBookVC.h"
 #import "MapPreviewVC.h"
 #import <AudioToolbox/AudioToolbox.h>
 
@@ -132,6 +134,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     BOOL isCapturing;
     BOOL isAutoPhotoEnabled;
     BOOL isBack;
+    BOOL isOpeingNewRoadbook;
     BOOL isEditEnabled;
     BOOL isWayPointAdded; // Used to identify Tulip Angle
     BOOL isTempWayPointAdded; // Used to identify Tulip Angle
@@ -1377,13 +1380,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     if (!_recorder) {
         NSLog(@"recorder: %@ %ld %@", [error domain], (long)[error code], [[error userInfo] description]);
 
-        [UIAlertController showAlertInViewController:self
-                                           withTitle:@"Warning"
-                                             message:[error localizedDescription]
-                                   cancelButtonTitle:@"OK"
-                              destructiveButtonTitle:nil
-                                   otherButtonTitles:nil
-                                            tapBlock:nil];
+        [AlertManager alert:[error localizedDescription] title:@"Warning" imageName:@"ic_error" onConfirm:NULL];
         return;
     }
 
@@ -2321,14 +2318,21 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     });
 
     if (isBack) {
-        [AlertManager alert:@"Your Route has been saved successfully"
-                      title:@"Rally Navigator"
-                  imageName:@"ic_success"
-                  onConfirm:^{
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [self.navigationController popViewControllerAnimated:YES];
-                      });
-                  }];
+        if (isOpeingNewRoadbook) {
+            UINavigationController* navVC = self.navigationController;
+            [self.navigationController popViewControllerAnimated:NO];
+
+            RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
+            [vc newRecording];
+        } else {
+            [AlertManager alert:@"Your Route has been saved successfully"
+                          title:@"Rally Navigator"
+                      imageName:@"ic_success"
+                      onConfirm:NULL];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        }
     }
 }
 
@@ -2466,69 +2470,30 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [self.view endEditing:YES];
 
     if (arrRemainingTracks.count > 0) {
-        UIAlertController* actionSheet =
-            [UIAlertController alertControllerWithTitle:@"Save Changes"
-                                                message:@"Do you want to save changes for this route?"
-                                         preferredStyle:UIAlertControllerStyleActionSheet];
-
-        /*** CANCEL action for UIAlertController ***/
-        [actionSheet addAction:[UIAlertAction actionWithTitle:@"Save"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction* action) {
-                                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                                              [self btnStopAndSaveClicked];
-                                                          });
-                                                          [self dismissViewControllerAnimated:YES
-                                                                                   completion:^{
-                                                                                   }];
-                                                      }]];
-
-        /*** EMAIL ADDRESS action for UIAlertController ***/
-        [actionSheet addAction:[UIAlertAction actionWithTitle:@"Don't Save"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction* action) {
-                                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                                              [self.navigationController popViewControllerAnimated:YES];
-                                                          });
-                                                          [self dismissViewControllerAnimated:YES
-                                                                                   completion:^{
-                                                                                   }];
-                                                      }]];
-
-        /*** PHONE NUMBER action for UIAlertController ***/
-        [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel"
-                                                        style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction* action) {
-                                                          //                                                          [self showAlertForPayPalMethod:PayPalPaymentMethodPhoneNumber];
-                                                          [self dismissViewControllerAnimated:YES
-                                                                                   completion:^{
-                                                                                   }];
-                                                      }]];
-
-        if (iPadDevice) {
-            actionSheet.popoverPresentationController.barButtonItem = self.navigationItem.leftBarButtonItem;
-            actionSheet.popoverPresentationController.sourceView = self.view;
-        }
-
-        /*** Presenting UIAlertController ***/
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self presentViewController:actionSheet animated:YES completion:nil];
-        });
+        [AlertManager choose:@"Do you want to save changes for this route?"
+                       title:@"Save Changes"
+                     buttons:@[
+                         [AlertButton withTitle:@"SAVE"
+                                         action:^{
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 [self btnStopAndSaveClicked];
+                                             });
+                                         }
+                                      isDefault:YES],
+                         [AlertButton withTitle:@"DON'T SAVE"
+                                         action:^{
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 [self.navigationController popViewControllerAnimated:YES];
+                                             });
+                                         }
+                                      isDefault:NO],
+                         [AlertButton withTitle:@"CANCEL"
+                                         action:NULL
+                                      isDefault:NO]
+                     ]];
     } else {
-        //        [_locationManager stopUpdatingLocation];
-        //        [_locationManager stopUpdatingHeading];
-        //        _locationManager = nil;
-        //        _mapBoxView = nil;
-
         [self.navigationController popViewControllerAnimated:YES];
     }
-
-    //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    //        [arrAllLocations removeAllObjects];
-    //        [arrAllTempLocations removeAllObjects];
-    //        [arrRemainingTracks removeAllObjects];
-    //        [arrTempRemainingTracks removeAllObjects];
-    //    });
 }
 
 - (IBAction)btnChangeView:(UIButton*)sender
@@ -2666,7 +2631,17 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         isBack = YES;
 
         [self handleAddWP:nil];
+
+    } else if (isOpeingNewRoadbook) {
+
+        UINavigationController* navVC = self.navigationController;
+        [self.navigationController popViewControllerAnimated:NO];
+
+        RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
+        [vc newRecording];
+
     } else {
+
         [AlertManager alert:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
                       title:@"Roadbook saved"
                   imageName:@"ic_success"
@@ -4290,9 +4265,44 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [self btnStopAndSaveClicked];
 }
 
-- (void)myRoadbooks
+- (void)newRecording
 {
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.view endEditing:YES];
+
+    UINavigationController* navVC = self.navigationController;
+
+    if (arrRemainingTracks.count > 0) {
+        [AlertManager choose:@"Do you want to save changes for this route?"
+                       title:@"Save Changes"
+                     buttons:@[
+                         [AlertButton withTitle:@"SAVE"
+                                         action:^{
+                                             self->isOpeingNewRoadbook = YES;
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 [self btnStopAndSaveClicked];
+                                             });
+                                         }
+                                      isDefault:YES],
+                         [AlertButton withTitle:@"DON'T SAVE"
+                                         action:^{
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 [self.navigationController popViewControllerAnimated:NO];
+
+                                                 RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
+                                                 [vc newRecording];
+                                             });
+                                         }
+                                      isDefault:NO],
+                         [AlertButton withTitle:@"CANCEL"
+                                         action:NULL
+                                      isDefault:NO]
+                     ]];
+    } else {
+        [self.navigationController popViewControllerAnimated:NO];
+
+        RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
+        [vc newRecording];
+    }
 }
 
 - (void)clickedOnLogout

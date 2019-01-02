@@ -485,15 +485,8 @@ static const int HEIGHT_SOCIAL_LOGIN_CELL = 80;
     NSDictionary* dic = [sender responseDict];
 
     if ([[dic valueForKey:SUCCESS_STATUS] boolValue]) {
-        [UIAlertController showAlertInViewController:self
-                                           withTitle:@"Password Request Sent"
-                                             message:@"Check your email for the link to reset your password"
-                                   cancelButtonTitle:@"OK"
-                              destructiveButtonTitle:nil
-                                   otherButtonTitles:nil
-                                            tapBlock:nil];
+        [AlertManager alert:@"Check your email for the link to reset your password" title:@"Password Request Sent" imageName:@"ic_success" onConfirm:NULL];
     } else {
-        //        NSLog(@"Error");
         [self showErrorInObject:self forDict:[sender responseDict]];
     }
 }

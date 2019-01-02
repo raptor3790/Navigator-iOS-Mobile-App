@@ -414,6 +414,15 @@
     [self fetchRoadBooks];
 }
 
+- (void)newRecording
+{
+    [self.view endEditing:YES];
+    
+    AddRoadBookVC* vc = loadViewController(StoryBoard_Main, kIDAddRoadBookVC);
+    vc.delegate = self;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 - (void)clickedOnLogout
 {
     [AlertManager confirm:@"Are you sure you want to log out?"
@@ -494,11 +503,7 @@
 
 - (IBAction)btnAddRoadBookClicked:(id)sender
 {
-    [self.view endEditing:YES];
-
-    AddRoadBookVC* vc = loadViewController(StoryBoard_Main, kIDAddRoadBookVC);
-    vc.delegate = self;
-    [self.navigationController pushViewController:vc animated:YES];
+    [self newRecording];
 }
 
 - (IBAction)btnAddFolderClicked:(id)sender

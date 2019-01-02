@@ -42,5 +42,6 @@ typedef enum
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightLblSync;
 
 - (void)getRoadBooks;
+- (void)newRecording;
 
 @end

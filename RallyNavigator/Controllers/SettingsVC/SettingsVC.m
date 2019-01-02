@@ -1,3 +1,5 @@
+
+
 //
 //  SettingsVC.m
 //  RallyNavigator
@@ -20,7 +22,7 @@
 #import "PickRoadBookVC.h"
 
 typedef enum {
-    SettingsCellTypeMyRoadbooks = 0,
+    SettingsCellTypeNewRecording = 0,
     SettingsCellTypeSave,
     SettingsCellTypeOverlayTrack,
     SettingsCellTypeDistanceUnit,
@@ -184,11 +186,13 @@ typedef enum {
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
     switch (indexPath.row) {
-    case SettingsCellTypeMyRoadbooks: {
-        if ([self.delegate respondsToSelector:@selector(myRoadbooks)]) {
-            [self.delegate myRoadbooks];
-        }
-        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
+    case SettingsCellTypeNewRecording: {
+        [self.navigationController dismissViewControllerAnimated:YES
+                                                      completion:^{
+                                                          if ([self.delegate respondsToSelector:@selector(newRecording)]) {
+                                                              [self.delegate newRecording];
+                                                          }
+                                                      }];
     } break;
 
     case SettingsCellTypeOverlayTrack: {
@@ -199,16 +203,6 @@ typedef enum {
 
                 for (id vc in nav.viewControllers) {
                     if ([vc isKindOfClass:[RoadBooksVC class]]) {
-                        //                                RoadBooksVC *l_VC = vc;
-                        //                                PickRoadBookVC *vc = loadViewController(StoryBoard_Settings, kIDPickRoadBookVC);
-                        //                                vc.curMapStyle = _curMapStyle;
-                        //                                vc.delegate = _delegate;
-                        //                                vc.arrRoadbooks = [[NSMutableArray alloc] init];
-                        //                                NSLog(@"%ld", [l_VC.arrRoadBooks count]);
-                        //                                vc.arrRoadbooks = l_VC.arrRoadBooks;
-                        //                                dispatch_async(dispatch_get_main_queue(), ^{
-                        //                                    [self.navigationController pushViewController:vc animated:YES];
-                        //                                });
                         RoadBooksVC* vc = loadViewController(StoryBoard_Main, kIDRoadBooksVC);
                         vc.isOverlayTrack = YES;
                         vc.delegate = _delegate;
@@ -300,9 +294,9 @@ typedef enum {
     SettingsCell* cell;
 
     switch (indexPath.row) {
-    case SettingsCellTypeMyRoadbooks: {
+    case SettingsCellTypeNewRecording: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Continue recording existing roadbook";
+        cell.lblTitle.text = @"Record New Roadbook";
         cell.switchAutoPhoto.hidden = YES;
     } break;
 
@@ -421,26 +415,30 @@ typedef enum {
 
 - (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    //    CGFloat totalValue = 7.0f;
-
-    if (_currentOverlay == OverlayStatusNotApplicable) {
-        if (indexPath.row == SettingsCellTypeOverlayTrack) {
-            return 0.0f;
+    switch (indexPath.row) {
+    case SettingsCellTypeOverlayTrack: {
+        if (!_isRecording || _currentOverlay == OverlayStatusNotApplicable) {
+            return 0;
         }
+    } break;
 
-        //        totalValue--;
-    }
-
-    if (!_isRecording) {
-        if (indexPath.row == SettingsCellTypeSave) {
-            return 0.0f;
+    case SettingsCellTypeSave: {
+        if (!_isRecording) {
+            return 0;
         }
+    } break;
 
-        //        totalValue--;
+    case SettingsCellTypeNewRecording: {
+        if (_isRecording || ![self.delegate respondsToSelector:@selector(newRecording)]) {
+            return 0;
+        }
+    } break;
+
+    default:
+        break;
     }
 
     return 72;
-    //    return (SCREEN_HEIGHT - 64.0f) / totalValue;
 }
 
 #pragma mark - Auto Photo Web Service

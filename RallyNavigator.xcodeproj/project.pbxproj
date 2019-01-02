@@ -17,6 +17,7 @@
 		66751D7C21DC76CC002C07EB /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66751D7A21DC76CC002C07EB /* AlertManager.swift */; };
 		66751D7D21DC76CC002C07EB /* FormMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66751D7B21DC76CC002C07EB /* FormMessageView.swift */; };
 		66F1C3B021DC8AD6007D441F /* russo_one.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F1C3AF21DC8AD6007D441F /* russo_one.ttf */; };
+		66FBCCD221DD42830089D861 /* Helvetica Neu Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66FBCCD121DD42830089D861 /* Helvetica Neu Bold.ttf */; };
 		E40AD97620076A4700162CFE /* DistanceUnitsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E40AD97520076A4700162CFE /* DistanceUnitsVC.m */; };
 		E40AD97820076A7700162CFE /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E40AD97720076A7700162CFE /* Settings.storyboard */; };
 		E41E302820661D0A00AE5AC1 /* night_map.json in Resources */ = {isa = PBXBuildFile; fileRef = E41E302720661D0900AE5AC1 /* night_map.json */; };
@@ -124,6 +125,7 @@
 		66751D7B21DC76CC002C07EB /* FormMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormMessageView.swift; sourceTree = "<group>"; };
 		66F1C3AE21DC7B3F007D441F /* RallyNavigator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RallyNavigator-Bridging-Header.h"; sourceTree = "<group>"; };
 		66F1C3AF21DC8AD6007D441F /* russo_one.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = russo_one.ttf; sourceTree = "<group>"; };
+		66FBCCD121DD42830089D861 /* Helvetica Neu Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Helvetica Neu Bold.ttf"; sourceTree = "<group>"; };
 		A6D533200A6E1C1F0C4789E7 /* libPods-RallyNavigator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RallyNavigator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40AD97420076A4700162CFE /* DistanceUnitsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DistanceUnitsVC.h; sourceTree = "<group>"; };
 		E40AD97520076A4700162CFE /* DistanceUnitsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DistanceUnitsVC.m; sourceTree = "<group>"; };
@@ -343,6 +345,15 @@
 			path = AlertManager;
 			sourceTree = "<group>";
 		};
+		66FBCCD321DD428E0089D861 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				66FBCCD121DD42830089D861 /* Helvetica Neu Bold.ttf */,
+				66F1C3AF21DC8AD6007D441F /* russo_one.ttf */,
+			);
+			name = Font;
+			sourceTree = "<group>";
+		};
 		E42C71991FF2510E0077EF9D /* AVCam */ = {
 			isa = PBXGroup;
 			children = (
@@ -478,7 +489,7 @@
 		E44A4EC11FE8CB64003CE84D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				66F1C3AF21DC8AD6007D441F /* russo_one.ttf */,
+				66FBCCD321DD428E0089D861 /* Font */,
 				E44A4EC21FE8CB64003CE84D /* main.m */,
 				E44A4ECD1FE8CB64003CE84D /* Assets.xcassets */,
 				E471B2AE1FECC8F600E0A228 /* RallyNavigator.pch */,
@@ -1000,6 +1011,7 @@
 				E40AD97820076A7700162CFE /* Settings.storyboard in Resources */,
 				554236C8205921FE00329A6C /* Voice.mp3 in Resources */,
 				554586DF205A36080093E536 /* Text.aiff in Resources */,
+				66FBCCD221DD42830089D861 /* Helvetica Neu Bold.ttf in Resources */,
 				E4590E201FF3B07C00CBD0C9 /* TrojanAudioRecorder.xib in Resources */,
 				E44A4EE51FE8CBE9003CE84D /* LaunchScreen.storyboard in Resources */,
 			);

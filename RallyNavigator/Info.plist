@@ -94,6 +94,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>russo_one.ttf</string>
+		<string>Helvetica Neu Bold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

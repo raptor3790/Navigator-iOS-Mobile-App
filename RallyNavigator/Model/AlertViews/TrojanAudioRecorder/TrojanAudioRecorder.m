@@ -124,13 +124,7 @@
     {
         NSLog(@"recorder: %@ %ld %@", [error domain], (long)[error code], [[error userInfo] description]);
         
-        [UIAlertController showAlertInViewController:self
-                                           withTitle:@"Warning"
-                                             message:[error localizedDescription]
-                                   cancelButtonTitle:@"OK"
-                              destructiveButtonTitle:nil
-                                   otherButtonTitles:nil
-                                            tapBlock:nil];
+        [AlertManager alert:[error localizedDescription] title:@"Warning" imageName:@"ic_error" onConfirm:NULL];
         return;
     }
     

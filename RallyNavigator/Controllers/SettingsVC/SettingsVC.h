@@ -13,7 +13,7 @@
 
 @optional
 
-- (void)myRoadbooks;
+- (void)newRecording;
 - (void)saveRoadbook;
 - (void)clickedOnLogout;
 - (void)clearOverlay;
@@ -31,7 +31,7 @@ typedef enum {
 
 @property (assign, nonatomic) CurrentMapStyle curMapStyle;
 
-@property (strong, nonatomic) id<SettingsVCDelegate> delegate;
+@property (weak, nonatomic) id<SettingsVCDelegate> delegate;
 
 @property (strong, nonatomic) id overlaySender;
 @property (assign, nonatomic) BOOL isRecording;
