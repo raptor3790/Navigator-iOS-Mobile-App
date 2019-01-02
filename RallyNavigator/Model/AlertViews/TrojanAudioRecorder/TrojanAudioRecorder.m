@@ -317,7 +317,7 @@
 
     if (isRecording)
     {
-        [SVProgressHUD showInfoWithStatus:@"Please stop recorder"];
+        [AlertManager alert:@"" title:@"Please stop recorder" imageName:@"ic_error" onConfirm:NULL];
         return;
     }
 

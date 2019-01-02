@@ -18,4 +18,5 @@ target 'RallyNavigator' do
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Mapbox-iOS-SDK'
+  pod 'SwiftEntryKit'
 end

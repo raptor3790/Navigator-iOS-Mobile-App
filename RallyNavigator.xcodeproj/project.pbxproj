@@ -14,6 +14,9 @@
 		554236CE205925B000329A6C /* TextWithRecord.wav in Resources */ = {isa = PBXBuildFile; fileRef = 554236CD205925B000329A6C /* TextWithRecord.wav */; };
 		554586DF205A36080093E536 /* Text.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 554586DE205A36080093E536 /* Text.aiff */; };
 		555CE8FE2068B38300A9A2D2 /* HowToUseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 555CE8FD2068B38300A9A2D2 /* HowToUseVC.m */; };
+		66751D7C21DC76CC002C07EB /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66751D7A21DC76CC002C07EB /* AlertManager.swift */; };
+		66751D7D21DC76CC002C07EB /* FormMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66751D7B21DC76CC002C07EB /* FormMessageView.swift */; };
+		66F1C3B021DC8AD6007D441F /* russo_one.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F1C3AF21DC8AD6007D441F /* russo_one.ttf */; };
 		E40AD97620076A4700162CFE /* DistanceUnitsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E40AD97520076A4700162CFE /* DistanceUnitsVC.m */; };
 		E40AD97820076A7700162CFE /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E40AD97720076A7700162CFE /* Settings.storyboard */; };
 		E41E302820661D0A00AE5AC1 /* night_map.json in Resources */ = {isa = PBXBuildFile; fileRef = E41E302720661D0900AE5AC1 /* night_map.json */; };
@@ -120,6 +123,10 @@
 		554586DE205A36080093E536 /* Text.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Text.aiff; sourceTree = "<group>"; };
 		555CE8FC2068B38300A9A2D2 /* HowToUseVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HowToUseVC.h; sourceTree = "<group>"; };
 		555CE8FD2068B38300A9A2D2 /* HowToUseVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HowToUseVC.m; sourceTree = "<group>"; };
+		66751D7A21DC76CC002C07EB /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		66751D7B21DC76CC002C07EB /* FormMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormMessageView.swift; sourceTree = "<group>"; };
+		66F1C3AE21DC7B3F007D441F /* RallyNavigator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RallyNavigator-Bridging-Header.h"; sourceTree = "<group>"; };
+		66F1C3AF21DC8AD6007D441F /* russo_one.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = russo_one.ttf; sourceTree = "<group>"; };
 		A6D533200A6E1C1F0C4789E7 /* libPods-RallyNavigator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RallyNavigator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40AD97420076A4700162CFE /* DistanceUnitsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DistanceUnitsVC.h; sourceTree = "<group>"; };
 		E40AD97520076A4700162CFE /* DistanceUnitsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DistanceUnitsVC.m; sourceTree = "<group>"; };
@@ -336,6 +343,15 @@
 			path = Audio;
 			sourceTree = "<group>";
 		};
+		66751D7E21DC76D7002C07EB /* AlertManager */ = {
+			isa = PBXGroup;
+			children = (
+				66751D7A21DC76CC002C07EB /* AlertManager.swift */,
+				66751D7B21DC76CC002C07EB /* FormMessageView.swift */,
+			);
+			path = AlertManager;
+			sourceTree = "<group>";
+		};
 		E42C71991FF2510E0077EF9D /* AVCam */ = {
 			isa = PBXGroup;
 			children = (
@@ -462,6 +478,7 @@
 				E44A4EC11FE8CB64003CE84D /* Supporting Files */,
 				E44A4ED21FE8CB64003CE84D /* Info.plist */,
 				E466A7671FFB7F1C00C6443D /* GoogleService-Info.plist */,
+				66F1C3AE21DC7B3F007D441F /* RallyNavigator-Bridging-Header.h */,
 				E4E2CF5D1FF51373006C5CB1 /* RallyNavigator.xcdatamodeld */,
 			);
 			path = RallyNavigator;
@@ -470,6 +487,7 @@
 		E44A4EC11FE8CB64003CE84D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				66F1C3AF21DC8AD6007D441F /* russo_one.ttf */,
 				E44A4EC21FE8CB64003CE84D /* main.m */,
 				E44A4ECD1FE8CB64003CE84D /* Assets.xcassets */,
 				E471B2AE1FECC8F600E0A228 /* RallyNavigator.pch */,
@@ -495,6 +513,7 @@
 		E44A4EDC1FE8CBE9003CE84D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				66751D7E21DC76D7002C07EB /* AlertManager */,
 				E4590E1A1FF3B07B00CBD0C9 /* AlertViews */,
 				554236C420591E4000329A6C /* Audio */,
 				E42C71991FF2510E0077EF9D /* AVCam */,
@@ -698,7 +717,6 @@
 			isa = PBXGroup;
 			children = (
 				E471B2BD1FECC9E300E0A228 /* CoreDataHelper */,
-				E471B2C41FECC9E300E0A228 /* CoredataObjectClasses */,
 			);
 			path = CoredataClasses;
 			sourceTree = "<group>";
@@ -714,13 +732,6 @@
 				E471B2C31FECC9E300E0A228 /* NSManagedObject+CoreDataActive.m */,
 			);
 			path = CoreDataHelper;
-			sourceTree = "<group>";
-		};
-		E471B2C41FECC9E300E0A228 /* CoredataObjectClasses */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = CoredataObjectClasses;
 			sourceTree = "<group>";
 		};
 		E471B2C51FECC9E300E0A228 /* UserDefaults */ = {
@@ -1000,6 +1011,7 @@
 				E466A7681FFB7F1C00C6443D /* GoogleService-Info.plist in Resources */,
 				E41E302820661D0A00AE5AC1 /* night_map.json in Resources */,
 				554236CE205925B000329A6C /* TextWithRecord.wav in Resources */,
+				66F1C3B021DC8AD6007D441F /* russo_one.ttf in Resources */,
 				E40AD97820076A7700162CFE /* Settings.storyboard in Resources */,
 				554236C8205921FE00329A6C /* Voice.mp3 in Resources */,
 				554586DF205A36080093E536 /* Text.aiff in Resources */,
@@ -1149,6 +1161,7 @@
 				E420FD79202709A20065C781 /* CDRoutes.m in Sources */,
 				E471B2F01FECC9E300E0A228 /* NSUserDefaults+SaveCustomObject.m in Sources */,
 				E42F145F1FF7756100602813 /* Reachability.m in Sources */,
+				66751D7C21DC76CC002C07EB /* AlertManager.swift in Sources */,
 				E43D30601FF606B300A64480 /* RoadBooksVC.m in Sources */,
 				E450770C1FFA1A890071B4D0 /* Summary.m in Sources */,
 				E471B2E81FECC9E300E0A228 /* Function.m in Sources */,
@@ -1163,6 +1176,7 @@
 				E450770F1FFA1A890071B4D0 /* Waypoints.m in Sources */,
 				E42F14551FF76AC900602813 /* AwsConfig.m in Sources */,
 				E4FC932220062E1200D2C1F0 /* Config.m in Sources */,
+				66751D7D21DC76CC002C07EB /* FormMessageView.swift in Sources */,
 				E4AE51641FF658BC00F13F5F /* RoadBooks.m in Sources */,
 				E4FC932820062E5500D2C1F0 /* Rotation.m in Sources */,
 				E466A76F1FFBAC0C00C6443D /* RegisterCell.m in Sources */,
@@ -1305,6 +1319,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = Z59B6HMSPM;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1316,8 +1331,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "RallyNavigator/RallyNavigator-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1332,6 +1348,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = Z59B6HMSPM;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1343,7 +1360,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_OBJC_BRIDGING_HEADER = "RallyNavigator/RallyNavigator-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

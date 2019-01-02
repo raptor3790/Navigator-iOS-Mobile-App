@@ -110,7 +110,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     }
     @catch (NSException *exception)
     {
-        //        [SVProgressHUD showErrorWithStatus:exception.description maskType:SVProgressHUDMaskTypeGradient];
+//        [AlertManager alert:@"" title:exception.description imageName:@"ic_error"];
     }
 }
 

@@ -160,20 +160,17 @@ static const int HEIGHT_SOCIAL_LOGIN_CELL = 80;
 - (BOOL)validateUserInput
 {
     if (_strEmail.length == 0) {
-        [SVProgressHUD showInfoWithStatus:@"Please Enter Email Address"];
-        //        [self performShakeGesture:_strEmail];
+        [AlertManager alert:@"" title:@"Please Enter Email Address" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (![_strEmail isValidEmail]) {
-        [SVProgressHUD showInfoWithStatus:@"Please Enter Valid Email Address"];
-        //        [self performShakeGesture:_strEmail];
+        [AlertManager alert:@"" title:@"Please Enter Valid Email Address" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (_strPassword.length == 0) {
-        [SVProgressHUD showInfoWithStatus:@"Please Enter Password"];
-        //        [self performShakeGesture:_txtPassword];
+        [AlertManager alert:@"" title:@"Please Enter Password" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
@@ -455,58 +452,18 @@ static const int HEIGHT_SOCIAL_LOGIN_CELL = 80;
 {
     [self.view endEditing:YES];
 
-    NSString* strAlertMsg = @"Please enter your email address to reset your password";
-
-    UIAlertController* alertController =
-        [UIAlertController alertControllerWithTitle:@"Forgot password?"
-                                            message:strAlertMsg
-                                     preferredStyle:UIAlertControllerStyleAlert];
-
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField* textField) {
-        [self setUpForgotPasswordTextField:textField];
-    }];
-
-    UIAlertAction* btnReset =
-        [UIAlertAction actionWithTitle:@"Send"
-                                 style:UIAlertActionStyleDefault
-                               handler:^(UIAlertAction* action) {
-                                   [self.view endEditing:YES];
-                                   NSString* strEmail = ((UITextField*)[alertController.textFields objectAtIndex:0]).text;
-                                   [self resetPasswordForEmailID:strEmail];
-                               }];
-
-    UIAlertAction* btnCancel =
-        [UIAlertAction actionWithTitle:@"Cancel"
-                                 style:UIAlertActionStyleDefault
-                               handler:nil];
-
-    btnReset.enabled = NO;
-
-    [alertController addAction:btnCancel];
-    [alertController addAction:btnReset];
-
-    [self presentViewController:alertController animated:YES completion:nil];
-}
-
-- (void)setUpForgotPasswordTextField:(UITextField*)textField
-{
-    textField.placeholder = @"Enter your email address here";
-    textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    textField.keyboardType = UIKeyboardTypeEmailAddress;
-    textField.autocorrectionType = UITextAutocorrectionTypeNo;
-    textField.tintColor = RGB(85, 85, 85);
-    [textField addTarget:self
-                  action:@selector(textFieldTextDidChanged:)
-        forControlEvents:UIControlEventEditingChanged | UIControlEventEditingDidEnd];
-}
-
-- (void)textFieldTextDidChanged:(UITextField*)sender
-{
-    UIAlertController* alertController = (UIAlertController*)self.presentedViewController;
-    UIAlertAction* btnReset = alertController.actions.lastObject;
-    if (alertController) {
-        btnReset.enabled = [sender.text isValidEmail];
-    }
+    [AlertManager inputEmail:@"Please enter your email address to reset your password"
+                       title:@"Forgot password?"
+                       extra:NULL
+                 suggestions:NULL
+                 placeHolder:NULL
+                       image:@"ic_email_w"
+                    negative:@"CANCEL"
+                    positive:@"SEND"
+                   confirmed:^(NSString* _Nullable email) {
+                       [self.view endEditing:YES];
+                       [self resetPasswordForEmailID:email];
+                   }];
 }
 
 - (void)resetPasswordForEmailID:(NSString*)strEmail

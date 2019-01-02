@@ -11,6 +11,7 @@
 #import <AWSCore/AWSCore.h>
 #import <AWSS3/AWSS3.h>
 #import <GoogleSignIn/GoogleSignIn.h>
+#import "RallyNavigator-Swift.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

@@ -67,154 +67,139 @@ typedef enum {
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
     NSString* strAlertMsg = @"";
+    NSString* defaultStr = @"";
 
     switch (indexPath.row) {
     case GPSRecordingAccuracyTrackPointRecordingFrequency: {
         strAlertMsg = @"Please enter track point recording frequency amount in meters";
+        defaultStr = [NSString stringWithFormat:@"%ld", (long)roundf(_trackPointFrequency)];
         return;
     } break;
 
     case GPSRecordingAccuracyTrackPointAngleFilter: {
         strAlertMsg = @"Please enter track point angle filter";
+        defaultStr = [NSString stringWithFormat:@"%.1f", _trackPointAngle];
         return;
     } break;
 
     case GPSRecordingAccuracyTulipAngle: {
         strAlertMsg = @"Please enter tulip angle";
+        defaultStr = [NSString stringWithFormat:@"%ld", (long)roundf(_tulipAngle)];
     } break;
 
     default:
         break;
     }
 
-    UIAlertController* alertController =
-        [UIAlertController alertControllerWithTitle:@"Update Accuracy"
-                                            message:strAlertMsg
-                                     preferredStyle:UIAlertControllerStyleAlert];
+    [AlertManager inputDecimal:strAlertMsg
+                         title:@"Update Accuracy"
+                   placeHolder:@"INPUT ACCURACY"
+                  defaultValue:defaultStr
+                      negative:@"CANCEL"
+                      positive:@"SET"
+                     confirmed:^(NSString* _Nullable accuracy) {
+                         [self.view endEditing:YES];
 
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField* textField) {
-        textField.tag = indexPath.row;
-        [self setUpForgotPasswordTextField:textField];
-    }];
+                         NSString* strFrequency = [NSString stringWithString:accuracy];
 
-    UIAlertAction* btnReset =
-        [UIAlertAction actionWithTitle:@"Set"
-                                 style:UIAlertActionStyleDefault
-                               handler:^(UIAlertAction* action) {
-                                   [self.view endEditing:YES];
+                         if (strFrequency.length == 0) {
+                             return;
+                         }
 
-                                   NSString* strFrequency = ((UITextField*)[alertController.textFields objectAtIndex:0]).text;
+                         switch (indexPath.row) {
+                         case GPSRecordingAccuracyTrackPointRecordingFrequency: {
+                             self.trackPointFrequency = [strFrequency doubleValue];
 
-                                   if (strFrequency.length == 0) {
-                                       return;
-                                   }
+                             [self.tblGPSSettings beginUpdates];
+                             [self.tblGPSSettings reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:GPSRecordingAccuracyTrackPointRecordingFrequency inSection:0] ] withRowAnimation:UITableViewRowAnimationFade];
+                             [self.tblGPSSettings endUpdates];
 
-                                   switch (indexPath.row) {
-                                   case GPSRecordingAccuracyTrackPointRecordingFrequency: {
-                                       self.trackPointFrequency = [strFrequency doubleValue];
+                             User* objUser = GET_USER_OBJ;
 
-                                       [self.tblGPSSettings beginUpdates];
-                                       [self.tblGPSSettings reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:GPSRecordingAccuracyTrackPointRecordingFrequency inSection:0] ] withRowAnimation:UITableViewRowAnimationFade];
-                                       [self.tblGPSSettings endUpdates];
+                             NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
+                             Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
+                             objConfig.accuracy.distance = self.trackPointFrequency;
 
-                                       User* objUser = GET_USER_OBJ;
+                             NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
+                             [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];
 
-                                       NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
-                                       Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
-                                       objConfig.accuracy.distance = self.trackPointFrequency;
+                             [[WebServiceConnector alloc] init:URLSetConfig
+                                                withParameters:dicParam
+                                                    withObject:self
+                                                  withSelector:@selector(handleChangeInConfig:)
+                                                forServiceType:ServiceTypeJSON
+                                                showDisplayMsg:@""
+                                                    showLoader:YES];
 
-                                       NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
-                                       [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];
+                             if ([self.delegate respondsToSelector:@selector(updateTrackPointRecordingFrequency:)]) {
+                                 [self.delegate updateTrackPointRecordingFrequency:self.trackPointFrequency];
+                             }
+                         } break;
 
-                                       [[WebServiceConnector alloc] init:URLSetConfig
-                                                          withParameters:dicParam
-                                                              withObject:self
-                                                            withSelector:@selector(handleChangeInConfig:)
-                                                          forServiceType:ServiceTypeJSON
-                                                          showDisplayMsg:@""
-                                                              showLoader:YES];
+                         case GPSRecordingAccuracyTrackPointAngleFilter: {
+                             self.trackPointAngle = [strFrequency doubleValue];
 
-                                       if ([self.delegate respondsToSelector:@selector(updateTrackPointRecordingFrequency:)]) {
-                                           [self.delegate updateTrackPointRecordingFrequency:self.trackPointFrequency];
-                                       }
-                                   } break;
+                             [self.tblGPSSettings beginUpdates];
+                             [self.tblGPSSettings reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:GPSRecordingAccuracyTrackPointAngleFilter inSection:0] ] withRowAnimation:UITableViewRowAnimationFade];
+                             [self.tblGPSSettings endUpdates];
 
-                                   case GPSRecordingAccuracyTrackPointAngleFilter: {
-                                       self.trackPointAngle = [strFrequency doubleValue];
+                             User* objUser = GET_USER_OBJ;
 
-                                       [self.tblGPSSettings beginUpdates];
-                                       [self.tblGPSSettings reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:GPSRecordingAccuracyTrackPointAngleFilter inSection:0] ] withRowAnimation:UITableViewRowAnimationFade];
-                                       [self.tblGPSSettings endUpdates];
+                             NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
+                             Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
+                             objConfig.accuracy.angle = self.trackPointAngle;
+                             objConfig.autoCamera = TRUE;
 
-                                       User* objUser = GET_USER_OBJ;
+                             NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
+                             [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];
 
-                                       NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
-                                       Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
-                                       objConfig.accuracy.angle = self.trackPointAngle;
-                                       objConfig.autoCamera = TRUE;
+                             [[WebServiceConnector alloc] init:URLSetConfig
+                                                withParameters:dicParam
+                                                    withObject:self
+                                                  withSelector:@selector(handleChangeInConfig:)
+                                                forServiceType:ServiceTypeJSON
+                                                showDisplayMsg:@""
+                                                    showLoader:YES];
 
-                                       NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
-                                       [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];
+                             if ([self.delegate respondsToSelector:@selector(updateTrackPointAngle:)]) {
+                                 [self.delegate updateTrackPointAngle:self.trackPointAngle];
+                             }
+                         } break;
 
-                                       [[WebServiceConnector alloc] init:URLSetConfig
-                                                          withParameters:dicParam
-                                                              withObject:self
-                                                            withSelector:@selector(handleChangeInConfig:)
-                                                          forServiceType:ServiceTypeJSON
-                                                          showDisplayMsg:@""
-                                                              showLoader:YES];
+                         case GPSRecordingAccuracyTulipAngle: {
+                             self.tulipAngle = [strFrequency doubleValue];
 
-                                       if ([self.delegate respondsToSelector:@selector(updateTrackPointAngle:)]) {
-                                           [self.delegate updateTrackPointAngle:self.trackPointAngle];
-                                       }
-                                   } break;
+                             [self.tblGPSSettings beginUpdates];
+                             [self.tblGPSSettings reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:GPSRecordingAccuracyTulipAngle inSection:0] ] withRowAnimation:UITableViewRowAnimationFade];
+                             [self.tblGPSSettings endUpdates];
 
-                                   case GPSRecordingAccuracyTulipAngle: {
-                                       self.tulipAngle = [strFrequency doubleValue];
+                             User* objUser = GET_USER_OBJ;
 
-                                       [self.tblGPSSettings beginUpdates];
-                                       [self.tblGPSSettings reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:GPSRecordingAccuracyTulipAngle inSection:0] ] withRowAnimation:UITableViewRowAnimationFade];
-                                       [self.tblGPSSettings endUpdates];
+                             NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
+                             Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
+                             objConfig.accuracy.minDistanceTrackpoint = self.tulipAngle;
+                             objConfig.autoCamera = TRUE;
 
-                                       User* objUser = GET_USER_OBJ;
+                             NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
+                             [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];
 
-                                       NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
-                                       Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
-                                       objConfig.accuracy.minDistanceTrackpoint = self.tulipAngle;
-                                       objConfig.autoCamera = TRUE;
+                             [[WebServiceConnector alloc] init:URLSetConfig
+                                                withParameters:dicParam
+                                                    withObject:self
+                                                  withSelector:@selector(handleChangeInConfig:)
+                                                forServiceType:ServiceTypeJSON
+                                                showDisplayMsg:@""
+                                                    showLoader:YES];
 
-                                       NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
-                                       [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];
+                             if ([self.delegate respondsToSelector:@selector(updateTulipAngleDistance:)]) {
+                                 [self.delegate updateTulipAngleDistance:self.tulipAngle];
+                             }
+                         } break;
 
-                                       [[WebServiceConnector alloc] init:URLSetConfig
-                                                          withParameters:dicParam
-                                                              withObject:self
-                                                            withSelector:@selector(handleChangeInConfig:)
-                                                          forServiceType:ServiceTypeJSON
-                                                          showDisplayMsg:@""
-                                                              showLoader:YES];
-
-                                       if ([self.delegate respondsToSelector:@selector(updateTulipAngleDistance:)]) {
-                                           [self.delegate updateTulipAngleDistance:self.tulipAngle];
-                                       }
-                                   } break;
-
-                                   default:
-                                       break;
-                                   }
-                               }];
-
-    UIAlertAction* btnCancel =
-        [UIAlertAction actionWithTitle:@"Cancel"
-                                 style:UIAlertActionStyleDefault
-                               handler:nil];
-
-    [alertController addAction:btnCancel];
-    [alertController addAction:btnReset];
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:alertController animated:YES completion:nil];
-    });
+                         default:
+                             break;
+                         }
+                     }];
 }
 
 - (IBAction)handleChangeInConfig:(id)sender
@@ -226,31 +211,6 @@ typedef enum {
     if (arrResponse.count > 0) {
         [DefaultsValues setCustomObjToUserDefaults:[arrResponse firstObject] ForKey:kUserObject];
     }
-}
-
-- (void)setUpForgotPasswordTextField:(UITextField*)textField
-{
-    textField.placeholder = @"Enter your accuracy here";
-    switch (textField.tag) {
-    case GPSRecordingAccuracyTrackPointRecordingFrequency: {
-        textField.text = [NSString stringWithFormat:@"%ld", (long)roundf(_trackPointFrequency)];
-    } break;
-
-    case GPSRecordingAccuracyTrackPointAngleFilter: {
-        textField.text = [NSString stringWithFormat:@"%.1f", _trackPointAngle];
-    } break;
-
-    case GPSRecordingAccuracyTulipAngle: {
-        textField.text = [NSString stringWithFormat:@"%ld", (long)roundf(_tulipAngle)];
-    } break;
-
-    default:
-        break;
-    }
-
-    textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    textField.keyboardType = UIKeyboardTypeDecimalPad;
-    textField.autocorrectionType = UITextAutocorrectionTypeNo;
 }
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath

@@ -313,7 +313,7 @@ typedef enum {
     switch (indexPath.row) {
     case SettingsCellTypeMyRoadbooks: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"My Roadbooks";
+        cell.lblTitle.text = @"Continue recording existing roadbook";
         cell.switchAutoPhoto.hidden = YES;
     } break;
 

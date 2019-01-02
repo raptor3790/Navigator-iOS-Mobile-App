@@ -385,30 +385,22 @@
 {
     [self.view endEditing:YES];
 
-    [self presentConfirmationAlertWithTitle:@"Download Map\n(WiFi Recommended)"
-                                withMessage:@"Are you sure you want to download this map?"
-                      withCancelButtonTitle:@"Cancel"
-                               withYesTitle:@"Yes"
-                         withExecutionBlock:^{
-                             //                             _btnSettings.enabled = NO;
+    [AlertManager confirm:@"Are you sure you want to download this map?"
+                    title:@"Download Map\n(WiFi Recommended)"
+                 negative:@"CANCEL"
+                 positive:@"YES"
+               onNegative:NULL
+               onPositive:^{
+                   self.btnDownload.enabled = NO;
+                   self.btnStyle.hidden = YES;
 
-                             //                             if (_mapView.zoomLevel < 10) {
-                             //                                 [SVProgressHUD showInfoWithStatus:@"Invalid Region Selected"];
-                             //                                 return;
-                             //                             }
+                   CLLocationCoordinate2D cord1 = [self.mapView convertPoint:CGPointMake(CGRectGetWidth(self.lblOverlay2.frame), CGRectGetMaxY(self.lblOverlay2.frame)) toCoordinateFromView:self.view];
+                   CLLocationCoordinate2D cord2 = [self.mapView convertPoint:CGPointMake(CGRectGetMinX(self.lblOverlay3.frame), CGRectGetMaxY(self.lblOverlay1.frame)) toCoordinateFromView:self.view];
 
-                             self.btnDownload.enabled = NO;
-                             self.btnStyle.hidden = YES;
+                   self->cordBounds = MGLCoordinateBoundsMake(cord1, cord2);
 
-                             //                             [_mapView removeAnnotations:_mapView.annotations];
-
-                             CLLocationCoordinate2D cord1 = [self.mapView convertPoint:CGPointMake(CGRectGetWidth(self.lblOverlay2.frame), CGRectGetMaxY(self.lblOverlay2.frame)) toCoordinateFromView:self.view];
-                             CLLocationCoordinate2D cord2 = [self.mapView convertPoint:CGPointMake(CGRectGetMinX(self.lblOverlay3.frame), CGRectGetMaxY(self.lblOverlay1.frame)) toCoordinateFromView:self.view];
-
-                             self->cordBounds = MGLCoordinateBoundsMake(cord1, cord2);
-
-                             [self startOfflinePackDownload];
-                         }];
+                   [self startOfflinePackDownload];
+               }];
 }
 
 - (IBAction)btnSettingsClicked:(id)sender

@@ -30,10 +30,13 @@ PODS:
   - GTMSessionFetcher/Core (1.2.1)
   - Mapbox-iOS-SDK (4.7.1)
   - MJRefresh (3.1.15.7)
+  - QuickLayout (2.1.1)
   - SDWebImage (4.4.3):
     - SDWebImage/Core (= 4.4.3)
   - SDWebImage/Core (4.4.3)
   - SVProgressHUD (2.2.5)
+  - SwiftEntryKit (0.8.6):
+    - QuickLayout (= 2.1.1)
 
 DEPENDENCIES:
   - AWSS3
@@ -45,6 +48,7 @@ DEPENDENCIES:
   - MJRefresh
   - SDWebImage
   - SVProgressHUD
+  - SwiftEntryKit
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -60,8 +64,10 @@ SPEC REPOS:
     - GTMSessionFetcher
     - Mapbox-iOS-SDK
     - MJRefresh
+    - QuickLayout
     - SDWebImage
     - SVProgressHUD
+    - SwiftEntryKit
 
 SPEC CHECKSUMS:
   AWSCore: f17db38a5f8bceb217a19d58d8755bbb6f5ddb3c
@@ -76,9 +82,11 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   Mapbox-iOS-SDK: f9292a75e8cd5eb828f4432623bfc48aac42146a
   MJRefresh: 697f8ec75ebdbe9207767bb682cf0f51b0d8a41f
+  QuickLayout: 9af2b7fd89a6552828f51a5aba28d1bcdb8b340c
   SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  SwiftEntryKit: cb0e8d6b61552e374813a304a29b7ba51ea53128
 
-PODFILE CHECKSUM: 0cc39b104b2ed5599e5db8396ad45fb23a11eff0
+PODFILE CHECKSUM: 8e7deb4117dbb75bbe9b0e98ae6ce4d53673c479
 
 COCOAPODS: 1.6.0.beta.2

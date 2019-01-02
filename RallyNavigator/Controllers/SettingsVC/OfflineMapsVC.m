@@ -183,7 +183,7 @@
 
 - (void)didDownloadedMap
 {
-    [SVProgressHUD showSuccessWithStatus:@"Map Downloaded Successfully"];
+    [AlertManager alert:@"" title:@"Map Downloaded Successfully" imageName:@"ic_success" onConfirm:NULL];
 }
 
 #pragma mark - Delete Offline Map
@@ -204,7 +204,7 @@
                                            [self manageProgress];
                                        } else {
                                            NSLog(@"Error : %@", [error localizedDescription]);
-                                           [SVProgressHUD showInfoWithStatus:@"Failed to Delete Offline Map Pack"];
+                                           [AlertManager alert:@"" title:@"Failed to Delete Offline Map Pack" imageName:@"ic_error" onConfirm:NULL];
                                        }
                                    }];
 }
@@ -232,13 +232,14 @@
 
     switch (editingStyle) {
     case UITableViewCellEditingStyleDelete: {
-        [self presentConfirmationAlertWithTitle:@"Delete Map"
-                                    withMessage:@"Are you sure you want to delete this map?"
-                          withCancelButtonTitle:@"Cancel"
-                                   withYesTitle:@"Yes"
-                             withExecutionBlock:^{
-                                 [self deleteOfflineMap:pack];
-                             }];
+        [AlertManager confirm:@"Are you sure you want to delete this map?"
+                        title:@"Delete Map"
+                     negative:@"CANCEL"
+                     positive:@"YES"
+                   onNegative:NULL
+                   onPositive:^{
+                       [self deleteOfflineMap:pack];
+                   }];
     } break;
 
     default:

@@ -259,14 +259,14 @@
         NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(CDFolders* objFolder, NSDictionary<NSString*, id>* _Nullable bindings) {
             return (![objFolder.folderType isEqualToString:@"rally_roadbook_recorder_GPS"]) && (![objFolder.folderType isEqualToString:@"deleted_routes"]);
         }];
-        
+
         _arrFolders = [[NSMutableArray alloc] init];
         _arrFolders = [[arrSyncFolders filteredArrayUsingPredicate:predicate] mutableCopy];
 
         predicate = [NSPredicate predicateWithBlock:^BOOL(CDFolders* objFolder, NSDictionary<NSString*, id>* _Nullable bindings) {
             return [objFolder.folderType isEqualToString:@"default"];
         }];
-        
+
         NSString* parentId;
 
         if (_strFolderId) {
@@ -416,19 +416,19 @@
 
 - (void)clickedOnLogout
 {
-    [self presentConfirmationAlertWithTitle:@"Confirm Logout"
-                                withMessage:@"Are you sure you want to log out?"
-                      withCancelButtonTitle:@"Cancel"
-                               withYesTitle:@"Yes"
-                         withExecutionBlock:^{
+    [AlertManager confirm:@"Are you sure you want to log out?"
+                    title:@"Confirm Logout"
+                 negative:@"CANCEL"
+                 positive:@"YES"
+               onNegative:NULL
+               onPositive:^{
+                   FBSDKLoginManager* login = [[FBSDKLoginManager alloc] init];
+                   [login logOut];
 
-                             FBSDKLoginManager* login = [[FBSDKLoginManager alloc] init];
-                             [login logOut];
-
-                             [[GIDSignIn sharedInstance] signOut];
-                             [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
-                             [self.navigationController popToRootViewControllerAnimated:YES];
-                         }];
+                   [[GIDSignIn sharedInstance] signOut];
+                   [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
+                   [self.navigationController popToRootViewControllerAnimated:YES];
+               }];
 }
 
 #pragma mark - UIScrollView Delegate
@@ -587,7 +587,7 @@
                 CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
 
                 if (![objRoadBook.editable boolValue]) {
-                    [SVProgressHUD showInfoWithStatus:@"This route can not be edited"];
+                    [AlertManager alert:@"" title:@"This route can not be edited" imageName:@"ic_error" onConfirm:NULL];
                     return;
                 }
 
@@ -764,22 +764,22 @@
                                                  handler:^(UITableViewRowAction* _Nonnull action, NSIndexPath* _Nonnull indexPath) {
                                                      RoadBooksCell* cell = [tableView cellForRowAtIndexPath:indexPath];
 
-                                                     [self presentConfirmationAlertWithTitle:@"Delete Folder"
-                                                                                 withMessage:[NSString stringWithFormat:@"Are you sure you want to delete %@ folder?", cell.lblTitle.text]
-                                                                       withCancelButtonTitle:@"Cancel"
-                                                                                withYesTitle:@"Yes"
-                                                                          withExecutionBlock:^{
+                                                     [AlertManager confirm:[NSString stringWithFormat:@"Are you sure you want to delete %@ folder?", cell.lblTitle.text]
+                                                                     title:@"Delete Folder"
+                                                                  negative:@"CANCEL"
+                                                                  positive:@"YES"
+                                                                onNegative:NULL
+                                                                onPositive:^{
+                                                                    CDFolders* objRoadBook = self.arrFolders[indexPath.row];
 
-                                                                              CDFolders* objRoadBook = self.arrFolders[indexPath.row];
-
-                                                                              [[WebServiceConnector alloc] init:[NSString stringWithFormat:@"%@/%@", URLGetMyFolders, [NSString stringWithFormat:@"%@", objRoadBook.foldersIdentifier]]
-                                                                                                 withParameters:nil
-                                                                                                     withObject:self
-                                                                                                   withSelector:@selector(handleDeleteRoadbookResponse:)
-                                                                                                 forServiceType:ServiceTypeDELETE
-                                                                                                 showDisplayMsg:@""
-                                                                                                     showLoader:YES];
-                                                                          }];
+                                                                    [[WebServiceConnector alloc] init:[NSString stringWithFormat:@"%@/%@", URLGetMyFolders, [NSString stringWithFormat:@"%@", objRoadBook.foldersIdentifier]]
+                                                                                       withParameters:nil
+                                                                                           withObject:self
+                                                                                         withSelector:@selector(handleDeleteRoadbookResponse:)
+                                                                                       forServiceType:ServiceTypeDELETE
+                                                                                       showDisplayMsg:@""
+                                                                                           showLoader:YES];
+                                                                }];
                                                  }];
 
             [delete setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Delete"]]];
@@ -795,21 +795,22 @@
                                                  handler:^(UITableViewRowAction* _Nonnull action, NSIndexPath* _Nonnull indexPath) {
                                                      RoadBooksCell* cell = [tableView cellForRowAtIndexPath:indexPath];
 
-                                                     [self presentConfirmationAlertWithTitle:@"Delete Roadbook"
-                                                                                 withMessage:[NSString stringWithFormat:@"Are you sure you want to delete %@ roadbook?", cell.lblTitle.text]
-                                                                       withCancelButtonTitle:@"Cancel"
-                                                                                withYesTitle:@"Yes"
-                                                                          withExecutionBlock:^{
-                                                                              NSString* strId = @"";
-                                                                              if ([self.arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
-                                                                                  CDRoutes* objRoadBook = self.arrRoadBooks[indexPath.row];
-                                                                                  strId = [NSString stringWithFormat:@"%@", objRoadBook.routesIdentifier];
-                                                                              } else {
-                                                                                  CDSyncData* objData = self.arrRoadBooks[indexPath.row];
-                                                                                  strId = [NSString stringWithFormat:@"%@", objData.routeIdentifier];
-                                                                              }
-                                                                              [self deleteRoadbookWithRoadbookId:strId];
-                                                                          }];
+                                                     [AlertManager confirm:[NSString stringWithFormat:@"Are you sure you want to delete %@ roadbook?", cell.lblTitle.text]
+                                                                     title:@"Delete Roadbook"
+                                                                  negative:@"CANCEL"
+                                                                  positive:@"YES"
+                                                                onNegative:NULL
+                                                                onPositive:^{
+                                                                    NSString* strId = @"";
+                                                                    if ([self.arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
+                                                                        CDRoutes* objRoadBook = self.arrRoadBooks[indexPath.row];
+                                                                        strId = [NSString stringWithFormat:@"%@", objRoadBook.routesIdentifier];
+                                                                    } else {
+                                                                        CDSyncData* objData = self.arrRoadBooks[indexPath.row];
+                                                                        strId = [NSString stringWithFormat:@"%@", objData.routeIdentifier];
+                                                                    }
+                                                                    [self deleteRoadbookWithRoadbookId:strId];
+                                                                }];
                                                  }];
 
             [delete setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Delete"]]];

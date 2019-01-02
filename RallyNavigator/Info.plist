@@ -115,5 +115,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>russo_one.ttf</string>
+	</array>
 </dict>
 </plist>

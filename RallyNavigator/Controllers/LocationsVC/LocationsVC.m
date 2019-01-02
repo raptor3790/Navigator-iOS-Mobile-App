@@ -1077,34 +1077,18 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     switch ([CLLocationManager authorizationStatus]) {
     case kCLAuthorizationStatusRestricted:
     case kCLAuthorizationStatusDenied: {
-        UIAlertController* alertController =
-            [UIAlertController alertControllerWithTitle:@"Location Service Off"
-                                                message:@"Turn on Location Services in Settings > Privacy to allow Rally Navigator to determine your current location"
-                                         preferredStyle:UIAlertControllerStyleAlert];
-
-        UIAlertAction* settingsAction =
-            [UIAlertAction actionWithTitle:@"Settings"
-                                     style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction* _Nonnull action) {
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-                                                                              options:@{}
-                                                                    completionHandler:nil];
-                                       });
-                                       [self dismissViewControllerAnimated:YES completion:nil];
-                                   }];
-
-        UIAlertAction* okAction =
-            [UIAlertAction actionWithTitle:@"OK"
-                                     style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction* _Nonnull action) {
-                                       [self dismissViewControllerAnimated:YES completion:nil];
-                                   }];
-
-        [alertController addAction:settingsAction];
-        [alertController addAction:okAction];
-
-        [self presentViewController:alertController animated:YES completion:nil];
+        [AlertManager confirm:@"Turn on Location Services in Settings > Privacy to allow Rally Navigator to determine your current location"
+                        title:@"Location Service Off"
+                     negative:@"SETTINGS"
+                     positive:@"OK"
+                   onNegative:^{
+                       dispatch_async(dispatch_get_main_queue(), ^{
+                           [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+                                                              options:@{}
+                                                    completionHandler:nil];
+                       });
+                   }
+                   onPositive:NULL];
 
         return NO;
     } break;
@@ -2338,29 +2322,15 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     });
 
     if (isBack) {
-        UIAlertController* alertController = [UIAlertController alertControllerWithTitle:@"Rally Navigator"
-                                                                                 message:@"Your Route has been saved successfully"
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
-
-        UIAlertAction* yesAction = [UIAlertAction actionWithTitle:@"OK"
-                                                            style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction* _Nonnull action) {
-                                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                                  [self.navigationController popViewControllerAnimated:YES];
-                                                              });
-                                                              [self dismissViewControllerAnimated:YES
-                                                                                       completion:^{
-                                                                                       }];
-                                                          }];
-
-        [alertController addAction:yesAction];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self presentViewController:alertController animated:YES completion:nil];
-        });
+        [AlertManager alert:@"Your Route has been saved successfully"
+                      title:@"Rally Navigator"
+                  imageName:@"ic_success"
+                  onConfirm:^{
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [self.navigationController popViewControllerAnimated:YES];
+                      });
+                  }];
     }
-
-    //    [self btnRecordClicked:nil];
 }
 
 - (NSString*)getCurrentUTCTime
@@ -2698,6 +2668,10 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
         [self handleAddWP:nil];
     } else {
+        [AlertManager alert:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
+                      title:@"Roadbook saved"
+                  imageName:@"ic_success"
+                  onConfirm:NULL];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -3628,148 +3602,134 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     if (isRecordingStarted) {
         [_btnRecording sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
-    //    else
-    //    {
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            {
-                if (sender != nil)
-                {
-                    LocationCell *cell = (LocationCell *)[self getCellForClassName:NSStringFromClass([LocationCell class]) withSender:sender];
-                    
-                    if ([cell.btnEdit.imageView.image isEqual:[UIImage imageNamed:@"lock"]])
-                    {
-            [cell.lblDistanceUnit setHidden:NO];
-            [cell.btnEdit setHidden:YES];
-            if ([self->objConfig.unit isEqualToString:@"Kilometers"]) {
-                cell.lblDistanceUnit.text = @"KM";
-            } else {
-                cell.lblDistanceUnit.text = [self->objConfig.unit uppercaseString];
-            }
-            [cell.lblDistanceUnit setBackgroundColor:[UIColor whiteColor]];
-            [self.btnAdd setEnabled:TRUE];
-                    }
-                    else
-                    {
-            [cell.btnEdit setBackgroundColor:[UIColor blackColor]];
-            [cell.lblDistanceUnit setHidden:NO];
-            [cell.btnEdit setHidden:YES];
-            [self.btnAdd setEnabled:FALSE];
-                    }
-                    
-                    if (self->isEditEnabled)
-                    {
-            NSIndexPath* idPath = [self.tblLocations indexPathForCell:cell];
+            if (sender != nil) {
+                LocationCell* cell = (LocationCell*)[self getCellForClassName:NSStringFromClass([LocationCell class]) withSender:sender];
 
-            if (idPath.section == TableViewSectionCurrentState) {
+                if ([cell.btnEdit.imageView.image isEqual:[UIImage imageNamed:@"lock"]]) {
+                    [cell.lblDistanceUnit setHidden:NO];
+                    [cell.btnEdit setHidden:YES];
+                    if ([self->objConfig.unit isEqualToString:@"Kilometers"]) {
+                        cell.lblDistanceUnit.text = @"KM";
+                    } else {
+                        cell.lblDistanceUnit.text = [self->objConfig.unit uppercaseString];
+                    }
+                    [cell.lblDistanceUnit setBackgroundColor:[UIColor whiteColor]];
+                    [self.btnAdd setEnabled:TRUE];
+                } else {
+                    [cell.btnEdit setBackgroundColor:[UIColor blackColor]];
+                    [cell.lblDistanceUnit setHidden:NO];
+                    [cell.btnEdit setHidden:YES];
+                    [self.btnAdd setEnabled:FALSE];
+                }
+
+                if (self->isEditEnabled) {
+                    NSIndexPath* idPath = [self.tblLocations indexPathForCell:cell];
+
+                    if (idPath.section == TableViewSectionCurrentState) {
+                        return;
+                    }
+                }
+
+                if (((UIButton*)sender).tag != -1) {
+                    self->isEditEnabled = !self->isEditEnabled;
+
+                    if (self->isEditEnabled) {
+                        [self.tblLocations setScrollEnabled:NO];
+                        self->strEditWayPointDescription = cell.txtView.text;
+                        [self manageCell:cell forIndexPath:[self.tblLocations indexPathForCell:cell]];
+                    } else {
+                        NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(Locations* objLocation, NSDictionary<NSString*, id>* _Nullable bindings) {
+                            return objLocation.locationId == ((UIButton*)sender).tag;
+                        }];
+
+                        NSMutableArray* arrSearchResults = [[NSMutableArray alloc] init];
+                        arrSearchResults = [[self->arrAllLocations filteredArrayUsingPredicate:predicate] mutableCopy];
+
+                        if (arrSearchResults.count > 0) {
+                            NSUInteger index = [self->arrAllLocations indexOfObject:[arrSearchResults firstObject]];
+                            Locations* objLocation = [arrSearchResults firstObject];
+                            objLocation.text = self->strEditWayPointDescription;
+                            if (self->imgEditCaptured != nil) {
+                                objLocation.photos = @[ self->imgEditCaptured ];
+                            }
+
+                            if (self->audioEditData != nil) {
+                                objLocation.audios = @[ self->audioEditData ];
+                            }
+
+                            [self->arrAllLocations replaceObjectAtIndex:index withObject:objLocation];
+
+                            NSIndexPath* indexPath = [self.tblLocations indexPathForCell:cell];
+                            [self.tblLocations reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
+                        }
+
+                        [self playAudio:@"beep1_02" fileType:@"mp3"];
+                        NSString* strWayPointId = [NSString stringWithFormat:@"%ld", ((UIButton*)sender).tag];
+                        [self saveDataForUpdatingWayPoint:strWayPointId];
+                        [self.tblLocations setScrollEnabled:YES];
+                        self->audioEditData = nil;
+                        self->imgEditCaptured = nil;
+                        self->strEditWayPointDescription = @"";
+                        [self manageCell:cell forIndexPath:[self.tblLocations indexPathForCell:cell]];
+                    }
+
+                    return;
+                }
+            }
+
+            self->isCapturing = YES;
+
+            NSMutableArray* arrIndexes = [[NSMutableArray alloc] init];
+
+            for (NSInteger i = 0; i < self->arrAllLocations.count; i++) {
+                Locations* objLocation = [self->arrAllLocations objectAtIndex:i];
+                CLLocation* location = [[CLLocation alloc] initWithLatitude:objLocation.latitude longitude:objLocation.longitude];
+
+                if (objLocation.isWayPoint) {
+                    break;
+                }
+
+                if ([location distanceFromLocation:self->currentLocation] < /*objConfig.accuracy.minDistanceTrackpoint*/ 50) {
+                    [arrIndexes addObject:objLocation];
+                } else {
+                    break;
+                }
+            }
+
+            [self->arrAllLocations removeObjectsInArray:arrIndexes];
+
+            self->counter = self->arrAllLocations.count;
+
+            arrIndexes = [[NSMutableArray alloc] init];
+
+            for (NSInteger i = self->arrRemainingTracks.count - 1; i >= 0; i--) {
+                NSDictionary* dic = [self->arrRemainingTracks objectAtIndex:i];
+                NSDictionary* dicValue = [dic valueForKey:@"value"];
+                Waypoints* objWayPoint = [[Waypoints alloc] initWithDictionary:dicValue];
+                CLLocation* location1 = [[CLLocation alloc] initWithLatitude:objWayPoint.lat longitude:objWayPoint.lon];
+
+                if ([location1 distanceFromLocation:self->currentLocation] < /*objConfig.accuracy.minDistanceTrackpoint*/ 50) {
+                    [arrIndexes addObject:dic];
+                } else {
+                    break;
+                }
+            }
+
+            [self->arrRemainingTracks removeObjectsInArray:arrIndexes];
+
+            if (self->isAutoPhotoEnabled && self->imgCaptured == nil) {
+                [self.session startRunning];
+                [self capturePhoto];
+                [self handleAutoPhoto];
                 return;
             }
-                    }
-                    
-                    if (((UIButton *)sender).tag != -1)
-                    {
-            self->isEditEnabled = !self->isEditEnabled;
 
-            if (self->isEditEnabled) {
-                [self.tblLocations setScrollEnabled:NO];
-                self->strEditWayPointDescription = cell.txtView.text;
-                [self manageCell:cell forIndexPath:[self.tblLocations indexPathForCell:cell]];
-            } else {
-                NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(Locations* objLocation, NSDictionary<NSString*, id>* _Nullable bindings) {
-                    return objLocation.locationId == ((UIButton*)sender).tag;
-                }];
-
-                NSMutableArray* arrSearchResults = [[NSMutableArray alloc] init];
-                arrSearchResults = [[self->arrAllLocations filteredArrayUsingPredicate:predicate] mutableCopy];
-
-                if (arrSearchResults.count > 0) {
-                    NSUInteger index = [self->arrAllLocations indexOfObject:[arrSearchResults firstObject]];
-                    ;
-
-                    Locations* objLocation = [arrSearchResults firstObject];
-                    objLocation.text = self->strEditWayPointDescription;
-                    if (self->imgEditCaptured != nil) {
-                        objLocation.photos = @[ self->imgEditCaptured ];
-                    }
-
-                    if (self->audioEditData != nil) {
-                        objLocation.audios = @[ self->audioEditData ];
-                    }
-
-                    [self->arrAllLocations replaceObjectAtIndex:index withObject:objLocation];
-
-                    NSIndexPath* indexPath = [self.tblLocations indexPathForCell:cell];
-                    [self.tblLocations reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
-                }
-
-                [self playAudio:@"beep1_02" fileType:@"mp3"];
-                NSString* strWayPointId = [NSString stringWithFormat:@"%ld", ((UIButton*)sender).tag];
-                [self saveDataForUpdatingWayPoint:strWayPointId];
-                [self.tblLocations setScrollEnabled:YES];
-                self->audioEditData = nil;
-                self->imgEditCaptured = nil;
-                self->strEditWayPointDescription = @"";
-                [self manageCell:cell forIndexPath:[self.tblLocations indexPathForCell:cell]];
-            }
-
-            return;
-                    }
-                }
-                
-                self->isCapturing = YES;
-                
-                NSMutableArray *arrIndexes = [[NSMutableArray alloc] init];
-                
-                for (NSInteger i = 0; i < self->arrAllLocations.count; i++)
-                {
-        Locations* objLocation = [self->arrAllLocations objectAtIndex:i];
-        CLLocation* location = [[CLLocation alloc] initWithLatitude:objLocation.latitude longitude:objLocation.longitude];
-
-        if (objLocation.isWayPoint) {
-            break;
-        }
-
-        if ([location distanceFromLocation:self->currentLocation] < /*objConfig.accuracy.minDistanceTrackpoint*/ 50) {
-            [arrIndexes addObject:objLocation];
-        } else {
-            break;
-        }
-                }
-                
-                [self->arrAllLocations removeObjectsInArray:arrIndexes];
-                
-                self->counter = self->arrAllLocations.count;
-                
-                arrIndexes = [[NSMutableArray alloc] init];
-                
-                for (NSInteger i = self->arrRemainingTracks.count - 1; i >= 0; i--)
-                {
-        NSDictionary* dic = [self->arrRemainingTracks objectAtIndex:i];
-        NSDictionary* dicValue = [dic valueForKey:@"value"];
-        Waypoints* objWayPoint = [[Waypoints alloc] initWithDictionary:dicValue];
-        CLLocation* location1 = [[CLLocation alloc] initWithLatitude:objWayPoint.lat longitude:objWayPoint.lon];
-
-        if ([location1 distanceFromLocation:self->currentLocation] < /*objConfig.accuracy.minDistanceTrackpoint*/ 50) {
-            [arrIndexes addObject:dic];
-        } else {
-            break;
-        }
-                }
-                
-                [self->arrRemainingTracks removeObjectsInArray:arrIndexes];
-                
-                if (self->isAutoPhotoEnabled && self->imgCaptured == nil)
-                {
-        [self.session startRunning];
-        [self capturePhoto];
-        [self handleAutoPhoto];
-        return;
-                }
-                [self uploadData];
-}
-});
-});
-//    }
+            [self uploadData];
+        });
+    });
 }
 
 - (void)saveDataForUpdatingWayPoint:(NSString*)strWPId
@@ -3967,40 +3927,22 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                     [self capturePhoto];
                 });
             }
-
-            break;
-        }
+        } break;
 
         case AVCamSetupResultCameraNotAuthorized: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString* message = NSLocalizedString(@"AVCam doesn't have permission to use the camera, please change privacy settings",
-                    @"Alert message when the user has denied access to the camera");
-                UIAlertController* alertController = [UIAlertController alertControllerWithTitle:@"AVCam" message:message preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"Alert OK button") style:UIAlertActionStyleCancel handler:nil];
-                [alertController addAction:cancelAction];
-
-                // Provide quick access to Settings.
-                UIAlertAction* settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", @"Alert button to open Settings")
-                                                                         style:UIAlertActionStyleDefault
-                                                                       handler:^(UIAlertAction* action) {
-                                                                           [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
-                                                                       }];
-                [alertController addAction:settingsAction];
-                [self presentViewController:alertController animated:YES completion:nil];
-            });
-            break;
-        }
+            [AlertManager confirm:@"AVCam doesn't have permission to use the camera, please change privacy settings"
+                            title:@"AVCam"
+                         negative:@"SETTINGS"
+                         positive:@"OK"
+                       onNegative:^{
+                           [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
+                       }
+                       onPositive:NULL];
+        } break;
 
         case AVCamSetupResultSessionConfigurationFailed: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString* message = NSLocalizedString(@"Unable to capture media", @"Alert message when something goes wrong during capture session configuration");
-                UIAlertController* alertController = [UIAlertController alertControllerWithTitle:@"AVCam" message:message preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"Alert OK button") style:UIAlertActionStyleCancel handler:nil];
-                [alertController addAction:cancelAction];
-                //                    [self presentViewController:alertController animated:YES completion:nil];
-            });
-            break;
-        }
+            [AlertManager alert:@"Unable to capture media" title:@"AVCam" imageName:@"ic_error" onConfirm:NULL];
+        } break;
         }
 
         //        [self startStandardUpdates];
@@ -4356,20 +4298,20 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 - (void)clickedOnLogout
 {
-    [self presentConfirmationAlertWithTitle:@"Confirm Logout"
-                                withMessage:@"Are you sure you want to log out?"
-                      withCancelButtonTitle:@"Cancel"
-                               withYesTitle:@"Yes"
-                         withExecutionBlock:^{
+    [AlertManager confirm:@"Are you sure you want to log out?"
+                    title:@"Confirm Logout"
+                 negative:@"CANCEL"
+                 positive:@"YES"
+               onNegative:NULL
+               onPositive:^{
+                   FBSDKLoginManager* login = [[FBSDKLoginManager alloc] init];
+                   [login logOut];
 
-                             FBSDKLoginManager* login = [[FBSDKLoginManager alloc] init];
-                             [login logOut];
+                   [[GIDSignIn sharedInstance] signOut];
 
-                             [[GIDSignIn sharedInstance] signOut];
-
-                             [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
-                             [self.navigationController popToRootViewControllerAnimated:YES];
-                         }];
+                   [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
+                   [self.navigationController popToRootViewControllerAnimated:YES];
+               }];
 }
 
 #pragma mark - Pick Roadbook Delegate Methods
@@ -4520,42 +4462,43 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 - (void)showAlert
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self presentConfirmationAlertWithTitle:@"Download Offline Maps Around Overlay Track?"
-                                    withMessage:@""
-                          withCancelButtonTitle:@"No"
-                                   withYesTitle:@"Yes"
-                             withExecutionBlock:^{
-                                 DownloadMapVC* vc = loadViewController(StoryBoard_Settings, kIDDownloadMapVC);
-                                 if ([self.mapBoxView.styleURL isEqual:[MGLStyle streetsStyleURL]]) {
-                                     vc.curMapStyle = CurrentMapStyleStreets;
-                                 } else if ([self.mapBoxView.styleURL isEqual:[MGLStyle satelliteStreetsStyleURL]]) {
-                                     vc.curMapStyle = CurrentMapStyleSatellite;
-                                 } else if ([self.mapBoxView.styleURL isEqual:[MGLStyle darkStyleURL]]) {
-                                     vc.curMapStyle = CurrentMapStyleStreets;
-                                 }
+        [AlertManager confirm:@""
+                        title:@"Download Offline Maps Around Overlay Track?"
+                     negative:@"NO"
+                     positive:@"YES"
+                   onNegative:NULL
+                   onPositive:^{
+                       DownloadMapVC* vc = loadViewController(StoryBoard_Settings, kIDDownloadMapVC);
+                       if ([self.mapBoxView.styleURL isEqual:[MGLStyle streetsStyleURL]]) {
+                           vc.curMapStyle = CurrentMapStyleStreets;
+                       } else if ([self.mapBoxView.styleURL isEqual:[MGLStyle satelliteStreetsStyleURL]]) {
+                           vc.curMapStyle = CurrentMapStyleSatellite;
+                       } else if ([self.mapBoxView.styleURL isEqual:[MGLStyle darkStyleURL]]) {
+                           vc.curMapStyle = CurrentMapStyleStreets;
+                       }
 
-                                 vc.strMapName = self->overlayName;
-                                 vc.delegate = self;
+                       vc.strMapName = self->overlayName;
+                       vc.delegate = self;
 
-                                 vc.overlaySender = @{
-                                     @"markers" : self->arrMapBoxMarkers1,
-                                     @"polyline" : self->o_polylineMapBox
-                                 };
+                       vc.overlaySender = @{
+                           @"markers" : self->arrMapBoxMarkers1,
+                           @"polyline" : self->o_polylineMapBox
+                       };
 
-                                 NavController* nav = [[NavController alloc] initWithRootViewController:vc];
+                       NavController* nav = [[NavController alloc] initWithRootViewController:vc];
 
-                                 if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-                                     nav.navigationBar.barStyle = UIBarStyleBlack;
-                                     nav.navigationBar.translucent = NO;
-                                     nav.navigationBar.tintColor = [UIColor lightGrayColor];
-                                 } else {
-                                     nav.navigationBar.barStyle = UIBarStyleDefault;
-                                     nav.navigationBar.translucent = YES;
-                                     nav.navigationBar.tintColor = [UIColor blackColor];
-                                 }
+                       if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
+                           nav.navigationBar.barStyle = UIBarStyleBlack;
+                           nav.navigationBar.translucent = NO;
+                           nav.navigationBar.tintColor = [UIColor lightGrayColor];
+                       } else {
+                           nav.navigationBar.barStyle = UIBarStyleDefault;
+                           nav.navigationBar.translucent = YES;
+                           nav.navigationBar.tintColor = [UIColor blackColor];
+                       }
 
-                                 [self presentViewController:nav animated:YES completion:nil];
-                             }];
+                       [self presentViewController:nav animated:YES completion:nil];
+                   }];
     });
 }
 

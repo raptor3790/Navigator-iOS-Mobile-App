@@ -16,7 +16,7 @@
 #define ENV_PROD        1
 
 
-#define Server_Type ENV_DEV
+#define Server_Type ENV_PROD
 
 #if Server_Type == ENV_DEV
 
