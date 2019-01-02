@@ -14,7 +14,5 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnLeft;
 @property (weak, nonatomic) IBOutlet UIButton *btnRight;
 @property (weak, nonatomic) IBOutlet UISwitch *switchAutoPhoto;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthSwitch;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *horizontalSpaceSwitch;
 
 @end

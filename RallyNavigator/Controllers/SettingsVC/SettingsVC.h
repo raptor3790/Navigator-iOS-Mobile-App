@@ -13,6 +13,7 @@
 
 @optional
 
+- (void)myRoadbooks;
 - (void)saveRoadbook;
 - (void)clickedOnLogout;
 - (void)clearOverlay;
@@ -20,12 +21,11 @@
 
 @end
 
-typedef enum
-{
+typedef enum {
     OverlayStatusNotApplicable = 0,
     OverlayStatusShow,
     OverlayStatusHide
-}OverlayStatus;
+} OverlayStatus;
 
 @interface SettingsVC : BaseVC <UITableViewDataSource, UITableViewDelegate>
 
@@ -37,8 +37,6 @@ typedef enum
 @property (assign, nonatomic) BOOL isRecording;
 @property (assign, nonatomic) OverlayStatus currentOverlay;
 
-//@property (strong, nonatomic) UISwitch *switchAutoPhoto;
-
-@property (weak, nonatomic) IBOutlet UITableView *tblSettings;
+@property (weak, nonatomic) IBOutlet UITableView* tblSettings;
 
 @end

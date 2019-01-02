@@ -256,18 +256,22 @@
                                                                          sortDescriptor:nil
                                                                               forEntity:NSStringFromClass([CDFolders class])]];
 
+        NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(CDFolders* objFolder, NSDictionary<NSString*, id>* _Nullable bindings) {
+            return (![objFolder.folderType isEqualToString:@"rally_roadbook_recorder_GPS"]) && (![objFolder.folderType isEqualToString:@"deleted_routes"]);
+        }];
+        
         _arrFolders = [[NSMutableArray alloc] init];
-        _arrFolders = [arrSyncFolders mutableCopy];
+        _arrFolders = [[arrSyncFolders filteredArrayUsingPredicate:predicate] mutableCopy];
 
+        predicate = [NSPredicate predicateWithBlock:^BOOL(CDFolders* objFolder, NSDictionary<NSString*, id>* _Nullable bindings) {
+            return [objFolder.folderType isEqualToString:@"default"];
+        }];
+        
         NSString* parentId;
 
         if (_strFolderId) {
             parentId = _strFolderId;
         } else {
-            NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(CDFolders* objFolder, NSDictionary<NSString*, id>* _Nullable bindings) {
-                return [objFolder.folderType isEqualToString:@"default"];
-            }];
-
             NSMutableArray* arrWayPoints = [[NSMutableArray alloc] init];
             arrWayPoints = [[_arrFolders filteredArrayUsingPredicate:predicate] mutableCopy];
 
@@ -307,10 +311,6 @@
 
         arrRoadBooks = [[NSMutableArray alloc] init];
         arrRoadBooks = [sortedArray mutableCopy];
-
-        NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(CDFolders* objFolder, NSDictionary<NSString*, id>* _Nullable bindings) {
-            return [objFolder.folderType isEqualToString:@"default"];
-        }];
 
         NSMutableArray* arrWayPoints = [[NSMutableArray alloc] init];
         arrWayPoints = [[_arrFolders filteredArrayUsingPredicate:predicate] mutableCopy];

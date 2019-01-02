@@ -52,6 +52,8 @@
     self.navigationController.navigationBar.tintColor = [UIColor lightGrayColor];
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSForegroundColorAttributeName:[UIColor lightGrayColor]}];
+    
+    self.navigationItem.hidesBackButton = YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -66,6 +68,11 @@
     [textField resignFirstResponder];
     
     return YES;
+}
+
+- (void)myRoadbooks
+{
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (void)clickedOnLogout

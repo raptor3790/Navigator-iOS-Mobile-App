@@ -21,7 +21,8 @@
 #import "OfflineMapsVC.h"
 
 typedef enum {
-    SettingsCellTypeSave = 0,
+    SettingsCellTypeMyRoadbooks = 0,
+    SettingsCellTypeSave,
     SettingsCellTypeOverlayTrack,
     SettingsCellTypeOfflineMaps,
     SettingsCellTypeDistanceUnit,
@@ -179,12 +180,19 @@ typedef enum {
 
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 9;
+    return 10;
 }
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
     switch (indexPath.row) {
+    case SettingsCellTypeMyRoadbooks: {
+        if ([self.delegate respondsToSelector:@selector(myRoadbooks)]) {
+            [self.delegate myRoadbooks];
+        }
+        [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
+    } break;
+
     case SettingsCellTypeOfflineMaps: {
         OfflineMapsVC* vc = loadViewController(StoryBoard_Settings, kIDOfflineMapsVC);
         vc.curMapStyle = _curMapStyle;
@@ -303,27 +311,27 @@ typedef enum {
     SettingsCell* cell;
 
     switch (indexPath.row) {
+    case SettingsCellTypeMyRoadbooks: {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
+        cell.lblTitle.text = @"My Roadbooks";
+        cell.switchAutoPhoto.hidden = YES;
+    } break;
+
     case SettingsCellTypeSave: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = @"Stop Recording & Save Roadbook";
-        cell.horizontalSpaceSwitch.constant = 0.0f;
-        cell.widthSwitch.constant = 0.0f;
         cell.switchAutoPhoto.hidden = YES;
     } break;
 
     case SettingsCellTypeOverlayTrack: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = _currentOverlay == OverlayStatusHide ? @"Clear Overlay Track" : @"Overlay Track on Map";
-        cell.horizontalSpaceSwitch.constant = 0.0f;
-        cell.widthSwitch.constant = 0.0f;
         cell.switchAutoPhoto.hidden = YES;
     } break;
 
     case SettingsCellTypeOfflineMaps: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = @"Offline Maps";
-        cell.horizontalSpaceSwitch.constant = 0.0f;
-        cell.widthSwitch.constant = 0.0f;
         cell.switchAutoPhoto.hidden = YES;
     } break;
 
@@ -376,8 +384,6 @@ typedef enum {
     case SettingsCellTypeAutoPhoto: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = @"Auto Photo";
-        cell.horizontalSpaceSwitch.constant = 8.0f;
-        cell.widthSwitch.constant = 49.0f;
         cell.switchAutoPhoto.hidden = NO;
         [cell.switchAutoPhoto setOn:isAutoPhoto];
         [cell.switchAutoPhoto setOnTintColor:[UIColor redColor]];
@@ -396,24 +402,18 @@ typedef enum {
     case SettingsCellTypeHowToUse: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = @"Mobile App - How it Works";
-        cell.horizontalSpaceSwitch.constant = 0.0f;
-        cell.widthSwitch.constant = 0.0f;
         cell.switchAutoPhoto.hidden = YES;
     } break;
 
     case SettingsCellTypeShare: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = @"Share Rally Navigator";
-        cell.horizontalSpaceSwitch.constant = 0.0f;
-        cell.widthSwitch.constant = 0.0f;
         cell.switchAutoPhoto.hidden = YES;
     } break;
 
     case SettingsCellTypeLogout: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = @"Logout";
-        cell.horizontalSpaceSwitch.constant = 0.0f;
-        cell.widthSwitch.constant = 0.0f;
         cell.switchAutoPhoto.hidden = YES;
     } break;
 
@@ -438,7 +438,7 @@ typedef enum {
 
 - (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    CGFloat totalValue = 7.0f;
+    //    CGFloat totalValue = 7.0f;
 
     if (_currentOverlay == OverlayStatusNotApplicable) {
         if (indexPath.row == SettingsCellTypeOverlayTrack) {
@@ -456,7 +456,8 @@ typedef enum {
         //        totalValue--;
     }
 
-    return (SCREEN_HEIGHT - 64.0f) / totalValue;
+    return 72;
+    //    return (SCREEN_HEIGHT - 64.0f) / totalValue;
 }
 
 #pragma mark - Auto Photo Web Service
