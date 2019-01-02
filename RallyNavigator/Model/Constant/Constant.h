@@ -108,8 +108,6 @@
 #define kIDMapPreviewVC @"idMapPreviewVC"
 #define kIDHowToUseVC @"idHowToUseVC"
 #define kIDPickRoadBookVC @"idPickRoadBookVC"
-#define kIDOfflineMapsVC @"idOfflineMapsVC"
-#define kIDDownloadMapVC @"idDownloadMapVC"
 #define kIDZoomLevelVC @"idZoomLevelVC"
 #define kIDAddMapNameVC @"idAddMapNameVC"
 #define kIDAddFolderVC @"idAddFolderVC"

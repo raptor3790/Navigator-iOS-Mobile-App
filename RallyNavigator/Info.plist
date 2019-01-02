@@ -47,7 +47,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>41</string>
+	<string>42</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -91,6 +91,10 @@
 	<string>Please allow access to microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please allow access to your photo library</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>russo_one.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -115,9 +119,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>russo_one.ttf</string>
-	</array>
 </dict>
 </plist>

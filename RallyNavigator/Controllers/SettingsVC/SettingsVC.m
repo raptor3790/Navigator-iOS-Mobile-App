@@ -18,13 +18,11 @@
 #import <Crashlytics/Crashlytics.h>
 #import "RoadBooksVC.h"
 #import "PickRoadBookVC.h"
-#import "OfflineMapsVC.h"
 
 typedef enum {
     SettingsCellTypeMyRoadbooks = 0,
     SettingsCellTypeSave,
     SettingsCellTypeOverlayTrack,
-    SettingsCellTypeOfflineMaps,
     SettingsCellTypeDistanceUnit,
     SettingsCellTypeThemes,
     SettingsCellTypeAutoPhoto,
@@ -180,7 +178,7 @@ typedef enum {
 
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return 9;
 }
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
@@ -191,15 +189,6 @@ typedef enum {
             [self.delegate myRoadbooks];
         }
         [self.navigationController dismissViewControllerAnimated:YES completion:NULL];
-    } break;
-
-    case SettingsCellTypeOfflineMaps: {
-        OfflineMapsVC* vc = loadViewController(StoryBoard_Settings, kIDOfflineMapsVC);
-        vc.curMapStyle = _curMapStyle;
-        if (_overlaySender) {
-            vc.overlaySender = _overlaySender;
-        }
-        [self.navigationController pushViewController:vc animated:YES];
     } break;
 
     case SettingsCellTypeOverlayTrack: {
@@ -326,12 +315,6 @@ typedef enum {
     case SettingsCellTypeOverlayTrack: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
         cell.lblTitle.text = _currentOverlay == OverlayStatusHide ? @"Clear Overlay Track" : @"Overlay Track on Map";
-        cell.switchAutoPhoto.hidden = YES;
-    } break;
-
-    case SettingsCellTypeOfflineMaps: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Offline Maps";
         cell.switchAutoPhoto.hidden = YES;
     } break;
 

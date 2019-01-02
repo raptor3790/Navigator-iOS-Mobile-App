@@ -91,9 +91,6 @@
 		E471B2F61FECC9E300E0A228 /* WebServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = E471B2DC1FECC9E300E0A228 /* WebServiceResponse.m */; };
 		E471B2F71FECC9E300E0A228 /* UIAlertController+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = E471B2DF1FECC9E300E0A228 /* UIAlertController+Blocks.m */; };
 		E471B2FA1FECC9E300E0A228 /* UITableView+Placeholder.m in Sources */ = {isa = PBXBuildFile; fileRef = E471B2E71FECC9E300E0A228 /* UITableView+Placeholder.m */; };
-		E47A148420D236B600048FD4 /* OfflineMapsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E47A148320D236B600048FD4 /* OfflineMapsVC.m */; };
-		E47A148720D250C900048FD4 /* OfflineMapCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E47A148620D250C900048FD4 /* OfflineMapCell.m */; };
-		E47A148A20D27EC500048FD4 /* DownloadMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E47A148920D27EC500048FD4 /* DownloadMapVC.m */; };
 		E47F5CFA212D44CB003AF75D /* Folders.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F5CF5212D44CB003AF75D /* Folders.m */; };
 		E47F5CFB212D44CB003AF75D /* PaginationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F5CF7212D44CB003AF75D /* PaginationInfo.m */; };
 		E47F5CFC212D44CB003AF75D /* Roadbooks.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F5CF9212D44CB003AF75D /* Roadbooks.m */; };
@@ -274,12 +271,6 @@
 		E471B2DF1FECC9E300E0A228 /* UIAlertController+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Blocks.m"; sourceTree = "<group>"; };
 		E471B2E61FECC9E300E0A228 /* UITableView+Placeholder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Placeholder.h"; sourceTree = "<group>"; };
 		E471B2E71FECC9E300E0A228 /* UITableView+Placeholder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Placeholder.m"; sourceTree = "<group>"; };
-		E47A148220D236B600048FD4 /* OfflineMapsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OfflineMapsVC.h; sourceTree = "<group>"; };
-		E47A148320D236B600048FD4 /* OfflineMapsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OfflineMapsVC.m; sourceTree = "<group>"; };
-		E47A148520D250C900048FD4 /* OfflineMapCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OfflineMapCell.h; sourceTree = "<group>"; };
-		E47A148620D250C900048FD4 /* OfflineMapCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OfflineMapCell.m; sourceTree = "<group>"; };
-		E47A148820D27EC500048FD4 /* DownloadMapVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DownloadMapVC.h; sourceTree = "<group>"; };
-		E47A148920D27EC500048FD4 /* DownloadMapVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DownloadMapVC.m; sourceTree = "<group>"; };
 		E47F5CF4212D44CB003AF75D /* Folders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Folders.h; sourceTree = "<group>"; };
 		E47F5CF5212D44CB003AF75D /* Folders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Folders.m; sourceTree = "<group>"; };
 		E47F5CF6212D44CB003AF75D /* PaginationInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaginationInfo.h; sourceTree = "<group>"; };
@@ -874,10 +865,6 @@
 				555CE8FD2068B38300A9A2D2 /* HowToUseVC.m */,
 				E46684F620A446940084C0FC /* PickRoadBookVC.h */,
 				E46684F720A446940084C0FC /* PickRoadBookVC.m */,
-				E47A148220D236B600048FD4 /* OfflineMapsVC.h */,
-				E47A148320D236B600048FD4 /* OfflineMapsVC.m */,
-				E47A148820D27EC500048FD4 /* DownloadMapVC.h */,
-				E47A148920D27EC500048FD4 /* DownloadMapVC.m */,
 				E42918F220D92B4600CFAA78 /* ZoomLevelVC.h */,
 				E42918F320D92B4600CFAA78 /* ZoomLevelVC.m */,
 				E449CFCD20E2123500D4FC20 /* AddMapNameVC.h */,
@@ -891,8 +878,6 @@
 			children = (
 				E4FC931C200620D300D2C1F0 /* SettingsCell.h */,
 				E4FC931D200620D300D2C1F0 /* SettingsCell.m */,
-				E47A148520D250C900048FD4 /* OfflineMapCell.h */,
-				E47A148620D250C900048FD4 /* OfflineMapCell.m */,
 			);
 			path = SettingsCell;
 			sourceTree = "<group>";
@@ -1154,7 +1139,6 @@
 				E4645E3920EB462000AFF9A2 /* LocationArrayHandler.m in Sources */,
 				E4FC931E200620D300D2C1F0 /* SettingsCell.m in Sources */,
 				E4E6526D202AC08900446EA7 /* NavController.m in Sources */,
-				E47A148720D250C900048FD4 /* OfflineMapCell.m in Sources */,
 				E47F5D02212D8795003AF75D /* _CDFolders.m in Sources */,
 				E45077061FFA1A890071B4D0 /* Backgroundimage.m in Sources */,
 				E471B2EE1FECC9E300E0A228 /* NSObject+Archivable.m in Sources */,
@@ -1165,8 +1149,6 @@
 				E43D30601FF606B300A64480 /* RoadBooksVC.m in Sources */,
 				E450770C1FFA1A890071B4D0 /* Summary.m in Sources */,
 				E471B2E81FECC9E300E0A228 /* Function.m in Sources */,
-				E47A148420D236B600048FD4 /* OfflineMapsVC.m in Sources */,
-				E47A148A20D27EC500048FD4 /* DownloadMapVC.m in Sources */,
 				E45077081FFA1A890071B4D0 /* Endlocation.m in Sources */,
 				E4FC931A20061C3600D2C1F0 /* SettingsVC.m in Sources */,
 				E471B2F61FECC9E300E0A228 /* WebServiceResponse.m in Sources */,

@@ -9,9 +9,8 @@
 #import "PickRoadBookVC.h"
 #import "CDSyncData.h"
 #import "Config.h"
-#import "DownloadMapVC.h"
 
-@interface PickRoadBookVC () <DownloadMapVCDelegate> {
+@interface PickRoadBookVC () {
     User* objUser;
 }
 @end

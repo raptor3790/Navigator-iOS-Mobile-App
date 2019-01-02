@@ -9,7 +9,6 @@
 @import AVFoundation;
 
 #import "LocationsVC.h"
-#import "DownloadMapVC.h"
 #import "ImagePreviewVC.h"
 #import "LocationCell.h"
 #import "AVCamPreviewView.h"
@@ -118,7 +117,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 @end
 
-@interface LocationsVC () <TrojanAudioRecorderDelegate, AVCapturePhotoCaptureDelegate, SettingsVCDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, PickRoadBookVCDelegate, MGLMapViewDelegate, DownloadMapVCDelegate> {
+@interface LocationsVC () <TrojanAudioRecorderDelegate, AVCapturePhotoCaptureDelegate, SettingsVCDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, PickRoadBookVCDelegate, MGLMapViewDelegate> {
     NSUInteger counter;
     CGFloat curZoomLevel;
 
@@ -4336,8 +4335,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                            forServiceType:ServiceTypeGET
                            showDisplayMsg:@""
                                showLoader:YES];
-    } else {
-        [self showAlert];
     }
 }
 
@@ -4353,7 +4350,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         Route* objRoute = [arrResponse firstObject];
         NSString* strRoadBookId = [NSString stringWithFormat:@"routeIdentifier='%f'", objRoute.routeIdentifier];
         [self manageForRouteId:strRoadBookId];
-        [self showAlert];
     } else {
         [self showErrorInObject:self forDict:[sender responseDict]];
     }
@@ -4457,49 +4453,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [self btnTogglePreferrenceClicked:nil];
 
     return routeName;
-}
-
-- (void)showAlert
-{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [AlertManager confirm:@""
-                        title:@"Download Offline Maps Around Overlay Track?"
-                     negative:@"NO"
-                     positive:@"YES"
-                   onNegative:NULL
-                   onPositive:^{
-                       DownloadMapVC* vc = loadViewController(StoryBoard_Settings, kIDDownloadMapVC);
-                       if ([self.mapBoxView.styleURL isEqual:[MGLStyle streetsStyleURL]]) {
-                           vc.curMapStyle = CurrentMapStyleStreets;
-                       } else if ([self.mapBoxView.styleURL isEqual:[MGLStyle satelliteStreetsStyleURL]]) {
-                           vc.curMapStyle = CurrentMapStyleSatellite;
-                       } else if ([self.mapBoxView.styleURL isEqual:[MGLStyle darkStyleURL]]) {
-                           vc.curMapStyle = CurrentMapStyleStreets;
-                       }
-
-                       vc.strMapName = self->overlayName;
-                       vc.delegate = self;
-
-                       vc.overlaySender = @{
-                           @"markers" : self->arrMapBoxMarkers1,
-                           @"polyline" : self->o_polylineMapBox
-                       };
-
-                       NavController* nav = [[NavController alloc] initWithRootViewController:vc];
-
-                       if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-                           nav.navigationBar.barStyle = UIBarStyleBlack;
-                           nav.navigationBar.translucent = NO;
-                           nav.navigationBar.tintColor = [UIColor lightGrayColor];
-                       } else {
-                           nav.navigationBar.barStyle = UIBarStyleDefault;
-                           nav.navigationBar.translucent = YES;
-                           nav.navigationBar.tintColor = [UIColor blackColor];
-                       }
-
-                       [self presentViewController:nav animated:YES completion:nil];
-                   }];
-    });
 }
 
 - (void)clearOverlay

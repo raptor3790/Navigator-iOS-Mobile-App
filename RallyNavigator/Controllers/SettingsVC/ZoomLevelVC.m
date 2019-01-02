@@ -7,7 +7,6 @@
 //
 
 #import "ZoomLevelVC.h"
-#import "DownloadMapVC.h"
 
 @interface ZoomLevelVC ()
 
@@ -48,8 +47,6 @@
 - (IBAction)maxSliderValueChanged:(UISlider *)sender
 {
     _lblMaxZoom.text = [NSString stringWithFormat:@"%.2f", ceilf(_maxZoomProgressView.value)];
-    
-    ((DownloadMapVC *)_delegate).maxZoomLevel = ceilf(_maxZoomProgressView.value);
 }
 
 @end
