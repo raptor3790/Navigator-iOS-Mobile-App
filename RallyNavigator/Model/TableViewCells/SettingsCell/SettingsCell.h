@@ -10,9 +10,10 @@
 
 @interface SettingsCell : UITableViewCell
 
-@property (weak, nonatomic) IBOutlet UILabel *lblTitle;
-@property (weak, nonatomic) IBOutlet UIButton *btnLeft;
-@property (weak, nonatomic) IBOutlet UIButton *btnRight;
-@property (weak, nonatomic) IBOutlet UISwitch *switchAutoPhoto;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *closeButton;
+@property (weak, nonatomic) IBOutlet UISwitch *switchControl;
+@property (weak, nonatomic) IBOutlet UIButton *leftButton;
+@property (weak, nonatomic) IBOutlet UIButton *rightButton;
 
 @end

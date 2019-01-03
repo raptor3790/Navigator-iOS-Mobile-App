@@ -22,7 +22,8 @@
 #import "PickRoadBookVC.h"
 
 typedef enum {
-    SettingsCellTypeNewRecording = 0,
+    SettingsCellTypeTitle = 0,
+    SettingsCellTypeNewRecording,
     SettingsCellTypeSave,
     SettingsCellTypeOverlayTrack,
     SettingsCellTypeDistanceUnit,
@@ -34,9 +35,11 @@ typedef enum {
 } SettingsCellType;
 
 @interface SettingsVC () <GPSSettingsVCDelegate> {
+    BOOL isLightView;
+    BOOL isAutoPhoto;
+
     User* objUser;
     Config* objConfig;
-    BOOL isAutoPhoto;
     NSDictionary* dicNewWayPoints;
 }
 @end
@@ -46,13 +49,6 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.title = @"Settings";
-
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-
-    UIBarButtonItem* btnDismiss = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(@"cancel_icon") style:UIBarButtonItemStylePlain target:self action:@selector(btnDismissClicked:)];
-    self.navigationItem.rightBarButtonItem = btnDismiss;
 
     _tblSettings.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
@@ -100,19 +96,9 @@ typedef enum {
     if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
         self.view.backgroundColor = [UIColor blackColor];
         _tblSettings.backgroundColor = [UIColor blackColor];
-        self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-        self.navigationController.navigationBar.translucent = NO;
-        self.navigationController.navigationBar.tintColor = [UIColor lightGrayColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:
-                                                     @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
     } else {
         self.view.backgroundColor = [UIColor whiteColor];
         _tblSettings.backgroundColor = [UIColor whiteColor];
-        self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-        self.navigationController.navigationBar.translucent = NO;
-        self.navigationController.navigationBar.tintColor = [UIColor blackColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:
-                                                     @{ NSForegroundColorAttributeName : [UIColor blackColor] }];
     }
 }
 
@@ -132,7 +118,7 @@ typedef enum {
                            showLoader:showLoader];
 }
 
-- (IBAction)handleConfigResponse:(id)sender
+- (void)handleConfigResponse:(id)sender
 {
     NSArray* arrResponse = [self validateResponse:sender
                                        forKeyName:LoginKey
@@ -155,12 +141,12 @@ typedef enum {
 
 #pragma mark - Button Click Events
 
-- (IBAction)btnDismissClicked:(id)sender
+- (IBAction)btnDismissClicked:(UIButton*)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (IBAction)handleChangeInConfig:(id)sender
+- (void)handleChangeInConfig:(id)sender
 {
     NSArray* arrResponse = [self validateResponse:sender
                                        forKeyName:LoginKey
@@ -180,7 +166,7 @@ typedef enum {
 
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 9;
+    return 10;
 }
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
@@ -193,6 +179,15 @@ typedef enum {
                                                               [self.delegate newRecording];
                                                           }
                                                       }];
+    } break;
+
+    case SettingsCellTypeSave: {
+        if ([self.delegate respondsToSelector:@selector(saveRoadbook)]) {
+            [self dismissViewControllerAnimated:YES
+                                     completion:^{
+                                         [self.delegate saveRoadbook];
+                                     }];
+        }
     } break;
 
     case SettingsCellTypeOverlayTrack: {
@@ -257,13 +252,9 @@ typedef enum {
         });
     } break;
 
-    case SettingsCellTypeSave: {
-        if ([self.delegate respondsToSelector:@selector(saveRoadbook)]) {
-            [self dismissViewControllerAnimated:YES
-                                     completion:^{
-                                         [self.delegate saveRoadbook];
-                                     }];
-        }
+    case SettingsCellTypeHowToUse: {
+        HowToUseVC* vc = loadViewController(StoryBoard_Settings, kIDHowToUseVC);
+        [self.navigationController pushViewController:vc animated:YES];
     } break;
 
     case SettingsCellTypeLogout: {
@@ -279,11 +270,6 @@ typedef enum {
         });
     } break;
 
-    case SettingsCellTypeHowToUse: {
-        HowToUseVC* vc = loadViewController(StoryBoard_Settings, kIDHowToUseVC);
-        [self.navigationController pushViewController:vc animated:YES];
-    } break;
-
     default:
         break;
     }
@@ -294,120 +280,138 @@ typedef enum {
     SettingsCell* cell;
 
     switch (indexPath.row) {
+    case SettingsCellTypeTitle: {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsNavigationCell"];
+        if (SCREEN_WIDTH >= 768) {
+            [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:32.0f]];
+            [cell.closeButton setImage:[UIImage imageNamed:@"cross_x"] forState:UIControlStateNormal];
+            cell.closeButton.contentEdgeInsets = UIEdgeInsetsZero;
+        }
+    } break;
+
     case SettingsCellTypeNewRecording: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Record New Roadbook";
-        cell.switchAutoPhoto.hidden = YES;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUsageCell"];
+        cell.titleLabel.text = @"Record New Roadbook";
     } break;
 
     case SettingsCellTypeSave: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Stop Recording & Save Roadbook";
-        cell.switchAutoPhoto.hidden = YES;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUsageCell"];
+        cell.titleLabel.text = @"Stop Recording & Save Roadbook";
     } break;
 
     case SettingsCellTypeOverlayTrack: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = _currentOverlay == OverlayStatusHide ? @"Clear Overlay Track" : @"Overlay Track on Map";
-        cell.switchAutoPhoto.hidden = YES;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUsageCell"];
+        cell.titleLabel.text = _currentOverlay == OverlayStatusHide ? @"Clear Overlay Track" : @"Overlay Track on Map";
     } break;
 
     case SettingsCellTypeDistanceUnit: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingOptionsCell"];
-        [cell.btnLeft setTitle:@"Miles" forState:UIControlStateNormal];
-        [cell.btnRight setTitle:@"Kilometers" forState:UIControlStateNormal];
-        cell.btnLeft.tag = SettingsCellTypeDistanceUnit;
-        cell.btnRight.tag = SettingsCellTypeDistanceUnit;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUnitCell"];
+
+        [cell.leftButton setTitle:@"Miles" forState:UIControlStateNormal];
+        [cell.rightButton setTitle:@"Kilometers" forState:UIControlStateNormal];
+
+        cell.leftButton.tag = SettingsCellTypeDistanceUnit;
+        cell.rightButton.tag = SettingsCellTypeDistanceUnit;
+
+        if (SCREEN_WIDTH >= 768) {
+            [cell.leftButton.titleLabel setFont:[cell.leftButton.titleLabel.font fontWithSize:26.0f]];
+            [cell.rightButton.titleLabel setFont:[cell.rightButton.titleLabel.font fontWithSize:26.0f]];
+        }
 
         UIColor* color;
-
         if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-            color = [UIColor lightGrayColor];
+            color = UIColor.lightGrayColor;
         } else {
-            color = [UIColor blackColor];
+            color = UIColor.blackColor;
         }
 
-        if ([objConfig.unit isEqualToString:cell.btnLeft.titleLabel.text]) {
-            [cell.btnLeft setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [cell.btnRight setTitleColor:color forState:UIControlStateNormal];
+        if ([objConfig.unit isEqualToString:@"Miles"]) {
+            cell.leftButton.tintColor = UIColor.redColor;
+            cell.rightButton.tintColor = color;
         } else {
-            [cell.btnRight setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [cell.btnLeft setTitleColor:color forState:UIControlStateNormal];
+            cell.leftButton.tintColor = color;
+            cell.rightButton.tintColor = UIColor.redColor;
         }
 
-        [cell.btnLeft addTarget:self action:@selector(btnLeftAction:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.btnRight addTarget:self action:@selector(btnRightAction:) forControlEvents:UIControlEventTouchUpInside];
+        // [cell.leftButton addTarget:self action:@selector(leftButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        // [cell.rightButton addTarget:self action:@selector(rightButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     } break;
 
     case SettingsCellTypeThemes: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingOptionsCell"];
-        [cell.btnLeft setTitle:@"Dark View" forState:UIControlStateNormal];
-        [cell.btnRight setTitle:@"Light View" forState:UIControlStateNormal];
-        cell.btnLeft.tag = SettingsCellTypeThemes;
-        cell.btnRight.tag = SettingsCellTypeThemes;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUnitCell"];
 
-        if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-            [cell.btnLeft setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [cell.btnRight setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-        } else {
-            [cell.btnRight setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            [cell.btnLeft setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [cell.leftButton setTitle:@"Dark View" forState:UIControlStateNormal];
+        [cell.rightButton setTitle:@"Light View" forState:UIControlStateNormal];
+
+        cell.leftButton.tag = SettingsCellTypeThemes;
+        cell.rightButton.tag = SettingsCellTypeThemes;
+
+        if (SCREEN_WIDTH >= 768) {
+            [cell.leftButton.titleLabel setFont:[cell.leftButton.titleLabel.font fontWithSize:26.0f]];
+            [cell.rightButton.titleLabel setFont:[cell.rightButton.titleLabel.font fontWithSize:26.0f]];
         }
 
-        [cell.btnLeft addTarget:self action:@selector(btnLeftAction:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.btnRight addTarget:self action:@selector(btnRightAction:) forControlEvents:UIControlEventTouchUpInside];
+        if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
+            cell.leftButton.tintColor = UIColor.redColor;
+            cell.rightButton.tintColor = UIColor.lightGrayColor;
+        } else {
+            cell.leftButton.tintColor = UIColor.blackColor;
+            cell.rightButton.tintColor = UIColor.redColor;
+        }
+
+        // [cell.leftButton addTarget:self action:@selector(leftButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        // [cell.rightButton addTarget:self action:@selector(rightButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     } break;
 
     case SettingsCellTypeAutoPhoto: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Auto Photo";
-        cell.switchAutoPhoto.hidden = NO;
-        [cell.switchAutoPhoto setOn:isAutoPhoto];
-        [cell.switchAutoPhoto setOnTintColor:[UIColor redColor]];
 
-        UIColor* color;
+        cell.titleLabel.text = @"Auto Photo";
+        [cell.switchControl setOn:isAutoPhoto];
+
         if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-            color = [UIColor lightGrayColor];
+            [cell.switchControl setThumbTintColor:UIColor.lightGrayColor];
         } else {
-            color = [UIColor blackColor];
+            [cell.switchControl setThumbTintColor:UIColor.blackColor];
         }
-        [cell.switchAutoPhoto setThumbTintColor:color];
 
-        [cell.switchAutoPhoto addTarget:self action:@selector(handleAutoPhotoValueChanged:) forControlEvents:UIControlEventValueChanged];
+        // [cell.switchControl addTarget:self action:@selector(handleAutoPhotoValueChanged:) forControlEvents:UIControlEventValueChanged];
     } break;
 
     case SettingsCellTypeHowToUse: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Mobile App - How it Works";
-        cell.switchAutoPhoto.hidden = YES;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUsageCell"];
+        cell.titleLabel.text = @"Mobile App - How it Works";
     } break;
 
     case SettingsCellTypeShare: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Share Rally Navigator";
-        cell.switchAutoPhoto.hidden = YES;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUsageCell"];
+        cell.titleLabel.text = @"Share Rally Navigator";
     } break;
 
     case SettingsCellTypeLogout: {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsCell"];
-        cell.lblTitle.text = @"Logout";
-        cell.switchAutoPhoto.hidden = YES;
+        cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsUsageCell"];
+        cell.titleLabel.text = @"Logout";
+        cell.titleLabel.textColor = UIColor.redColor;
     } break;
 
     default:
         break;
     }
 
-    if (iPadDevice) {
-        cell.lblTitle.font = [UIFont boldSystemFontOfSize:32.0f];
-        cell.btnLeft.titleLabel.font = [UIFont boldSystemFontOfSize:32.0f];
-        cell.btnRight.titleLabel.font = [UIFont boldSystemFontOfSize:32.0f];
+    if (indexPath.row != SettingsCellTypeTitle && indexPath.row != SettingsCellTypeLogout) {
+        if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
+            cell.titleLabel.textColor = UIColor.lightGrayColor;
+        } else {
+            cell.titleLabel.textColor = UIColor.blackColor;
+        }
     }
 
-    if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-        cell.lblTitle.textColor = [UIColor lightGrayColor];
-    } else {
-        cell.lblTitle.textColor = [UIColor blackColor];
+    if (indexPath.row == SettingsCellTypeNewRecording || indexPath.row == SettingsCellTypeSave || indexPath.row == SettingsCellTypeOverlayTrack) {
+        if (SCREEN_WIDTH >= 768) {
+            [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:32]];
+        } else {
+            [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:26]];
+        }
     }
 
     return cell;
@@ -438,7 +442,7 @@ typedef enum {
         break;
     }
 
-    return 72;
+    return UITableViewAutomaticDimension;
 }
 
 #pragma mark - Auto Photo Web Service
@@ -480,14 +484,13 @@ typedef enum {
                            showLoader:YES];
 }
 
-- (IBAction)btnLeftAction:(UIButton*)sender
+- (IBAction)leftButtonAction:(UIButton*)sender
 {
-    NSString* strBtnTitle = sender.titleLabel.text;
-    if ([strBtnTitle isEqualToString:@"Miles"]) {
+    if (sender.tag == SettingsCellTypeDistanceUnit) {
         User* objUser = GET_USER_OBJ;
         NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
         Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
-        objConfig.unit = strBtnTitle;
+        objConfig.unit = @"Miles";
 
         NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
         [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];
@@ -506,14 +509,13 @@ typedef enum {
     }
 }
 
-- (IBAction)btnRightAction:(UIButton*)sender
+- (IBAction)rightButtonAction:(UIButton*)sender
 {
-    NSString* strBtnTitle = sender.titleLabel.text;
-    if ([strBtnTitle isEqualToString:@"Kilometers"]) {
+    if (sender.tag == SettingsCellTypeDistanceUnit) {
         User* objUser = GET_USER_OBJ;
         NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
         Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
-        objConfig.unit = strBtnTitle;
+        objConfig.unit = @"Kilometers";
 
         NSMutableDictionary* dicParam = [[NSMutableDictionary alloc] init];
         [dicParam setValue:[objConfig dictionaryRepresentation] forKey:@"config"];

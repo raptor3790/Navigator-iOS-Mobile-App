@@ -133,21 +133,9 @@
     vc.isRecording = NO;
     vc.delegate = self;
     vc.curMapStyle = CurrentMapStyleSatellite;
+    
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
-
-    if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-        nav.navigationBar.barStyle = UIBarStyleBlack;
-        nav.navigationBar.translucent = NO;
-        nav.navigationBar.tintColor = [UIColor lightGrayColor];
-        [nav.navigationBar setTitleTextAttributes:
-                               @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
-    } else {
-        nav.navigationBar.barStyle = UIBarStyleDefault;
-        nav.navigationBar.translucent = YES;
-        nav.navigationBar.tintColor = [UIColor blackColor];
-        [nav.navigationBar setTitleTextAttributes:
-                               @{ NSForegroundColorAttributeName : [UIColor blackColor] }];
-    }
+    [nav setNavigationBarHidden:YES animated:NO];
 
     [self presentViewController:nav animated:YES completion:nil];
 }
