@@ -10,14 +10,13 @@
 
 @interface AddRoadBookVC : BaseVC <UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UILabel *recordLabel;
 @property (weak, nonatomic) IBOutlet UITextField *txtRoadBookName;
 @property (weak, nonatomic) IBOutlet UIButton *btnStartRecording;
-@property (weak, nonatomic) IBOutlet UIButton *btnSelectRoadbook;
-@property (weak, nonatomic) IBOutlet UILabel *recordLabel;
 @property (weak, nonatomic) IBOutlet UILabel *continueLabel;
-@property (weak, nonatomic) IBOutlet UIView *separatorView;
-@property (weak, nonatomic) IBOutlet UIImageView *logoImage;
-@property (weak, nonatomic) IBOutlet UILabel *logoLabel;
+@property (weak, nonatomic) IBOutlet UIButton *btnSelectRoadbook;
+@property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
+@property (weak, nonatomic) IBOutlet UILabel *webSiteLabel;
 
 @property (strong, nonatomic) NSString *strFolderId;
 

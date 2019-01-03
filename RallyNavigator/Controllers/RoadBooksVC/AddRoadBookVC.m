@@ -36,18 +36,18 @@
         fontSize = 32;
     }
     UIFont* font = [UIFont fontWithName:@"RussoOne" size:fontSize];
-    UIFont* fontSmall = [UIFont fontWithName:@"RussoOne" size:fontSize - 2];
     _recordLabel.font = font;
     _continueLabel.font = font;
     _btnStartRecording.titleLabel.font = font;
     _btnSelectRoadbook.titleLabel.font = font;
-    _logoLabel.font = fontSmall;
+    _descriptionLabel.font = font;
+    _webSiteLabel.font = [UIFont fontWithName:@"RussoOne" size:fontSize - 4];
 
     // Custom placeholder
     NSAttributedString* str
         = [[NSAttributedString alloc] initWithString:@"Enter Roadbook Name" attributes:@{ NSForegroundColorAttributeName : [UIColor darkGrayColor] }];
     self.txtRoadBookName.attributedPlaceholder = str;
-    self.txtRoadBookName.font = fontSmall;
+    self.txtRoadBookName.font = [UIFont fontWithName:@"RussoOne" size:fontSize - 2];
 
     // Add Setting menu
     UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(iPadDevice ? @"drawer_x" : @"drawer")
@@ -71,19 +71,6 @@
 
     [self borderButton:_btnStartRecording];
     [self borderButton:_btnSelectRoadbook];
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(orientationChanged:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning
@@ -97,20 +84,6 @@
     button.layer.cornerRadius = 5.0;
     button.layer.borderWidth = iPadDevice ? 3 : 2;
     button.layer.borderColor = UIColor.redColor.CGColor;
-}
-
-#pragma mark - Orientation Delegate Methods
-
-- (IBAction)orientationChanged:(id)sender
-{
-    if (iPadDevice) {
-        return;
-    }
-
-    BOOL hidden = UIScreen.mainScreen.bounds.size.width > UIScreen.mainScreen.bounds.size.height;
-    _separatorView.hidden = hidden;
-    _logoImage.hidden = hidden;
-    _logoLabel.hidden = hidden;
 }
 
 #pragma mark - UITextField Delegate Methods

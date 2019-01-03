@@ -159,7 +159,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     NSData* audioEditData;
     NSString* strEditWayPointDescription;
 
-    CLLocation* prevLocation;
     CLLocation* currentLocation;
     CLLocation* tempCurrentLocation;
 
@@ -223,7 +222,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     _tblLocations.transform = CGAffineTransformMakeRotation(-M_PI);
     _tblLocations.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
-    _btnMapType.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _btnMapType.layer.borderColor = UIColor.lightGrayColor.CGColor;
     _btnMapType.layer.borderWidth = 2.0f;
     _btnMapType.layer.cornerRadius = CGRectGetHeight(_btnMapType.frame) / 2.0f;
     _btnMapType.clipsToBounds = YES;
@@ -243,12 +242,12 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
     _btnChangeView.layer.cornerRadius = CGRectGetWidth(_btnChangeView.frame) / 2.0f;
     _btnChangeView.clipsToBounds = YES;
-    _btnChangeView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _btnChangeView.layer.borderColor = UIColor.lightGrayColor.CGColor;
     _btnChangeView.layer.borderWidth = 2.0f;
 
     _btnViewPreference.layer.cornerRadius = CGRectGetWidth(_btnChangeView.frame) / 2.0f;
     _btnViewPreference.clipsToBounds = YES;
-    _btnViewPreference.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _btnViewPreference.layer.borderColor = UIColor.lightGrayColor.CGColor;
     _btnViewPreference.layer.borderWidth = 2.0f;
 
     UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(iPadDevice ? @"drawer_x" : @"drawer")
@@ -287,19 +286,19 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 
     if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-        self.view.backgroundColor = [UIColor blackColor];
-        _tblLocations.backgroundColor = [UIColor blackColor];
+        self.view.backgroundColor = UIColor.blackColor;
+        _tblLocations.backgroundColor = UIColor.blackColor;
         self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
         self.navigationController.navigationBar.translucent = NO;
-        self.navigationController.navigationBar.tintColor = [UIColor lightGrayColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+        self.navigationController.navigationBar.tintColor = UIColor.lightGrayColor;
+        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : UIColor.lightGrayColor }];
     } else {
         self.view.backgroundColor = [UIColor whiteColor];
         _tblLocations.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.barStyle = UIBarStyleDefault; // optional
         self.navigationController.navigationBar.translucent = YES;
-        self.navigationController.navigationBar.tintColor = [UIColor blackColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor] }];
+        self.navigationController.navigationBar.tintColor = UIColor.blackColor;
+        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : UIColor.blackColor }];
     }
 
     self.navigationItem.leftBarButtonItem = NULL;
@@ -601,53 +600,54 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 - (void)setUpLocationId
 {
+    if (arrAllLocations.count == 0) {
+        return;
+    }
+
     for (int i = 0; i < arrAllLocations.count; i++) {
         Locations* objLocation = [arrAllLocations objectAtIndex:i];
         objLocation.locationId = (arrAllLocations.count - i - 1);
         [arrAllLocations replaceObjectAtIndex:i withObject:objLocation];
     }
 
-    if (arrAllLocations.count > 0) {
-        @autoreleasepool {
-            NSString* strRoadBookId = [NSString stringWithFormat:@"routeIdentifier='%@'", _strRouteIdentifier];
-            NSArray* arrNonSyncData = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@ AND isActive = 0 AND isEdit = 1", strRoadBookId]]] all];
+    @autoreleasepool {
+        NSString* strRoadBookId = [NSString stringWithFormat:@"routeIdentifier='%@'", _strRouteIdentifier];
+        NSArray* arrNonSyncData = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@ AND isActive = 0 AND isEdit = 1", strRoadBookId]]] all];
 
-            for (CDSyncData* objData in arrNonSyncData) {
-                NSDictionary* dic = [RallyNavigatorConstants convertJsonStringToObject:objData.jsonData];
-                NSString* strWayPointId = [dic valueForKey:@"wayPointId"];
-                NSString* strWayPointDesc = [dic valueForKey:@"wayPointDesc"];
+        for (CDSyncData* objData in arrNonSyncData) {
+            NSDictionary* dic = [RallyNavigatorConstants convertJsonStringToObject:objData.jsonData];
+            NSString* strWayPointId = [dic valueForKey:@"wayPointId"];
+            NSString* strWayPointDesc = [dic valueForKey:@"wayPointDesc"];
 
-                NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(Locations* objLocation, NSDictionary<NSString*, id>* _Nullable bindings) {
-                    return objLocation.locationId == [strWayPointId doubleValue];
-                }];
+            NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(Locations* objLocation, NSDictionary<NSString*, id>* _Nullable bindings) {
+                return objLocation.locationId == [strWayPointId doubleValue];
+            }];
 
-                NSMutableArray* arrSearchResults = [[NSMutableArray alloc] init];
-                arrSearchResults = [[arrAllLocations filteredArrayUsingPredicate:predicate] mutableCopy];
+            NSMutableArray* arrSearchResults = [[NSMutableArray alloc] init];
+            arrSearchResults = [[arrAllLocations filteredArrayUsingPredicate:predicate] mutableCopy];
 
-                if (arrSearchResults.count > 0) {
-                    NSUInteger index = [arrAllLocations indexOfObject:[arrSearchResults firstObject]];
-                    ;
+            if (arrSearchResults.count > 0) {
+                NSUInteger index = [arrAllLocations indexOfObject:[arrSearchResults firstObject]];
 
-                    Locations* objLocation = [arrSearchResults firstObject];
-                    objLocation.text = strWayPointDesc;
+                Locations* objLocation = [arrSearchResults firstObject];
+                objLocation.text = strWayPointDesc;
 
-                    @try {
-                        if (objData.imageData.length > 0) {
-                            NSData* data = [[NSData alloc] initWithBase64EncodedString:objData.imageData options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                            UIImage* img = [UIImage imageWithData:data];
-                            objLocation.photos = @[ img ];
-                        }
-
-                        if (objData.voiceData.length > 0) {
-                            NSData* data = [[NSData alloc] initWithBase64EncodedString:objData.voiceData options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                            objLocation.audios = @[ data ];
-                        }
-                    } @catch (NSException* exception) {
-                    } @finally {
+                @try {
+                    if (objData.imageData.length > 0) {
+                        NSData* data = [[NSData alloc] initWithBase64EncodedString:objData.imageData options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                        UIImage* img = [UIImage imageWithData:data];
+                        objLocation.photos = @[ img ];
                     }
 
-                    [arrAllLocations replaceObjectAtIndex:index withObject:objLocation];
+                    if (objData.voiceData.length > 0) {
+                        NSData* data = [[NSData alloc] initWithBase64EncodedString:objData.voiceData options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                        objLocation.audios = @[ data ];
+                    }
+                } @catch (NSException* exception) {
+                } @finally {
                 }
+
+                [arrAllLocations replaceObjectAtIndex:index withObject:objLocation];
             }
         }
     }
@@ -1763,12 +1763,11 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                 [self focusMapToShowAllMarkersWithAnimate:YES];
 
                 LocationCell* cell = [self.tblLocations cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-                [cell.lblDistanceUnit setHidden:YES];
-                [cell.btnEdit setHidden:NO];
+                cell.lblDistanceUnit.hidden = YES;
+                cell.btnEdit.hidden = NO;
                 [cell.btnEdit setImage:[UIImage imageNamed:@"lock"] forState:UIControlStateNormal];
                 [self.tblLocations endUpdates];
                 [self.tblLocations scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-                [self.btnAdd setEnabled:FALSE];
             }
         });
 
@@ -1882,9 +1881,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             float x = 35 * cos(DEGREES_TO_RADIANS(A)) + centerPoint.x;
             float y = 35 * sin(DEGREES_TO_RADIANS(A)) + centerPoint.y;
 
-            [cell drawDirectionPathIn:cell.contentView
-                           startPoint:centerPoint
-                             endPoint:CGPointMake(x, y)];
+            [cell drawDirectionPathIn:cell.contentView startPoint:centerPoint endPoint:CGPointMake(x, y)];
 
             float sX = 15 * cos(DEGREES_TO_RADIANS((A + 155))) + x;
             float sY = 15 * sin(DEGREES_TO_RADIANS((A + 155))) + y;
@@ -1899,9 +1896,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             float x = 35 * cos(DEGREES_TO_RADIANS(A)) + centerPoint.x;
             float y = 35 * sin(DEGREES_TO_RADIANS(A)) + centerPoint.y;
 
-            [cell drawDirectionPathIn:cell.contentView
-                           startPoint:centerPoint
-                             endPoint:CGPointMake(x, y)];
+            [cell drawDirectionPathIn:cell.contentView startPoint:centerPoint endPoint:CGPointMake(x, y)];
 
             float sX = 15 * cos(DEGREES_TO_RADIANS((A + 155))) + x;
             float sY = 15 * sin(DEGREES_TO_RADIANS((A + 155))) + y;
@@ -1919,8 +1914,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 - (void)locationManager:(CLLocationManager*)manager didUpdateHeading:(nonnull CLHeading*)newHeading
 {
     bearingDirection = newHeading.trueHeading;
-
-    //    [self updateCurrentLocationCell];
 
     if (_currentPreference == ViewingPreferenceCurrentLocationTrackUp) {
         [self updateIconHeading];
@@ -2146,17 +2139,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                                                    path:@"/summary/totalwaypoints"
                                                   value:[NSNumber numberWithUnsignedInteger:totalWayPoints]];
 
-        Locations* objPrevWayPoint = arrAllLocations[1];
-        CLLocation* prevLocation = [[CLLocation alloc] initWithLatitude:objPrevWayPoint.latitude longitude:objPrevWayPoint.longitude];
-
-        double val = 0;
-
-        if (_currentDistanceUnitsType == DistanceUnitsTypeKilometers) {
-            val = 1.0f;
-        } else {
-            val = 0.62f;
-        }
-
         double distance = 0.0;
 
         for (NSInteger i = arrAllLocations.count - 1; i > 1; i--) {
@@ -2169,7 +2151,11 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             distance += [objLoc1 distanceFromLocation:objLoc2];
         }
 
-        distance += [prevLocation distanceFromLocation:location];
+        if (arrAllLocations.count > 1) {
+            Locations* objPrevWayPoint = arrAllLocations[1];
+            CLLocation* prevLocation = [[CLLocation alloc] initWithLatitude:objPrevWayPoint.latitude longitude:objPrevWayPoint.longitude];
+            distance += [prevLocation distanceFromLocation:location];
+        }
 
         NSMutableDictionary* dicTotalRange =
             [self getSaveWayPointDictionaryForOperation:@"replace"
@@ -2358,16 +2344,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     objLocation.isWayPoint = isWayPoint;
     [isForPaused ? arrAllTempLocations : arrAllLocations insertObject:objLocation atIndex:0];
 
-    //    if (objLocation.isWayPoint)
-    //    {
-    //        CLLocationCoordinate2D position = CLLocationCoordinate2DMake(objLocation.latitude, objLocation.longitude);
-    //        GMSMarker *marker = [GMSMarker markerWithPosition:position];
-    //        marker.icon = [UIImage imageNamed:objLocation.isWayPoint ? @"imgWay_Point" : @"imgTrack_Point"];
-    //        marker.groundAnchor = CGPointMake(0.5, 0.5);
-    //        marker.map = _mapView;
-    //        [arrMapMarkers addObject:marker];
-    //    }
-    //    [self focusMapToShowAllMarkersWithAnimate:objLocation.isWayPoint];
     if (isForPaused) {
         return objWayPoint;
     }
@@ -2376,9 +2352,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [self setLocationDistance];
 
     if (isWayPoint) {
-        //        dispatch_async(dispatch_get_main_queue(), ^{
         [_tblLocations insertRowsAtIndexPaths:@[ [NSIndexPath indexPathForItem:0 inSection:1] ] withRowAnimation:UITableViewRowAnimationTop];
-        //        });
         LocationCell* cell = [_tblLocations cellForRowAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:1]];
         [cell.btnEdit setHidden:YES];
 
@@ -2388,7 +2362,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             [self.tblLocations endUpdates];
         });
     } else {
-
         if (arrAllLocations.count > 0) {
             [self positionShapeLayerForCell:[_tblLocations cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]]
                                andIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
@@ -2397,8 +2370,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         [_tblLocations reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ] withRowAnimation:UITableViewRowAnimationNone];
         [_tblLocations endUpdates];
     }
-
-    //    NSLog(@"generaring");
 
     return objWayPoint;
 }
@@ -2445,7 +2416,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     } break;
 
     default:
-        return;
         break;
     }
 }
@@ -2459,9 +2429,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         _currentPreference = ViewingPreferenceCurrentLocationTrackUp;
         [self focusMapToShowAllMarkersWithAnimate:NO];
         [self updateIconHeading];
-        //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0002 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        //                [_mapBoxView setVisibleCoordinateBounds:_mapBoxView.visibleCoordinateBounds edgePadding:UIEdgeInsetsMake(100, 0, 0, 0) animated:NO];
-        //            });
         [_btnViewPreference setImage:Set_Local_Image(@"north_current_location") forState:UIControlStateNormal];
         _mapBoxView.scrollEnabled = NO;
         _mapBoxView.rotateEnabled = NO;
@@ -2488,9 +2455,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         _btnViewPreference.transform = CGAffineTransformIdentity;
         [_btnViewPreference setImage:Set_Local_Image(@"north_current_location") forState:UIControlStateNormal];
         [_mapBoxView resetNorth];
-        //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0002 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        //                [_mapBoxView setVisibleCoordinateBounds:_mapBoxView.visibleCoordinateBounds edgePadding:UIEdgeInsetsMake(100, 0, 0, 0) animated:NO];
-        //            });
         _mapBoxView.scrollEnabled = NO;
         _mapBoxView.rotateEnabled = NO;
     } break;
@@ -2589,20 +2553,12 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         isPaused = YES;
         isTempWayPointAdded = YES;
 
-        //        CLLocationCoordinate2D position = CLLocationCoordinate2DMake(currentLocation.coordinate.latitude, currentLocation.coordinate.longitude);
-        //        GMSMarker *marker = [GMSMarker markerWithPosition:position];
-        //        marker.icon = [UIImage imageNamed:@"imgWay_Point"];
-        //        marker.groundAnchor = CGPointMake(0.5, 0.5);
-        //        [arrMapMarkers addObject:marker];
-
         MGLPointAnnotation* marker1 = [[MGLPointAnnotation alloc] init];
         marker1.coordinate = CLLocationCoordinate2DMake(currentLocation.coordinate.latitude, currentLocation.coordinate.longitude);
         marker1.title = @"Test Name";
         [_mapBoxView addAnnotation:marker1];
         [arrMapBoxMarkers addObject:marker1];
         isAddedWayPointForPolyline = YES;
-
-        //        [self focusMapToShowAllMarkersWithAnimate:YES];
     }
 
     if (isAutoPhotoEnabled && imgCaptured == nil) {
@@ -2610,9 +2566,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     } else {
         [self playAudio:@"Text" fileType:@"aiff"];
     }
-
-    //    [_tblLocations scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-    //    LocationCell *cell = [_tblLocations cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     if ([cell.txtView isFirstResponder]) {
         return;
@@ -2685,10 +2638,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         } else {
             self->isCancelled = NO;
             self->isManual = NO;
-            //            if (isAutoPhotoEnabled && imgCaptured == nil)
-            //            {
-            //                [self capturePhoto];
-            //            }
             [self playAudio:@"Voice" fileType:@"mp3"];
             [btn setImage:[UIImage imageNamed:@"smallGrayMicrophone"] forState:UIControlStateNormal];
             [self flashOn:btn isEditable:@"YES" button:btn];
@@ -2813,17 +2762,17 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         NavController* nav = [[NavController alloc] initWithRootViewController:vc];
 
         if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-            nav.navigationBar.barStyle = UIBarStyleBlack; // optional
+            nav.navigationBar.barStyle = UIBarStyleBlack;
             nav.navigationBar.translucent = NO;
-            nav.navigationBar.tintColor = [UIColor lightGrayColor];
+            nav.navigationBar.tintColor = UIColor.lightGrayColor;
             [nav.navigationBar setTitleTextAttributes:
-                                   @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+                                   @{ NSForegroundColorAttributeName : UIColor.lightGrayColor }];
         } else {
-            nav.navigationBar.barStyle = UIBarStyleDefault; // optional
+            nav.navigationBar.barStyle = UIBarStyleDefault;
             nav.navigationBar.translucent = YES;
-            nav.navigationBar.tintColor = [UIColor blackColor];
+            nav.navigationBar.tintColor = UIColor.blackColor;
             [nav.navigationBar setTitleTextAttributes:
-                                   @{ NSForegroundColorAttributeName : [UIColor blackColor] }];
+                                   @{ NSForegroundColorAttributeName : UIColor.blackColor }];
         }
 
         [self presentViewController:nav animated:YES completion:nil];
@@ -2987,10 +2936,10 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         UIColor* color;
 
         if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-            color = [UIColor lightGrayColor];
-            [cell.lblDistanceUnit setBackgroundColor:[UIColor blackColor]];
+            color = UIColor.lightGrayColor;
+            [cell.lblDistanceUnit setBackgroundColor:UIColor.blackColor];
         } else {
-            color = [UIColor blackColor];
+            color = UIColor.blackColor;
             [cell.lblDistanceUnit setBackgroundColor:[UIColor whiteColor]];
         }
         [cell.lblDistanceUnit setTextColor:color];
@@ -3075,10 +3024,10 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         UIColor* color;
 
         if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-            color = [UIColor lightGrayColor];
-            [cell.lblDistanceUnit setBackgroundColor:[UIColor blackColor]];
+            color = UIColor.lightGrayColor;
+            [cell.lblDistanceUnit setBackgroundColor:UIColor.blackColor];
         } else {
-            color = [UIColor blackColor];
+            color = UIColor.blackColor;
             [cell.lblDistanceUnit setBackgroundColor:[UIColor whiteColor]];
         }
 
@@ -3247,23 +3196,23 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [cell.btnEdit addTarget:self action:@selector(handleAddWP:) forControlEvents:UIControlEventTouchUpInside];
 
     if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
-        cell.lblDistance.textColor = [UIColor lightGrayColor];
-        cell.lblRowCount.textColor = [UIColor blackColor];
-        cell.lblPerDistance.textColor = [UIColor lightGrayColor];
-        cell.lblAngle.textColor = [UIColor lightGrayColor];
-        cell.lblLatitude.textColor = [UIColor lightGrayColor];
-        cell.lblLongitude.textColor = [UIColor lightGrayColor];
+        cell.lblDistance.textColor = UIColor.lightGrayColor;
+        cell.lblRowCount.textColor = UIColor.blackColor;
+        cell.lblPerDistance.textColor = UIColor.lightGrayColor;
+        cell.lblAngle.textColor = UIColor.lightGrayColor;
+        cell.lblLatitude.textColor = UIColor.lightGrayColor;
+        cell.lblLongitude.textColor = UIColor.lightGrayColor;
         cell.txtView.layer.shadowColor = BLACK_COLOR.CGColor;
         cell.txtView.textColor = [UIColor whiteColor];
     } else {
-        cell.lblDistance.textColor = [UIColor blackColor];
+        cell.lblDistance.textColor = UIColor.blackColor;
         cell.lblRowCount.textColor = [UIColor whiteColor];
-        cell.lblPerDistance.textColor = [UIColor blackColor];
-        cell.lblAngle.textColor = [UIColor blackColor];
-        cell.lblLatitude.textColor = [UIColor blackColor];
-        cell.lblLongitude.textColor = [UIColor blackColor];
+        cell.lblPerDistance.textColor = UIColor.blackColor;
+        cell.lblAngle.textColor = UIColor.blackColor;
+        cell.lblLatitude.textColor = UIColor.blackColor;
+        cell.lblLongitude.textColor = UIColor.blackColor;
         cell.txtView.layer.shadowColor = WHITE_COLOR.CGColor;
-        cell.txtView.textColor = [UIColor blackColor];
+        cell.txtView.textColor = UIColor.blackColor;
     }
 
     // Button to save way-point
@@ -3451,7 +3400,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                     [cell.lblDistanceUnit setBackgroundColor:[UIColor whiteColor]];
                     [self.btnAdd setEnabled:TRUE];
                 } else {
-                    [cell.btnEdit setBackgroundColor:[UIColor blackColor]];
+                    [cell.btnEdit setBackgroundColor:UIColor.blackColor];
                     [cell.lblDistanceUnit setHidden:NO];
                     [cell.btnEdit setHidden:YES];
                     [self.btnAdd setEnabled:FALSE];
@@ -3717,7 +3666,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         audioData = data;
         LocationCell* cell = [_tblLocations cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:TableViewSectionCurrentState]];
         [cell.btnStartRecording setHidden:NO];
-        //        [_tblLocations reloadSections:[NSIndexSet indexSetWithIndex:TableViewSectionCurrentState] withRowAnimation:UITableViewRowAnimationNone];
 
         if (!isManuallyStopped) {
             isRecordingStarted = NO;
@@ -3791,9 +3739,8 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
     switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
     case AVAuthorizationStatusAuthorized: {
-        //            NSLog(@"Authorized");
-        break;
-    }
+    } break;
+
     case AVAuthorizationStatusNotDetermined: {
         dispatch_suspend(self.sessionQueue);
         [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
@@ -3803,12 +3750,11 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                                      }
                                      dispatch_resume(self.sessionQueue);
                                  }];
-        break;
-    }
+    } break;
+
     default: {
         self.setupResult = AVCamSetupResultCameraNotAuthorized;
-        break;
-    }
+    } break;
     }
 
     dispatch_async(self.sessionQueue, ^{
