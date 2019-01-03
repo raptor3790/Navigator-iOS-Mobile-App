@@ -131,7 +131,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     BOOL isCapturing;
     BOOL isAutoPhotoEnabled;
     BOOL isBack;
-    BOOL isOpeingNewRoadbook;
     BOOL isEditEnabled;
     BOOL isWayPointAdded; // Used to identify Tulip Angle
     BOOL isTempWayPointAdded; // Used to identify Tulip Angle
@@ -252,10 +251,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     _btnViewPreference.layer.borderColor = [UIColor lightGrayColor].CGColor;
     _btnViewPreference.layer.borderWidth = 2.0f;
 
-    UIBarButtonItem* btnBack = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(@"back") style:UIBarButtonItemStyleDone target:self action:@selector(btnBackClicked:)];
-    btnBack.imageInsets = UIEdgeInsetsMake(0, -13, 0, 0);
-    self.navigationItem.leftBarButtonItem = btnBack;
-
     UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(@"drawer") style:UIBarButtonItemStyleDone target:self action:@selector(btnDrawerAction:)];
     self.navigationItem.rightBarButtonItem = btnDrawer;
 
@@ -281,18 +276,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [_btnViewPreference addGestureRecognizer:loGest];
 }
 
-- (void)showFullRoute
-{
-    if (_currentPreference == ViewingPreferenceRouteNorthUp) {
-        mCamera = nil;
-        [self focusMapToShowAllMarkersWithAnimate:YES];
-        [_mapBoxView resetNorth];
-        MGLMapCamera* camera = _mapBoxView.camera;
-        camera.pitch = 0;
-        _mapBoxView.camera = camera;
-    }
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -306,17 +289,18 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
         self.navigationController.navigationBar.translucent = NO;
         self.navigationController.navigationBar.tintColor = [UIColor lightGrayColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:
-                                                     @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
     } else {
         self.view.backgroundColor = [UIColor whiteColor];
         _tblLocations.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.barStyle = UIBarStyleDefault; // optional
         self.navigationController.navigationBar.translucent = YES;
         self.navigationController.navigationBar.tintColor = [UIColor blackColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:
-                                                     @{ NSForegroundColorAttributeName : [UIColor blackColor] }];
+        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor] }];
     }
+
+    self.navigationItem.leftBarButtonItem = NULL;
+    self.navigationItem.hidesBackButton = YES;
 
     if (arrAllLocations.count > 0) {
         [_tblLocations reloadData];
@@ -404,6 +388,18 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)showFullRoute
+{
+    if (_currentPreference == ViewingPreferenceRouteNorthUp) {
+        mCamera = nil;
+        [self focusMapToShowAllMarkersWithAnimate:YES];
+        [_mapBoxView resetNorth];
+        MGLMapCamera* camera = _mapBoxView.camera;
+        camera.pitch = 0;
+        _mapBoxView.camera = camera;
+    }
 }
 
 #pragma mark - WS Call
@@ -2259,34 +2255,23 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             totalWP = totalWP + 1;
             AppContext.totalWayPoints = totalWP;
         } else if ([ReachabilityManager isReachable] && !AppContext.isWebServiceIsCalling) {
-            //        AppContext.isWebServiceIsCalling = YES;
             NSArray* arrCDUser = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:@"isActive = 0"]] all];
 
             AppContext.isWebServiceIsCalling = YES;
             AppContext.totalWayPoints = arrCDUser.count;
             AppContext.syncedWayPoints = 0;
-            //            NSLog(@"Web Service 1");
             [AppContext checkForSyncData];
         }
-    });
-
-    if (isBack) {
-        if (isOpeingNewRoadbook) {
-            UINavigationController* navVC = self.navigationController;
-            [self.navigationController popViewControllerAnimated:NO];
-
-            RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
-            [vc newRecording];
-        } else {
-            [AlertManager alert:@"Your Route has been saved successfully"
-                          title:@"Rally Navigator"
+        
+        if (self->isBack) {
+            [AlertManager alert:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
+                          title:@"Roadbook saved"
                       imageName:@"ic_success"
-                      onConfirm:NULL];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.navigationController popViewControllerAnimated:YES];
-            });
+                      onConfirm:^{
+                          [self.navigationController popViewControllerAnimated:YES];
+                      }];
         }
-    }
+    });
 }
 
 - (NSString*)getCurrentUTCTime
@@ -2418,37 +2403,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 #pragma mark - Button Click Events
 
-- (IBAction)btnBackClicked:(id)sender
-{
-    [self.view endEditing:YES];
-
-    if (arrRemainingTracks.count > 0) {
-        [AlertManager choose:@"Do you want to save changes for this route?"
-                       title:@"Save Changes"
-                     buttons:@[
-                         [AlertButton withTitle:@"SAVE"
-                                         action:^{
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 [self btnStopAndSaveClicked];
-                                             });
-                                         }
-                                      isDefault:YES],
-                         [AlertButton withTitle:@"DON'T SAVE"
-                                         action:^{
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 [self.navigationController popViewControllerAnimated:YES];
-                                             });
-                                         }
-                                      isDefault:NO],
-                         [AlertButton withTitle:@"CANCEL"
-                                         action:NULL
-                                      isDefault:NO]
-                     ]];
-    } else {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-}
-
 - (IBAction)btnChangeView:(UIButton*)sender
 {
     switch (_currentViewType) {
@@ -2555,24 +2509,14 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 {
     if (arrRemainingTracks.count > 0) {
         isBack = YES;
-
         [self handleAddWP:nil];
-
-    } else if (isOpeingNewRoadbook) {
-
-        UINavigationController* navVC = self.navigationController;
-        [self.navigationController popViewControllerAnimated:NO];
-
-        RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
-        [vc newRecording];
-
     } else {
-
         [AlertManager alert:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
                       title:@"Roadbook saved"
                   imageName:@"ic_success"
-                  onConfirm:NULL];
-        [self.navigationController popViewControllerAnimated:YES];
+                  onConfirm:^{
+                      [self.navigationController popViewControllerAnimated:YES];
+                  }];
     }
 }
 
@@ -2582,22 +2526,8 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
     SettingsVC* vc = loadViewController(StoryBoard_Settings, kIDSettingsVC);
     vc.currentOverlay = o_polylineMapBox ? OverlayStatusHide : OverlayStatusShow;
-
-    if (vc.currentOverlay == OverlayStatusHide) {
-        //        vc.overlaySender = overlaySender;
-    }
-
     vc.isRecording = isStart;
     vc.delegate = self;
-
-    if ([_mapBoxView.styleURL isEqual:[MGLStyle streetsStyleURL]]) {
-        vc.curMapStyle = CurrentMapStyleStreets;
-    } else if ([_mapBoxView.styleURL isEqual:[MGLStyle satelliteStreetsStyleURL]]) {
-        vc.curMapStyle = CurrentMapStyleSatellite;
-    } else if ([_mapBoxView.styleURL isEqual:[MGLStyle darkStyleURL]]) {
-        //        vc.curMapStyle = CurrentMapStyleDark;
-        vc.curMapStyle = CurrentMapStyleStreets;
-    }
 
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
     [nav setNavigationBarHidden:YES animated:NO];
@@ -3835,8 +3765,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             [AlertManager alert:@"Unable to capture media" title:@"AVCam" imageName:@"ic_error" onConfirm:NULL];
         } break;
         }
-
-        //        [self startStandardUpdates];
     });
 }
 
@@ -4157,16 +4085,9 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 #pragma mark - SettingVC delegate
 
-- (void)saveRoadbook
-{
-    [self btnStopAndSaveClicked];
-}
-
 - (void)newRecording
 {
     [self.view endEditing:YES];
-
-    UINavigationController* navVC = self.navigationController;
 
     if (arrRemainingTracks.count > 0) {
         [AlertManager choose:@"Do you want to save changes for this route?"
@@ -4174,20 +4095,12 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                      buttons:@[
                          [AlertButton withTitle:@"SAVE"
                                          action:^{
-                                             self->isOpeingNewRoadbook = YES;
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 [self btnStopAndSaveClicked];
-                                             });
+                                             [self btnStopAndSaveClicked];
                                          }
                                       isDefault:YES],
                          [AlertButton withTitle:@"DON'T SAVE"
                                          action:^{
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 [self.navigationController popViewControllerAnimated:NO];
-
-                                                 RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
-                                                 [vc newRecording];
-                                             });
+                                             [self.navigationController popViewControllerAnimated:YES];
                                          }
                                       isDefault:NO],
                          [AlertButton withTitle:@"CANCEL"
@@ -4195,11 +4108,31 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                                       isDefault:NO]
                      ]];
     } else {
-        [self.navigationController popViewControllerAnimated:NO];
-
-        RoadBooksVC* vc = (RoadBooksVC*)navVC.topViewController;
-        [vc newRecording];
+        [self.navigationController popViewControllerAnimated:YES];
     }
+}
+
+- (void)saveRoadbook
+{
+    [self btnStopAndSaveClicked];
+}
+
+- (void)overlayTrack
+{
+    RoadBooksVC* vc = loadViewController(StoryBoard_Main, kIDRoadBooksVC);
+    vc.isOverlayTrack = YES;
+    vc.delegate = self;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)clearOverlay
+{
+    overlaySender = nil;
+
+    [_mapBoxView removeAnnotation:o_polylineMapBox];
+    [_mapBoxView removeAnnotations:arrMapBoxMarkers1];
+
+    o_polylineMapBox = nil;
 }
 
 - (void)clickedOnLogout
@@ -4218,6 +4151,146 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                    [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
                    [self.navigationController popToRootViewControllerAnimated:YES];
                }];
+}
+
+#pragma mark - Pick Roadbook Delegate Methods
+
+- (void)didPickRoadbookWithId:(NSString*)strRoadbookId
+{
+    if (_currentViewType == ViewTypeListView) {
+        [self btnChangeView:nil];
+    }
+
+    BOOL isConnectionAvailable = [[WebServiceConnector alloc] checkNetConnection];
+
+    overlayName = [self manageForRouteId:[NSString stringWithFormat:@"routeIdentifier='%@'", strRoadbookId]];
+
+    if (isConnectionAvailable && ([strRoadbookId doubleValue] > 0)) {
+        [[WebServiceConnector alloc] init:[[URLGetRouteDetails stringByAppendingString:@"/"] stringByAppendingString:strRoadbookId]
+                           withParameters:nil
+                               withObject:self
+                             withSelector:@selector(handlePickedRouteDetailsResponse:)
+                           forServiceType:ServiceTypeGET
+                           showDisplayMsg:@""
+                               showLoader:YES];
+    }
+}
+
+- (IBAction)handlePickedRouteDetailsResponse:(id)sender
+{
+    overlaySender = sender;
+
+    NSArray* arrResponse = [self validateResponse:sender
+                                       forKeyName:RouteKey
+                                        forObject:self
+                                        showError:YES];
+    if (arrResponse.count > 0) {
+        Route* objRoute = [arrResponse firstObject];
+        NSString* strRoadBookId = [NSString stringWithFormat:@"routeIdentifier='%f'", objRoute.routeIdentifier];
+        [self manageForRouteId:strRoadBookId];
+    } else {
+        [self showErrorInObject:self forDict:[sender responseDict]];
+    }
+}
+
+- (NSString*)manageForRouteId:(NSString*)strRouteId
+{
+    NSString* strRoadBookId = strRouteId;
+    NSArray* arrSyncedData = [[[CDRoute query] where:[NSPredicate predicateWithFormat:strRoadBookId]] all];
+    NSArray* arrNonSyncData = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@ AND isActive = 0 AND isEdit = 0", strRoadBookId]]] all];
+    NSMutableArray* arrLocalNonSyncData = [self processForLocalLocationsForArray:arrNonSyncData];
+
+    NSMutableArray* arrAllLocations1 = [[NSMutableArray alloc] init];
+
+    [_mapBoxView removeAnnotations:arrMapBoxMarkers1];
+
+    arrMapBoxMarkers1 = [[NSMutableArray alloc] init];
+
+    NSString* routeName;
+
+    if (arrSyncedData.count > 0) {
+        CDRoute* objRoute = [arrSyncedData firstObject];
+        routeName = objRoute.name;
+        NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objRoute.data];
+        RouteDetails* objRouteDetails = [[RouteDetails alloc] initWithDictionary:jsonDict];
+        objRouteDetails.waypoints = [[objRouteDetails.waypoints reverseObjectEnumerator] allObjects];
+
+        for (Waypoints* objWP in objRouteDetails.waypoints) {
+            Locations* objLocation = [[Locations alloc] init];
+            objLocation.locationId = arrAllLocations.count;
+            objLocation.latitude = objWP.lat;
+            objLocation.longitude = objWP.lon;
+            objLocation.text = objWP.wayPointDescription;
+            objLocation.isWayPoint = objWP.show;
+            objLocation.imageUrl = objWP.backgroundimage.url;
+            objLocation.audioUrl = objWP.voiceNote.url;
+            [arrAllLocations1 addObject:objLocation];
+            if (objLocation.isWayPoint) {
+                MGLPointAnnotation* marker1 = [[MGLPointAnnotation alloc] init];
+                marker1.coordinate = CLLocationCoordinate2DMake(objLocation.latitude, objLocation.longitude);
+                marker1.title = @"Test Name1";
+                [_mapBoxView addAnnotation:marker1];
+                [arrMapBoxMarkers1 addObject:marker1];
+            }
+        }
+    } else if (arrNonSyncData.count > 0) {
+        CDSyncData* data = arrNonSyncData[0];
+        routeName = data.name;
+    }
+
+    NSIndexSet* indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [arrLocalNonSyncData count])];
+    [arrAllLocations1 insertObjects:[[arrLocalNonSyncData reverseObjectEnumerator] allObjects] atIndexes:indexes];
+
+    NSMutableArray* arrGeoLocations = [[NSMutableArray alloc] init];
+
+    for (Locations* objLocation in arrAllLocations1) {
+        [arrGeoLocations addObject:[NSArray arrayWithObjects:[NSNumber numberWithDouble:objLocation.longitude], [NSNumber numberWithDouble:objLocation.latitude], nil]];
+    }
+
+    if (arrGeoLocations.count > 0) {
+        NSMutableDictionary* dicGeometry = [[NSMutableDictionary alloc] init];
+        [dicGeometry setValue:@"LineString" forKey:@"type"];
+        [dicGeometry setObject:arrGeoLocations forKey:@"coordinates"];
+
+        NSMutableDictionary* dicName = [[NSMutableDictionary alloc] init];
+        [dicName setValue:@"Test Name" forKey:@"name"];
+
+        NSMutableDictionary* dicData = [[NSMutableDictionary alloc] init];
+        [dicData setValue:@"Feature" forKey:@"type"];
+        [dicData setObject:dicName forKey:@"properties"];
+        [dicData setObject:dicGeometry forKey:@"geometry"];
+
+        NSArray* arrFeatures = [NSArray arrayWithObjects:dicData, nil];
+
+        NSMutableDictionary* dicGeoJson = [[NSMutableDictionary alloc] init];
+        [dicGeoJson setValue:@"FeatureCollection" forKey:@"type"];
+        [dicGeoJson setValue:arrFeatures forKey:@"features"];
+
+        NSError* error;
+        NSData* strJsonData = [NSJSONSerialization dataWithJSONObject:dicGeoJson options:NSJSONWritingPrettyPrinted error:&error];
+
+        dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(backgroundQueue, ^(void) {
+            MGLShapeCollectionFeature* shapeCollectionFeature = (MGLShapeCollectionFeature*)[MGLShape shapeWithData:strJsonData encoding:NSUTF8StringEncoding error:NULL];
+
+            MGLPolylineFeature* temp = self->o_polylineMapBox;
+            self->o_polylineMapBox = (MGLPolylineFeature*)shapeCollectionFeature.shapes.firstObject;
+
+            self->o_polylineMapBox.title = self->polylineMapBox.attributes[@"Test Name1"]; // "Crema to Council Crest"
+
+            __weak typeof(self) weakSelf = self;
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                [weakSelf.mapBoxView addAnnotation:self->o_polylineMapBox];
+                [weakSelf.mapBoxView removeAnnotation:temp];
+            });
+        });
+    }
+
+    mCamera = nil;
+    _currentPreference = ViewingPreferenceCurrentLocationTrackUp;
+    [self btnTogglePreferrenceClicked:nil];
+
+    return routeName;
 }
 
 @end

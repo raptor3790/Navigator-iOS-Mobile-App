@@ -8,6 +8,7 @@
 
 #import "RoadBooksVC.h"
 #import "AddFolderVC.h"
+#import "AddRoadBookVC.h"
 #import "LocationsVC.h"
 #import "SettingsVC.h"
 #import "RoadBooksCell.h"
@@ -323,31 +324,7 @@
     }
 }
 
-#pragma mark - AddRoadBook Delegate Methods
-
-- (void)createRoadBookNamed:(NSString*)strRoadBookName
-{
-    LocationsVC* vc = loadViewController(StoryBoard_Main, kIDLocationsVC);
-    vc.isFirstTime = YES;
-    vc.strRouteName = strRoadBookName;
-
-    if (objUser == nil) {
-        objUser = GET_USER_OBJ;
-    }
-
-    NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
-    Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
-
-    if ([objConfig.unit isEqualToString:@"Kilometers"]) {
-        vc.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
-    } else {
-        vc.currentDistanceUnitsType = DistanceUnitsTypeMiles;
-    }
-
-    vc.strFolderId = _strFolderId;
-
-    [self.navigationController pushViewController:vc animated:NO];
-}
+#pragma mark - AddFolderVCDelegate
 
 - (void)createFolderNamed:(NSString*)strFolderName
 {
@@ -361,65 +338,20 @@
     [[WebServiceConnector alloc] init:URLGetMyFolders
                        withParameters:dicParam
                            withObject:self
-                         withSelector:@selector(handleCreateFolderResponse:)
+                         withSelector:@selector(fetchRoadBooks)
                        forServiceType:ServiceTypeJSON
                        showDisplayMsg:@""
                            showLoader:YES];
-
-    /*Folders *objFolder = [[Folders alloc] init];
-    objFolder.folderName = strFolderName;
-    
-    NSArray *arrSyncData = [[[[CDSyncFolders query] where:nil]
-                             order:[NSSortDescriptor sortDescriptorWithKey:@"foldersIdentifier" ascending:YES]] all];
-    
-    if (arrSyncData.count > 0)
-    {
-        CDSyncFolders *objSyncData = [arrSyncData firstObject];
-     
-        if ([objSyncData.foldersIdentifier doubleValue] > 0)
-        {
-            objFolder.foldersIdentifier = -1;
-        }
-        else
-        {
-            objFolder.foldersIdentifier = [objSyncData.foldersIdentifier doubleValue] - 1;
-        }
-    }
-    else
-    {
-        objFolder.foldersIdentifier = -1;
-    }
-
-    objFolder.folderType = @"normal";
-    
-    if (_strFolderId)
-    {
-        objFolder.parentId = [_strFolderId integerValue];
-    }
-    else
-    {
-        objFolder.parentId = 0;
-    }
-
-    objFolder.routesCounts = 0;
-    objFolder.subfoldersCount = 0;
-    
-    [CoreDataAdaptor SaveDataInCoreDB:[[WebServiceDataAdaptor alloc] processObjectForCoreData:objFolder] forEntity:NSStringFromClass([CDSyncFolders class])];
-    
-    [self fetchRoadBooks];*/
 }
 
-- (IBAction)handleCreateFolderResponse:(id)sender
-{
-    [self fetchRoadBooks];
-}
+#pragma mark - SettingsVCDelegate
 
 - (void)newRecording
 {
     [self.view endEditing:YES];
-    
+
     AddRoadBookVC* vc = loadViewController(StoryBoard_Main, kIDAddRoadBookVC);
-    vc.delegate = self;
+    vc.strFolderId = _strFolderId;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -481,8 +413,7 @@
     vc.currentOverlay = OverlayStatusNotApplicable;
     vc.isRecording = NO;
     vc.delegate = self;
-    vc.curMapStyle = CurrentMapStyleSatellite;
-    
+
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
     [nav setNavigationBarHidden:YES animated:NO];
 
@@ -563,18 +494,18 @@
                 CDSyncData* objRoadBook = arrRoadBooks[indexPath.row];
                 strRoadbookId = [NSString stringWithFormat:@"%ld", (long)[objRoadBook.routeIdentifier doubleValue]];
             }
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self dismissViewControllerAnimated:YES
-                                         completion:^{
-
-                                             if ([self.delegate respondsToSelector:@selector(didPickRoadbookWithId:)]) {
-                                                 [self.delegate didPickRoadbookWithId:strRoadbookId];
-                                             }
-                                         }];
-            });
+            
+            if ([self.delegate respondsToSelector:@selector(didPickRoadbookWithId:)]) {
+                [self.delegate didPickRoadbookWithId:strRoadbookId];
+            }
+            [self.navigationController popViewControllerAnimated:YES];
         } else {
-            LocationsVC* vc = loadViewController(StoryBoard_Main, kIDLocationsVC);
+            // Add AddRoadBookVC
+            AddRoadBookVC* addRoadBookVC = loadViewController(StoryBoard_Main, kIDAddRoadBookVC);
+            addRoadBookVC.strFolderId = _strFolderId;
+
+            // Add LocationsVC
+            LocationsVC* locationVC = loadViewController(StoryBoard_Main, kIDLocationsVC);
 
             if ([arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
                 CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
@@ -585,33 +516,36 @@
                 }
 
                 if ([objRoadBook.units isEqualToString:@"kilometers"]) {
-                    vc.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
+                    locationVC.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
                 } else {
-                    vc.currentDistanceUnitsType = DistanceUnitsTypeMiles;
+                    locationVC.currentDistanceUnitsType = DistanceUnitsTypeMiles;
                 }
 
-                vc.strFolderId = _strFolderId;
-                vc.strRouteIdentifier = [NSString stringWithFormat:@"%ld", (long)[objRoadBook.routesIdentifier doubleValue]];
-                vc.strRouteName = objRoadBook.name;
+                locationVC.strFolderId = _strFolderId;
+                locationVC.strRouteIdentifier = [NSString stringWithFormat:@"%ld", (long)[objRoadBook.routesIdentifier doubleValue]];
+                locationVC.strRouteName = objRoadBook.name;
             } else {
                 CDSyncData* objRoadBook = arrRoadBooks[indexPath.row];
 
                 if ([objRoadBook.distanceUnit isEqualToString:@"Kilometers"]) {
-                    vc.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
+                    locationVC.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
                 } else {
-                    vc.currentDistanceUnitsType = DistanceUnitsTypeMiles;
+                    locationVC.currentDistanceUnitsType = DistanceUnitsTypeMiles;
                 }
 
-                vc.strRouteIdentifier = [NSString stringWithFormat:@"%ld", (long)[objRoadBook.routeIdentifier doubleValue]];
-                vc.strRouteName = objRoadBook.name;
+                locationVC.strRouteIdentifier = [NSString stringWithFormat:@"%ld", (long)[objRoadBook.routeIdentifier doubleValue]];
+                locationVC.strRouteName = objRoadBook.name;
             }
 
-            [Answers logContentViewWithName:[NSString stringWithFormat:@"Visited Roadbook %@", vc.strRouteName]
+            [Answers logContentViewWithName:[NSString stringWithFormat:@"Visited Roadbook %@", locationVC.strRouteName]
                                 contentType:@"Roadbook Visit"
-                                  contentId:vc.strRouteIdentifier
+                                  contentId:locationVC.strRouteIdentifier
                            customAttributes:@{}];
 
-            [self.navigationController pushViewController:vc animated:YES];
+            NSMutableArray* controllers = [self.navigationController.viewControllers mutableCopy];
+            [controllers addObject:addRoadBookVC];
+            [controllers addObject:locationVC];
+            [self.navigationController setViewControllers:controllers animated:YES];
         }
     } break;
 

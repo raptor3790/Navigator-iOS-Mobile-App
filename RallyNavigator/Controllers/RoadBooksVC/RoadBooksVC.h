@@ -7,7 +7,6 @@
 //
 
 #import "BaseVC.h"
-#import "AddRoadBookVC.h"
 
 typedef enum
 {
@@ -23,7 +22,7 @@ typedef enum
 
 @end
 
-@interface RoadBooksVC : BaseVC <UITableViewDataSource, UITableViewDelegate, AddRoadBookVCDelegate>
+@interface RoadBooksVC : BaseVC <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) id<RoadBooksVCDelegate> delegate;
 

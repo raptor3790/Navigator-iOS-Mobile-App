@@ -436,17 +436,20 @@ typedef enum {
         [DefaultsValues setCustomObjToUserDefaults:objUser ForKey:kUserObject];
         [DefaultsValues setBooleanValueToUserDefaults:YES ForKey:kLogIn];
         [DefaultsValues setStringValueToUserDefaults:_strPassword ForKey:kUserPassword];
-        RoadBooksVC* vc1 = loadViewController(StoryBoard_Main, kIDRoadBooksVC);
-        vc1.navigationItem.hidesBackButton = YES;
-        [vc1 getRoadBooks];
-        AddRoadBookVC* vc = loadViewController(StoryBoard_Main, kIDAddRoadBookVC);
-        vc.delegate = vc1;
-        vc1.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-        //        vc.navigationItem.hidesBackButton = YES;
+
+        // RoadBooksVC
+        RoadBooksVC* roadbookVC = loadViewController(StoryBoard_Main, kIDRoadBooksVC);
+        roadbookVC.navigationItem.hidesBackButton = YES;
+        [roadbookVC getRoadBooks];
+        roadbookVC.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+
+        // AddRoadBookVC
+        AddRoadBookVC* addRoadbookVC = loadViewController(StoryBoard_Main, kIDAddRoadBookVC);
 
         NSMutableArray* controllers = [self.navigationController.viewControllers mutableCopy];
-        [controllers addObject:vc1];
-        [controllers addObject:vc];
+        [controllers addObject:roadbookVC];
+        [controllers addObject:addRoadbookVC];
+
         [self.navigationController setViewControllers:controllers animated:YES];
     } else {
         [self showErrorInObject:self forDict:[sender responseDict]];

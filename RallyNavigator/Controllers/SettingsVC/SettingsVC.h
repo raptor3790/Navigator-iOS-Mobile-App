@@ -15,9 +15,9 @@
 
 - (void)newRecording;
 - (void)saveRoadbook;
-- (void)clickedOnLogout;
+- (void)overlayTrack;
 - (void)clearOverlay;
-- (void)navigateToOverlayMap;
+- (void)clickedOnLogout;
 
 @end
 
@@ -28,8 +28,6 @@ typedef enum {
 } OverlayStatus;
 
 @interface SettingsVC : BaseVC <UITableViewDataSource, UITableViewDelegate>
-
-@property (assign, nonatomic) CurrentMapStyle curMapStyle;
 
 @property (weak, nonatomic) id<SettingsVCDelegate> delegate;
 

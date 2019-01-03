@@ -8,17 +8,7 @@
 
 #import "BaseVC.h"
 
-@protocol AddRoadBookVCDelegate <NSObject>
-
-@optional
-
-- (void)createRoadBookNamed:(NSString *)strRoadBookName;
-
-@end
-
 @interface AddRoadBookVC : BaseVC <UITextFieldDelegate>
-
-@property (weak, nonatomic) id<AddRoadBookVCDelegate> delegate;
 
 @property (weak, nonatomic) IBOutlet UITextField *txtRoadBookName;
 @property (weak, nonatomic) IBOutlet UIButton *btnStartRecording;
@@ -28,5 +18,7 @@
 @property (weak, nonatomic) IBOutlet UIView *separatorView;
 @property (weak, nonatomic) IBOutlet UIImageView *logoImage;
 @property (weak, nonatomic) IBOutlet UILabel *logoLabel;
+
+@property (strong, nonatomic) NSString *strFolderId;
 
 @end

@@ -9,13 +9,14 @@
 //
 
 #import "SettingsVC.h"
-#import "HowToUseVC.h"
 #import "SettingsCell.h"
 #import "CDSyncData.h"
+#import "HowToUseVC.h"
+#import "RoadBooksVC.h"
+#import "LocationsVC.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Crashlytics/Crashlytics.h>
-#import "RoadBooksVC.h"
 
 typedef enum {
     SettingsCellTypeTitle = 0,
@@ -169,59 +170,38 @@ typedef enum {
 {
     switch (indexPath.row) {
     case SettingsCellTypeNewRecording: {
-        [self.navigationController dismissViewControllerAnimated:YES
-                                                      completion:^{
-                                                          if ([self.delegate respondsToSelector:@selector(newRecording)]) {
-                                                              [self.delegate newRecording];
-                                                          }
-                                                      }];
+        [self dismissViewControllerAnimated:YES
+                                 completion:^{
+                                     if ([self.delegate respondsToSelector:@selector(newRecording)]) {
+                                         [self.delegate newRecording];
+                                     }
+                                 }];
     } break;
 
     case SettingsCellTypeSave: {
-        if ([self.delegate respondsToSelector:@selector(saveRoadbook)]) {
-            [self dismissViewControllerAnimated:YES
-                                     completion:^{
+        [self dismissViewControllerAnimated:YES
+                                 completion:^{
+                                     if ([self.delegate respondsToSelector:@selector(saveRoadbook)]) {
                                          [self.delegate saveRoadbook];
-                                     }];
-        }
+                                     }
+                                 }];
     } break;
 
     case SettingsCellTypeOverlayTrack: {
-        switch (_currentOverlay) {
-        case OverlayStatusShow: {
-            if ([AppContext.window.rootViewController isKindOfClass:[UINavigationController class]]) {
-                UINavigationController* nav = (UINavigationController*)AppContext.window.rootViewController;
-
-                for (id vc in nav.viewControllers) {
-                    if ([vc isKindOfClass:[RoadBooksVC class]]) {
-                        RoadBooksVC* vc = loadViewController(StoryBoard_Main, kIDRoadBooksVC);
-                        vc.isOverlayTrack = YES;
-                        vc.delegate = _delegate;
-                        [self.navigationController pushViewController:vc animated:YES];
-
-                        break;
-                    }
-                }
-            }
-        } break;
-
-        case OverlayStatusHide: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([self.delegate respondsToSelector:@selector(clearOverlay)]) {
-                    [self dismissViewControllerAnimated:YES
-                                             completion:^{
-                                                 [self.delegate clearOverlay];
-                                             }];
-                }
-            });
-        } break;
-
-        case OverlayStatusNotApplicable: {
-            NSLog(@"Hello");
-        } break;
-
-        default:
-            break;
+        if (_currentOverlay == OverlayStatusShow) {
+            [self dismissViewControllerAnimated:YES
+                                     completion:^{
+                                         if ([self.delegate respondsToSelector:@selector(overlayTrack)]) {
+                                             [self.delegate overlayTrack];
+                                         }
+                                     }];
+        } else if (_currentOverlay == OverlayStatusHide) {
+            [self dismissViewControllerAnimated:YES
+                                     completion:^{
+                                         if ([self.delegate respondsToSelector:@selector(clearOverlay)]) {
+                                             [self.delegate clearOverlay];
+                                         }
+                                     }];
         }
     } break;
 
@@ -243,9 +223,7 @@ typedef enum {
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             activityViewController.popoverPresentationController.sourceView = self.view;
         }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self presentViewController:activityViewController animated:YES completion:nil];
-        });
+        [self presentViewController:activityViewController animated:YES completion:nil];
     } break;
 
     case SettingsCellTypeHowToUse: {
@@ -255,15 +233,12 @@ typedef enum {
 
     case SettingsCellTypeLogout: {
         [self.view endEditing:YES];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.delegate respondsToSelector:@selector(clickedOnLogout)]) {
-                [self dismissViewControllerAnimated:YES
-                                         completion:^{
-                                             [self.delegate clickedOnLogout];
-                                         }];
-            }
-        });
+        [self dismissViewControllerAnimated:YES
+                                 completion:^{
+                                     if ([self.delegate respondsToSelector:@selector(clickedOnLogout)]) {
+                                         [self.delegate clickedOnLogout];
+                                     }
+                                 }];
     } break;
 
     default:

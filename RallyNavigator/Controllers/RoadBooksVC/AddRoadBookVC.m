@@ -1,3 +1,5 @@
+
+
 //
 //  AddRoadBookVC.m
 //  RallyNavigator
@@ -8,6 +10,7 @@
 
 #import "AddRoadBookVC.h"
 #import "SettingsVC.h"
+#import "LocationsVC.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
@@ -132,7 +135,6 @@
     vc.currentOverlay = OverlayStatusNotApplicable;
     vc.isRecording = NO;
     vc.delegate = self;
-    vc.curMapStyle = CurrentMapStyleSatellite;
     
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
     [nav setNavigationBarHidden:YES animated:NO];
@@ -151,12 +153,33 @@
 
     if (_txtRoadBookName.text.length > 0) {
         if ([_txtRoadBookName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0) {
-            if ([_delegate respondsToSelector:@selector(createRoadBookNamed:)]) {
-                [self.navigationController popViewControllerAnimated:NO];
-                [_delegate createRoadBookNamed:[_txtRoadBookName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-            }
+            NSString* roadbookName = [_txtRoadBookName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            [self createRoadBookNamed:roadbookName];
+            _txtRoadBookName.text = @"";
         }
     }
 }
+
+- (void)createRoadBookNamed:(NSString*)strRoadBookName
+{
+    LocationsVC* vc = loadViewController(StoryBoard_Main, kIDLocationsVC);
+    vc.isFirstTime = YES;
+    vc.strRouteName = strRoadBookName;
+    
+    User *objUser = GET_USER_OBJ;
+    NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
+    Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
+    
+    if ([objConfig.unit isEqualToString:@"Kilometers"]) {
+        vc.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
+    } else {
+        vc.currentDistanceUnitsType = DistanceUnitsTypeMiles;
+    }
+    
+    vc.strFolderId = _strFolderId;
+    
+    [self.navigationController pushViewController:vc animated:NO];
+}
+
 
 @end

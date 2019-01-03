@@ -447,7 +447,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="BH5-S8-Zrl"/>
                     </view>
-                    <navigationItem key="navigationItem" id="pCD-R5-OAy"/>
+                    <navigationItem key="navigationItem" id="pCD-R5-OAy">
+                        <barButtonItem key="backBarButtonItem" title=" " id="gQo-a1-c97"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="btnAdd" destination="aua-nd-hIE" id="vJE-Nw-4jv"/>
                         <outlet property="btnCamera" destination="Qfp-ze-kXZ" id="4p5-sQ-WPY"/>
