@@ -35,7 +35,6 @@ typedef enum
 
 @property (nonatomic, strong) NSURL *myMapBoxType;
 
-@property (weak, nonatomic) IBOutlet UIButton *btnAdd;
 @property (weak, nonatomic) IBOutlet UITableView *tblLocations;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomBtnAddWayPoint;
 @property (weak, nonatomic) IBOutlet MGLMapView *mapBoxView;
@@ -47,8 +46,6 @@ typedef enum
 @property (strong, nonatomic) NSString *strRouteIdentifier;
 @property (strong, nonatomic) CDRoute *objRoute;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomMapView;
-
 @property (assign, nonatomic) WayPointType currentWayPointType;
 @property (assign, nonatomic) DistanceUnitsType currentDistanceUnitsType;
 
@@ -58,14 +55,11 @@ typedef enum
 
 @property (strong, nonatomic) AVAudioPlayer *player;
 
+@property (weak, nonatomic) IBOutlet UIButton *btnAdd;
 @property (strong, nonatomic) IBOutlet UIButton *btnRecording;
 @property (strong, nonatomic) IBOutlet UIButton *btnCamera;
 @property (strong, nonatomic) IBOutlet UIButton *btnText;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthBtnAdd;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthBtnText;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthBtnImage;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthBtnRecording;
 @property (strong, nonatomic) AVAudioRecorder *recorder;
 @property (weak, nonatomic) NSString *recorderFilePath;
 
@@ -78,7 +72,6 @@ typedef enum
                        withDesc:(NSString *)strDes;
 
 - (void)didCapturedImage:(NSData *)imageData;
-- (void)didPickRoadbookWithId:(NSString *)strRoadbookId;
 
 @end
 

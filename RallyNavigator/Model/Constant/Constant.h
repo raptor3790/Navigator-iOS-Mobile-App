@@ -98,18 +98,9 @@
 #define kIDRoadBooksVC @"idRoadBooksVC"
 #define kIDAddRoadBookVC @"idAddRoadBookVC"
 #define kIDLocationsVC @"idLocationsVC"
-#define kIDLocations2VC @"idLocations2VC"
-#define kIDGPSController @"idGPSController"
 #define kIDImagePreviewVC @"idImagePreviewVC"
 #define kIDSettingsVC @"idSettingsVC"
-#define kIDGPSSettingsVC @"idGPSSettingsVC"
-#define kIDDistanceUnitsVC @"idDistanceUnitsVC"
-#define kIDNewWayPointVC @"idNewWayPointVC"
-#define kIDMapPreviewVC @"idMapPreviewVC"
 #define kIDHowToUseVC @"idHowToUseVC"
-#define kIDPickRoadBookVC @"idPickRoadBookVC"
-#define kIDZoomLevelVC @"idZoomLevelVC"
-#define kIDAddMapNameVC @"idAddMapNameVC"
 #define kIDAddFolderVC @"idAddFolderVC"
 
 

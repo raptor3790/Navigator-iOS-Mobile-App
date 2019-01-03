@@ -32,10 +32,7 @@
 #import "SettingsVC.h"
 #import "RoadBooksVC.h"
 #import "AddRoadBookVC.h"
-#import "MapPreviewVC.h"
 #import <AudioToolbox/AudioToolbox.h>
-
-#import "PickRoadBookVC.h"
 
 #import <Speech/Speech.h>
 
@@ -119,7 +116,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 @end
 
-@interface LocationsVC () <TrojanAudioRecorderDelegate, AVCapturePhotoCaptureDelegate, SettingsVCDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, PickRoadBookVCDelegate, MGLMapViewDelegate> {
+@interface LocationsVC () <TrojanAudioRecorderDelegate, AVCapturePhotoCaptureDelegate, SettingsVCDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, RoadBooksVCDelegate, MGLMapViewDelegate> {
     NSUInteger counter;
     CGFloat curZoomLevel;
 
@@ -396,54 +393,10 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             NSDictionary* dicNewWayPoints = [NSJSONSerialization JSONObjectWithData:objectData
                                                                             options:NSJSONReadingMutableContainers
                                                                               error:&jsonError];
-            int tCount = 4;
-
-            if (![[dicNewWayPoints valueForKey:@"waypointOnly"] boolValue]) {
-                _widthBtnAdd.constant = 0.0f;
-                tCount--;
-            }
-
-            if (![[dicNewWayPoints valueForKey:@"text"] boolValue]) {
-                _widthBtnText.constant = 0.0f;
-                tCount--;
-            }
-
-            if (![[dicNewWayPoints valueForKey:@"takePicture"] boolValue]) {
-                _widthBtnImage.constant = 0.0f;
-                tCount--;
-            }
-
-            if (![[dicNewWayPoints valueForKey:@"voiceRecorder"] boolValue]) {
-                _widthBtnRecording.constant = 0.0f;
-                tCount--;
-            }
-
-            if ([[dicNewWayPoints valueForKey:@"autoPhoto"] boolValue]) {
-                _widthBtnImage.constant = 0.0f;
-                tCount--;
-            }
-
-            /*    ||    */
-
-            if ([[dicNewWayPoints valueForKey:@"waypointOnly"] boolValue]) {
-                _widthBtnAdd.constant = CGRectGetWidth(_tblLocations.frame) / tCount;
-            }
-
-            if ([[dicNewWayPoints valueForKey:@"text"] boolValue]) {
-                _widthBtnText.constant = CGRectGetWidth(_tblLocations.frame) / tCount;
-            }
-
-            if ([[dicNewWayPoints valueForKey:@"takePicture"] boolValue]) {
-                if ([[dicNewWayPoints valueForKey:@"autoPhoto"] boolValue]) {
-                    _widthBtnImage.constant = 0.0f;
-                } else {
-                    _widthBtnImage.constant = CGRectGetWidth(_tblLocations.frame) / tCount;
-                }
-            }
-
-            if ([[dicNewWayPoints valueForKey:@"voiceRecorder"] boolValue]) {
-                _widthBtnRecording.constant = CGRectGetWidth(_tblLocations.frame) / tCount;
-            }
+            _btnAdd.hidden = ![[dicNewWayPoints valueForKey:@"waypointOnly"] boolValue];
+            _btnText.hidden = ![[dicNewWayPoints valueForKey:@"text"] boolValue];
+            _btnRecording.hidden = ![[dicNewWayPoints valueForKey:@"voiceRecorder"] boolValue];
+            _btnCamera.hidden = ![[dicNewWayPoints valueForKey:@"takePicture"] boolValue] || [[dicNewWayPoints valueForKey:@"autoPhoto"] boolValue];
         }
     }
 }
@@ -2509,10 +2462,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     } break;
 
     case ViewTypeMapView: {
-        //            _currentViewType = ViewTypePreview;
-        //            _bottomMapView.constant = 75.0f;
         _currentViewType = ViewTypeListView;
-        _bottomMapView.constant = -145.0f;
         _mapBoxView.hidden = true;
         _btnViewPreference.hidden = true;
         _btnMapType.hidden = true;
@@ -2521,7 +2471,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
     case ViewTypePreview: {
         _currentViewType = ViewTypeListView;
-        _bottomMapView.constant = -145.0f;
         _mapBoxView.hidden = true;
         _btnViewPreference.hidden = true;
         _btnMapType.hidden = true;
@@ -2600,29 +2549,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 - (IBAction)btnMapFullScreenClicked:(id)sender
 {
     [self.view endEditing:YES];
-
-    //    MapPreviewVC *vc = loadViewController(StoryBoard_Main, kIDMapPreviewVC);
-    //
-    //    vc.mapType = _mapView.mapType;
-    //    vc.arrLocations = [[NSMutableArray alloc] init];
-    //    vc.arrLocations = [arrAllLocations mutableCopy];
-    //
-    //    NavController *nav = [[NavController alloc] initWithRootViewController:vc];
-    //
-    //    if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView])
-    //    {
-    //        nav.navigationBar.barStyle = UIBarStyleBlack;
-    //        nav.navigationBar.translucent = NO;
-    //        nav.navigationBar.tintColor = [UIColor lightGrayColor];
-    //    }
-    //    else
-    //    {
-    //        nav.navigationBar.barStyle = UIBarStyleDefault;
-    //        nav.navigationBar.translucent = YES;
-    //        nav.navigationBar.tintColor = [UIColor blackColor];
-    //    }
-    //
-    //    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)btnStopAndSaveClicked
@@ -4216,37 +4142,17 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             }
         });
     }
-    //    dispatch_async(self.sessionQueue, ^{
-    //        [self.session startRunning];
-    //        self.sessionRunning = self.session.isRunning;
-    //        _btnAdd.enabled = YES;
-    //        _btnRecording.enabled = YES;
-    //        _btnText.enabled = YES;
-    //        _btnCamera.enabled = YES;
-    //    });
 }
 
 - (void)sessionWasInterrupted:(NSNotification*)notification
 {
     AVCaptureSessionInterruptionReason reason = [notification.userInfo[AVCaptureSessionInterruptionReasonKey] integerValue];
     NSLog(@"Capture session was interrupted with reason %ld", (long)reason);
-
-    //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.00 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    //        _btnAdd.enabled = y;
-    //        _btnRecording.enabled = reason != AVCaptureSessionInterruptionReasonVideoDeviceNotAvailableInBackground;
-    //        _btnText.enabled = reason != AVCaptureSessionInterruptionReasonVideoDeviceNotAvailableInBackground;
-    //        _btnCamera.enabled = reason != AVCaptureSessionInterruptionReasonVideoDeviceNotAvailableInBackground;
-    //    });
 }
 
 - (void)sessionInterruptionEnded:(NSNotification*)notification
 {
     NSLog(@"Capture session interruption ended");
-
-    //    _btnAdd.enabled = YES;
-    //    _btnRecording.enabled = YES;
-    //    _btnText.enabled = YES;
-    //    _btnCamera.enabled = YES;
 }
 
 #pragma mark - SettingVC delegate
@@ -4312,158 +4218,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                    [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
                    [self.navigationController popToRootViewControllerAnimated:YES];
                }];
-}
-
-#pragma mark - Pick Roadbook Delegate Methods
-
-- (void)didPickRoadbookWithId:(NSString*)strRoadbookId
-{
-    NSLog(@"Picked");
-
-    if (_currentViewType == ViewTypeListView) {
-        [self btnChangeView:nil];
-    }
-
-    BOOL isConnectionAvailable = [[WebServiceConnector alloc] checkNetConnection];
-
-    overlayName = [self manageForRouteId:[NSString stringWithFormat:@"routeIdentifier='%@'", strRoadbookId]];
-
-    if (isConnectionAvailable && ([strRoadbookId doubleValue] > 0)) {
-        [[WebServiceConnector alloc] init:[[URLGetRouteDetails stringByAppendingString:@"/"] stringByAppendingString:strRoadbookId]
-                           withParameters:nil
-                               withObject:self
-                             withSelector:@selector(handleRouteDetailsResponse1:)
-                           forServiceType:ServiceTypeGET
-                           showDisplayMsg:@""
-                               showLoader:YES];
-    }
-}
-
-- (IBAction)handleRouteDetailsResponse1:(id)sender
-{
-    overlaySender = sender;
-
-    NSArray* arrResponse = [self validateResponse:sender
-                                       forKeyName:RouteKey
-                                        forObject:self
-                                        showError:YES];
-    if (arrResponse.count > 0) {
-        Route* objRoute = [arrResponse firstObject];
-        NSString* strRoadBookId = [NSString stringWithFormat:@"routeIdentifier='%f'", objRoute.routeIdentifier];
-        [self manageForRouteId:strRoadBookId];
-    } else {
-        [self showErrorInObject:self forDict:[sender responseDict]];
-    }
-}
-
-- (NSString*)manageForRouteId:(NSString*)strRouteId
-{
-    NSString* strRoadBookId = strRouteId;
-    NSArray* arrSyncedData = [[[CDRoute query] where:[NSPredicate predicateWithFormat:strRoadBookId]] all];
-    NSArray* arrNonSyncData = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@ AND isActive = 0 AND isEdit = 0", strRoadBookId]]] all];
-    NSMutableArray* arrLocalNonSyncData = [self processForLocalLocationsForArray:arrNonSyncData];
-
-    NSMutableArray* arrAllLocations1 = [[NSMutableArray alloc] init];
-
-    [_mapBoxView removeAnnotations:arrMapBoxMarkers1];
-
-    arrMapBoxMarkers1 = [[NSMutableArray alloc] init];
-
-    NSString* routeName;
-
-    if (arrSyncedData.count > 0) {
-        CDRoute* objRoute = [arrSyncedData firstObject];
-        routeName = objRoute.name;
-        NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objRoute.data];
-        RouteDetails* objRouteDetails = [[RouteDetails alloc] initWithDictionary:jsonDict];
-        objRouteDetails.waypoints = [[objRouteDetails.waypoints reverseObjectEnumerator] allObjects];
-
-        for (Waypoints* objWP in objRouteDetails.waypoints) {
-            Locations* objLocation = [[Locations alloc] init];
-            objLocation.locationId = arrAllLocations.count;
-            objLocation.latitude = objWP.lat;
-            objLocation.longitude = objWP.lon;
-            objLocation.text = objWP.wayPointDescription;
-            objLocation.isWayPoint = objWP.show;
-            objLocation.imageUrl = objWP.backgroundimage.url;
-            objLocation.audioUrl = objWP.voiceNote.url;
-            [arrAllLocations1 addObject:objLocation];
-            if (objLocation.isWayPoint) {
-                MGLPointAnnotation* marker1 = [[MGLPointAnnotation alloc] init];
-                marker1.coordinate = CLLocationCoordinate2DMake(objLocation.latitude, objLocation.longitude);
-                marker1.title = @"Test Name1";
-                [_mapBoxView addAnnotation:marker1];
-                [arrMapBoxMarkers1 addObject:marker1];
-            }
-        }
-    } else if (arrNonSyncData.count > 0) {
-        CDSyncData* data = arrNonSyncData[0];
-        routeName = data.name;
-    }
-
-    NSIndexSet* indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [arrLocalNonSyncData count])];
-    [arrAllLocations1 insertObjects:[[arrLocalNonSyncData reverseObjectEnumerator] allObjects] atIndexes:indexes];
-
-    NSMutableArray* arrGeoLocations = [[NSMutableArray alloc] init];
-
-    for (Locations* objLocation in arrAllLocations1) {
-        [arrGeoLocations addObject:[NSArray arrayWithObjects:[NSNumber numberWithDouble:objLocation.longitude], [NSNumber numberWithDouble:objLocation.latitude], nil]];
-    }
-
-    if (arrGeoLocations.count > 0) {
-        NSMutableDictionary* dicGeometry = [[NSMutableDictionary alloc] init];
-        [dicGeometry setValue:@"LineString" forKey:@"type"];
-        [dicGeometry setObject:arrGeoLocations forKey:@"coordinates"];
-
-        NSMutableDictionary* dicName = [[NSMutableDictionary alloc] init];
-        [dicName setValue:@"Test Name" forKey:@"name"];
-
-        NSMutableDictionary* dicData = [[NSMutableDictionary alloc] init];
-        [dicData setValue:@"Feature" forKey:@"type"];
-        [dicData setObject:dicName forKey:@"properties"];
-        [dicData setObject:dicGeometry forKey:@"geometry"];
-
-        NSArray* arrFeatures = [NSArray arrayWithObjects:dicData, nil];
-
-        NSMutableDictionary* dicGeoJson = [[NSMutableDictionary alloc] init];
-        [dicGeoJson setValue:@"FeatureCollection" forKey:@"type"];
-        [dicGeoJson setValue:arrFeatures forKey:@"features"];
-
-        NSError* error;
-        NSData* strJsonData = [NSJSONSerialization dataWithJSONObject:dicGeoJson options:NSJSONWritingPrettyPrinted error:&error];
-
-        dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_async(backgroundQueue, ^(void) {
-            MGLShapeCollectionFeature* shapeCollectionFeature = (MGLShapeCollectionFeature*)[MGLShape shapeWithData:strJsonData encoding:NSUTF8StringEncoding error:NULL];
-
-            MGLPolylineFeature* temp = self->o_polylineMapBox;
-            self->o_polylineMapBox = (MGLPolylineFeature*)shapeCollectionFeature.shapes.firstObject;
-
-            self->o_polylineMapBox.title = self->polylineMapBox.attributes[@"Test Name1"]; // "Crema to Council Crest"
-
-            __weak typeof(self) weakSelf = self;
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [weakSelf.mapBoxView addAnnotation:self->o_polylineMapBox];
-                [weakSelf.mapBoxView removeAnnotation:temp];
-            });
-        });
-    }
-
-    mCamera = nil;
-    _currentPreference = ViewingPreferenceCurrentLocationTrackUp;
-    [self btnTogglePreferrenceClicked:nil];
-
-    return routeName;
-}
-
-- (void)clearOverlay
-{
-    overlaySender = nil;
-
-    [_mapBoxView removeAnnotation:o_polylineMapBox];
-    [_mapBoxView removeAnnotations:arrMapBoxMarkers1];
-
-    o_polylineMapBox = nil;
 }
 
 @end

@@ -18,13 +18,11 @@
 		66751D7D21DC76CC002C07EB /* FormMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66751D7B21DC76CC002C07EB /* FormMessageView.swift */; };
 		66F1C3B021DC8AD6007D441F /* russo_one.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F1C3AF21DC8AD6007D441F /* russo_one.ttf */; };
 		66FBCCD221DD42830089D861 /* Helvetica Neu Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66FBCCD121DD42830089D861 /* Helvetica Neu Bold.ttf */; };
-		E40AD97620076A4700162CFE /* DistanceUnitsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E40AD97520076A4700162CFE /* DistanceUnitsVC.m */; };
 		E40AD97820076A7700162CFE /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E40AD97720076A7700162CFE /* Settings.storyboard */; };
 		E41E302820661D0A00AE5AC1 /* night_map.json in Resources */ = {isa = PBXBuildFile; fileRef = E41E302720661D0900AE5AC1 /* night_map.json */; };
 		E41E302A20662BB700AE5AC1 /* mapstyle-night.json in Resources */ = {isa = PBXBuildFile; fileRef = E41E302920662BB700AE5AC1 /* mapstyle-night.json */; };
 		E420FD78202709A20065C781 /* _CDRoutes.m in Sources */ = {isa = PBXBuildFile; fileRef = E420FD76202709A20065C781 /* _CDRoutes.m */; };
 		E420FD79202709A20065C781 /* CDRoutes.m in Sources */ = {isa = PBXBuildFile; fileRef = E420FD77202709A20065C781 /* CDRoutes.m */; };
-		E42918F420D92B4600CFAA78 /* ZoomLevelVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E42918F320D92B4600CFAA78 /* ZoomLevelVC.m */; };
 		E42C719E1FF2510E0077EF9D /* AVCamPhotoCaptureDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E42C719B1FF2510E0077EF9D /* AVCamPhotoCaptureDelegate.m */; };
 		E42C719F1FF2510E0077EF9D /* AVCamPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = E42C719D1FF2510E0077EF9D /* AVCamPreviewView.m */; };
 		E42F144F1FF75E3C00602813 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E42F144E1FF75E3C00602813 /* LoginVC.m */; };
@@ -44,7 +42,6 @@
 		E44797962133CB75007249D6 /* AddFolderVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E44797952133CB75007249D6 /* AddFolderVC.m */; };
 		E447979B21341345007249D6 /* _CDSyncFolders.m in Sources */ = {isa = PBXBuildFile; fileRef = E447979821341345007249D6 /* _CDSyncFolders.m */; };
 		E447979C21341345007249D6 /* CDSyncFolders.m in Sources */ = {isa = PBXBuildFile; fileRef = E447979A21341345007249D6 /* CDSyncFolders.m */; };
-		E449CFCF20E2123500D4FC20 /* AddMapNameVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E449CFCE20E2123500D4FC20 /* AddMapNameVC.m */; };
 		E44A4EC31FE8CB64003CE84D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E44A4EC21FE8CB64003CE84D /* main.m */; };
 		E44A4ECE1FE8CB64003CE84D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E44A4ECD1FE8CB64003CE84D /* Assets.xcassets */; };
 		E44A4EE51FE8CBE9003CE84D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E44A4EE11FE8CBE9003CE84D /* LaunchScreen.storyboard */; };
@@ -63,7 +60,6 @@
 		E450770F1FFA1A890071B4D0 /* Waypoints.m in Sources */ = {isa = PBXBuildFile; fileRef = E45077051FFA1A890071B4D0 /* Waypoints.m */; };
 		E45077121FFA2D6A0071B4D0 /* RouteDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = E45077111FFA2D6A0071B4D0 /* RouteDetails.m */; };
 		E4532D2C1FECE03200ABD304 /* GPSSettingsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E4532D2B1FECE03200ABD304 /* GPSSettingsCell.m */; };
-		E4532D301FECE73500ABD304 /* GPSSettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E4532D2F1FECE73500ABD304 /* GPSSettingsVC.m */; };
 		E4532D351FED06E400ABD304 /* Locations.m in Sources */ = {isa = PBXBuildFile; fileRef = E4532D341FED06E400ABD304 /* Locations.m */; };
 		E4590E191FF369A500CBD0C9 /* ImagePreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E4590E181FF369A500CBD0C9 /* ImagePreviewVC.m */; };
 		E4590E1F1FF3B07C00CBD0C9 /* TrojanAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E4590E1D1FF3B07B00CBD0C9 /* TrojanAudioRecorder.m */; };
@@ -71,7 +67,6 @@
 		E4590E261FF3C31B00CBD0C9 /* MJPopupBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = E4590E231FF3C31B00CBD0C9 /* MJPopupBackgroundView.m */; };
 		E4590E271FF3C31B00CBD0C9 /* UIViewController+MJPopupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4590E251FF3C31B00CBD0C9 /* UIViewController+MJPopupViewController.m */; };
 		E4645E3920EB462000AFF9A2 /* LocationArrayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = E4645E3820EB462000AFF9A2 /* LocationArrayHandler.m */; };
-		E46684F820A446940084C0FC /* PickRoadBookVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E46684F720A446940084C0FC /* PickRoadBookVC.m */; };
 		E466A7681FFB7F1C00C6443D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E466A7671FFB7F1C00C6443D /* GoogleService-Info.plist */; };
 		E466A76B1FFB9CB000C6443D /* RegisterVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E466A76A1FFB9CB000C6443D /* RegisterVC.m */; };
 		E466A76F1FFBAC0C00C6443D /* RegisterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E466A76E1FFBAC0C00C6443D /* RegisterCell.m */; };
@@ -97,14 +92,12 @@
 		E47F5CFC212D44CB003AF75D /* Roadbooks.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F5CF9212D44CB003AF75D /* Roadbooks.m */; };
 		E47F5D01212D8795003AF75D /* CDFolders.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F5CFE212D8795003AF75D /* CDFolders.m */; };
 		E47F5D02212D8795003AF75D /* _CDFolders.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F5CFF212D8795003AF75D /* _CDFolders.m */; };
-		E49CAE922008DCEF00CDAB27 /* NewWayPointVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E49CAE912008DCEF00CDAB27 /* NewWayPointVC.m */; };
 		E49CAE952008E59E00CDAB27 /* Action.m in Sources */ = {isa = PBXBuildFile; fileRef = E49CAE942008E59E00CDAB27 /* Action.m */; };
 		E4A84FAF202B070000615D0F /* _CDSyncData.m in Sources */ = {isa = PBXBuildFile; fileRef = E4A84FAB202B070000615D0F /* _CDSyncData.m */; };
 		E4A84FB0202B070000615D0F /* CDSyncData.m in Sources */ = {isa = PBXBuildFile; fileRef = E4A84FAD202B070000615D0F /* CDSyncData.m */; };
 		E4AE51641FF658BC00F13F5F /* RoadBooks.m in Sources */ = {isa = PBXBuildFile; fileRef = E4AE51631FF658BB00F13F5F /* RoadBooks.m */; };
 		E4E2CF5F1FF51373006C5CB1 /* RallyNavigator.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E4E2CF5D1FF51373006C5CB1 /* RallyNavigator.xcdatamodeld */; };
 		E4E6526D202AC08900446EA7 /* NavController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E6526C202AC08900446EA7 /* NavController.m */; };
-		E4F88F6E206A6C1000F8F21A /* MapPreviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F88F6D206A6C1000F8F21A /* MapPreviewVC.m */; };
 		E4FC931A20061C3600D2C1F0 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E4FC931920061C3600D2C1F0 /* SettingsVC.m */; };
 		E4FC931E200620D300D2C1F0 /* SettingsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E4FC931D200620D300D2C1F0 /* SettingsCell.m */; };
 		E4FC932220062E1200D2C1F0 /* Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E4FC932020062E1200D2C1F0 /* Config.m */; };
@@ -127,8 +120,6 @@
 		66F1C3AF21DC8AD6007D441F /* russo_one.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = russo_one.ttf; sourceTree = "<group>"; };
 		66FBCCD121DD42830089D861 /* Helvetica Neu Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Helvetica Neu Bold.ttf"; sourceTree = "<group>"; };
 		A6D533200A6E1C1F0C4789E7 /* libPods-RallyNavigator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RallyNavigator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E40AD97420076A4700162CFE /* DistanceUnitsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DistanceUnitsVC.h; sourceTree = "<group>"; };
-		E40AD97520076A4700162CFE /* DistanceUnitsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DistanceUnitsVC.m; sourceTree = "<group>"; };
 		E40AD97720076A7700162CFE /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		E41E302720661D0900AE5AC1 /* night_map.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = night_map.json; sourceTree = "<group>"; };
 		E41E302920662BB700AE5AC1 /* mapstyle-night.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "mapstyle-night.json"; sourceTree = "<group>"; };
@@ -136,8 +127,6 @@
 		E420FD75202709A20065C781 /* _CDRoutes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CDRoutes.h; sourceTree = "<group>"; };
 		E420FD76202709A20065C781 /* _CDRoutes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CDRoutes.m; sourceTree = "<group>"; };
 		E420FD77202709A20065C781 /* CDRoutes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDRoutes.m; sourceTree = "<group>"; };
-		E42918F220D92B4600CFAA78 /* ZoomLevelVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZoomLevelVC.h; sourceTree = "<group>"; };
-		E42918F320D92B4600CFAA78 /* ZoomLevelVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZoomLevelVC.m; sourceTree = "<group>"; };
 		E42C71981FF216280077EF9D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E42C719A1FF2510E0077EF9D /* AVCamPhotoCaptureDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCamPhotoCaptureDelegate.h; sourceTree = "<group>"; };
 		E42C719B1FF2510E0077EF9D /* AVCamPhotoCaptureDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamPhotoCaptureDelegate.m; sourceTree = "<group>"; };
@@ -177,8 +166,6 @@
 		E447979821341345007249D6 /* _CDSyncFolders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CDSyncFolders.m; sourceTree = "<group>"; };
 		E447979921341345007249D6 /* CDSyncFolders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDSyncFolders.h; sourceTree = "<group>"; };
 		E447979A21341345007249D6 /* CDSyncFolders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSyncFolders.m; sourceTree = "<group>"; };
-		E449CFCD20E2123500D4FC20 /* AddMapNameVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddMapNameVC.h; sourceTree = "<group>"; };
-		E449CFCE20E2123500D4FC20 /* AddMapNameVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddMapNameVC.m; sourceTree = "<group>"; };
 		E44A4EBE1FE8CB64003CE84D /* RallyNavigator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RallyNavigator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E44A4EC21FE8CB64003CE84D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E44A4ECD1FE8CB64003CE84D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -213,8 +200,6 @@
 		E45077111FFA2D6A0071B4D0 /* RouteDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RouteDetails.m; sourceTree = "<group>"; };
 		E4532D2A1FECE03200ABD304 /* GPSSettingsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPSSettingsCell.h; sourceTree = "<group>"; };
 		E4532D2B1FECE03200ABD304 /* GPSSettingsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GPSSettingsCell.m; sourceTree = "<group>"; };
-		E4532D2E1FECE73500ABD304 /* GPSSettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPSSettingsVC.h; sourceTree = "<group>"; };
-		E4532D2F1FECE73500ABD304 /* GPSSettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPSSettingsVC.m; sourceTree = "<group>"; };
 		E4532D331FED06E400ABD304 /* Locations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Locations.h; sourceTree = "<group>"; };
 		E4532D341FED06E400ABD304 /* Locations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Locations.m; sourceTree = "<group>"; };
 		E4590E171FF369A500CBD0C9 /* ImagePreviewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePreviewVC.h; sourceTree = "<group>"; };
@@ -228,8 +213,6 @@
 		E4590E251FF3C31B00CBD0C9 /* UIViewController+MJPopupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+MJPopupViewController.m"; sourceTree = "<group>"; };
 		E4645E3720EB462000AFF9A2 /* LocationArrayHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationArrayHandler.h; sourceTree = "<group>"; };
 		E4645E3820EB462000AFF9A2 /* LocationArrayHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationArrayHandler.m; sourceTree = "<group>"; };
-		E46684F620A446940084C0FC /* PickRoadBookVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PickRoadBookVC.h; sourceTree = "<group>"; };
-		E46684F720A446940084C0FC /* PickRoadBookVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PickRoadBookVC.m; sourceTree = "<group>"; };
 		E466A7671FFB7F1C00C6443D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E466A7691FFB9CB000C6443D /* RegisterVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterVC.h; sourceTree = "<group>"; };
 		E466A76A1FFB9CB000C6443D /* RegisterVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterVC.m; sourceTree = "<group>"; };
@@ -283,8 +266,6 @@
 		E47F5CFE212D8795003AF75D /* CDFolders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDFolders.m; sourceTree = "<group>"; };
 		E47F5CFF212D8795003AF75D /* _CDFolders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CDFolders.m; sourceTree = "<group>"; };
 		E47F5D00212D8795003AF75D /* _CDFolders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CDFolders.h; sourceTree = "<group>"; };
-		E49CAE902008DCEF00CDAB27 /* NewWayPointVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewWayPointVC.h; sourceTree = "<group>"; };
-		E49CAE912008DCEF00CDAB27 /* NewWayPointVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewWayPointVC.m; sourceTree = "<group>"; };
 		E49CAE932008E59D00CDAB27 /* Action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Action.h; sourceTree = "<group>"; };
 		E49CAE942008E59E00CDAB27 /* Action.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Action.m; sourceTree = "<group>"; };
 		E4A84FAB202B070000615D0F /* _CDSyncData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CDSyncData.m; sourceTree = "<group>"; };
@@ -296,8 +277,6 @@
 		E4E2CF5E1FF51373006C5CB1 /* RallyNavigator.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RallyNavigator.xcdatamodel; sourceTree = "<group>"; };
 		E4E6526B202AC08900446EA7 /* NavController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavController.h; sourceTree = "<group>"; };
 		E4E6526C202AC08900446EA7 /* NavController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NavController.m; sourceTree = "<group>"; };
-		E4F88F6C206A6C1000F8F21A /* MapPreviewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MapPreviewVC.h; sourceTree = "<group>"; };
-		E4F88F6D206A6C1000F8F21A /* MapPreviewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MapPreviewVC.m; sourceTree = "<group>"; };
 		E4FC931820061C3600D2C1F0 /* SettingsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		E4FC931920061C3600D2C1F0 /* SettingsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
 		E4FC931C200620D300D2C1F0 /* SettingsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsCell.h; sourceTree = "<group>"; };
@@ -504,9 +483,7 @@
 				E42F144C1FF75E2E00602813 /* LoginVC */,
 				E43D305D1FF6069900A64480 /* RoadBooksVC */,
 				E43D30591FF6065000A64480 /* LocationsVC */,
-				E4F88F6B206A6B9C00F8F21A /* MapPreviewVC */,
 				E4FC931720061C1000D2C1F0 /* SettingsVC */,
-				E4532D2D1FECE73500ABD304 /* GPSSettingsVC */,
 				E4590E161FF369A500CBD0C9 /* ImagePreviewVC */,
 			);
 			path = Controllers;
@@ -593,15 +570,6 @@
 				E4532D2B1FECE03200ABD304 /* GPSSettingsCell.m */,
 			);
 			path = GPSSettingsCell;
-			sourceTree = "<group>";
-		};
-		E4532D2D1FECE73500ABD304 /* GPSSettingsVC */ = {
-			isa = PBXGroup;
-			children = (
-				E4532D2E1FECE73500ABD304 /* GPSSettingsVC.h */,
-				E4532D2F1FECE73500ABD304 /* GPSSettingsVC.m */,
-			);
-			path = GPSSettingsVC;
 			sourceTree = "<group>";
 		};
 		E4532D311FED06E400ABD304 /* WSObjects */ = {
@@ -854,32 +822,13 @@
 			path = CoreDataObjects;
 			sourceTree = "<group>";
 		};
-		E4F88F6B206A6B9C00F8F21A /* MapPreviewVC */ = {
-			isa = PBXGroup;
-			children = (
-				E4F88F6C206A6C1000F8F21A /* MapPreviewVC.h */,
-				E4F88F6D206A6C1000F8F21A /* MapPreviewVC.m */,
-			);
-			path = MapPreviewVC;
-			sourceTree = "<group>";
-		};
 		E4FC931720061C1000D2C1F0 /* SettingsVC */ = {
 			isa = PBXGroup;
 			children = (
 				E4FC931820061C3600D2C1F0 /* SettingsVC.h */,
 				E4FC931920061C3600D2C1F0 /* SettingsVC.m */,
-				E40AD97420076A4700162CFE /* DistanceUnitsVC.h */,
-				E40AD97520076A4700162CFE /* DistanceUnitsVC.m */,
-				E49CAE902008DCEF00CDAB27 /* NewWayPointVC.h */,
-				E49CAE912008DCEF00CDAB27 /* NewWayPointVC.m */,
 				555CE8FC2068B38300A9A2D2 /* HowToUseVC.h */,
 				555CE8FD2068B38300A9A2D2 /* HowToUseVC.m */,
-				E46684F620A446940084C0FC /* PickRoadBookVC.h */,
-				E46684F720A446940084C0FC /* PickRoadBookVC.m */,
-				E42918F220D92B4600CFAA78 /* ZoomLevelVC.h */,
-				E42918F320D92B4600CFAA78 /* ZoomLevelVC.m */,
-				E449CFCD20E2123500D4FC20 /* AddMapNameVC.h */,
-				E449CFCE20E2123500D4FC20 /* AddMapNameVC.m */,
 			);
 			path = SettingsVC;
 			sourceTree = "<group>";
@@ -1116,7 +1065,6 @@
 				E44A4EC31FE8CB64003CE84D /* main.m in Sources */,
 				E471B2EC1FECC9E300E0A228 /* NSManagedObject+CoreDataActive.m in Sources */,
 				E45077071FFA1A890071B4D0 /* Coord.m in Sources */,
-				E40AD97620076A4700162CFE /* DistanceUnitsVC.m in Sources */,
 				E42F14561FF76ACA00602813 /* User.m in Sources */,
 				E43D306B1FF616A600A64480 /* AddRoadBookVC.m in Sources */,
 				E434B705202D9C5A0054410E /* AppDelegate.m in Sources */,
@@ -1124,10 +1072,8 @@
 				E45077091FFA1A890071B4D0 /* GravelLine.m in Sources */,
 				E4590E1F1FF3B07C00CBD0C9 /* TrojanAudioRecorder.m in Sources */,
 				E471B2EF1FECC9E300E0A228 /* NSObject+Copyable.m in Sources */,
-				E46684F820A446940084C0FC /* PickRoadBookVC.m in Sources */,
 				E42F144F1FF75E3C00602813 /* LoginVC.m in Sources */,
 				E471B2B21FECC94E00E0A228 /* BaseVC.m in Sources */,
-				E4532D301FECE73500ABD304 /* GPSSettingsVC.m in Sources */,
 				E471B2F51FECC9E300E0A228 /* WebServiceDataAdaptor.m in Sources */,
 				E4A84FAF202B070000615D0F /* _CDSyncData.m in Sources */,
 				E471B2F11FECC9E300E0A228 /* ObjMapper.m in Sources */,
@@ -1138,7 +1084,6 @@
 				E471B2F71FECC9E300E0A228 /* UIAlertController+Blocks.m in Sources */,
 				555CE8FE2068B38300A9A2D2 /* HowToUseVC.m in Sources */,
 				E471B2F41FECC9E300E0A228 /* WebServiceConnector.m in Sources */,
-				E4F88F6E206A6C1000F8F21A /* MapPreviewVC.m in Sources */,
 				E47F5D01212D8795003AF75D /* CDFolders.m in Sources */,
 				E47F5CFC212D44CB003AF75D /* Roadbooks.m in Sources */,
 				E466A76B1FFB9CB000C6443D /* RegisterVC.m in Sources */,
@@ -1177,14 +1122,11 @@
 				E436264A2028281B00353968 /* CDRoute.m in Sources */,
 				E450770A1FFA1A890071B4D0 /* Settings.m in Sources */,
 				E471B2FA1FECC9E300E0A228 /* UITableView+Placeholder.m in Sources */,
-				E49CAE922008DCEF00CDAB27 /* NewWayPointVC.m in Sources */,
 				E471B2EA1FECC9E300E0A228 /* CoreDataAdaptor.m in Sources */,
 				E45077121FFA2D6A0071B4D0 /* RouteDetails.m in Sources */,
 				E420FD78202709A20065C781 /* _CDRoutes.m in Sources */,
 				E447979B21341345007249D6 /* _CDSyncFolders.m in Sources */,
 				E45076ED1FF9FBFC0071B4D0 /* Routes.m in Sources */,
-				E449CFCF20E2123500D4FC20 /* AddMapNameVC.m in Sources */,
-				E42918F420D92B4600CFAA78 /* ZoomLevelVC.m in Sources */,
 				E471B2ED1FECC9E300E0A228 /* DefaultsValues.m in Sources */,
 				E45076F01FFA05980071B4D0 /* Route.m in Sources */,
 				E450770D1FFA1A890071B4D0 /* Td.m in Sources */,

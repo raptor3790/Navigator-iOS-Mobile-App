@@ -9,9 +9,6 @@
 //
 
 #import "SettingsVC.h"
-#import "GPSSettingsVC.h"
-#import "DistanceUnitsVC.h"
-#import "NewWayPointVC.h"
 #import "HowToUseVC.h"
 #import "SettingsCell.h"
 #import "CDSyncData.h"
@@ -19,7 +16,6 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Crashlytics/Crashlytics.h>
 #import "RoadBooksVC.h"
-#import "PickRoadBookVC.h"
 
 typedef enum {
     SettingsCellTypeTitle = 0,
@@ -34,7 +30,7 @@ typedef enum {
     SettingsCellTypeLogout
 } SettingsCellType;
 
-@interface SettingsVC () <GPSSettingsVCDelegate> {
+@interface SettingsVC () {
     BOOL isLightView;
     BOOL isAutoPhoto;
 
