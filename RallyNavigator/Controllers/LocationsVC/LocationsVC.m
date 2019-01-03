@@ -251,7 +251,10 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     _btnViewPreference.layer.borderColor = [UIColor lightGrayColor].CGColor;
     _btnViewPreference.layer.borderWidth = 2.0f;
 
-    UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(@"drawer") style:UIBarButtonItemStyleDone target:self action:@selector(btnDrawerAction:)];
+    UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(iPadDevice ? @"drawer_x" : @"drawer")
+                                                                  style:UIBarButtonItemStyleDone
+                                                                 target:self
+                                                                 action:@selector(btnDrawerAction:)];
     self.navigationItem.rightBarButtonItem = btnDrawer;
 
     [self setUpVC];
@@ -322,6 +325,17 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     if (self.sessionQueue != nil) {
         [self startCameraSession];
     }
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -931,12 +945,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 #pragma mark - KeyBoard Handling Methods
 
-- (void)registerForKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
-}
-
 - (void)keyboardWillShow:(NSNotification*)notification
 {
     if (isRecordingStarted) {
@@ -946,7 +954,12 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     NSDictionary* userInfo = [notification userInfo];
     CGSize kbSize = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 
-    _bottomBtnAddWayPoint.constant = kbSize.height;
+    UIView* bottomView = _btnAdd.superview.superview;
+    CGFloat offset = 75;
+    if (bottomView) {
+        offset = bottomView.frame.size.height;
+    }
+    _bottomBtnAddWayPoint.constant = kbSize.height - offset;
     [self.view layoutIfNeeded];
     [_btnMapType setHidden:YES];
     [_btnChangeView setHidden:YES];
@@ -2262,7 +2275,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
             AppContext.syncedWayPoints = 0;
             [AppContext checkForSyncData];
         }
-        
+
         if (self->isBack) {
             [AlertManager alert:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
                           title:@"Roadbook saved"
@@ -2530,8 +2543,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     vc.delegate = self;
 
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
-    [nav setNavigationBarHidden:YES animated:NO];
-
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -3731,11 +3742,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 - (void)startCameraSession
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-
-    [self registerForKeyboardNotifications];
-
     dispatch_async(self.sessionQueue, ^{
         switch (self.setupResult) {
         case AVCamSetupResultSuccess: {

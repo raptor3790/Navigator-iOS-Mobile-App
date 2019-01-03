@@ -9,6 +9,11 @@
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="russo_one.ttf">
+            <string>RussoOne</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--SettingsVC-->
         <scene sceneID="vF0-1b-Z0R">
@@ -118,13 +123,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x8N-6b-Adp">
-                                                    <rect key="frame" x="15" y="17" width="47.5" height="21.5"/>
+                                                    <rect key="frame" x="56.5" y="17" width="47.5" height="21.5"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jp2-bR-gN0">
-                                                    <rect key="frame" x="256" y="12.5" width="51" height="31"/>
+                                                    <rect key="frame" x="215.5" y="12.5" width="51" height="31"/>
                                                     <color key="onTintColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <color key="thumbTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <connections>
@@ -136,11 +141,19 @@
                                             <constraints>
                                                 <constraint firstItem="x8N-6b-Adp" firstAttribute="leading" secondItem="vKF-BP-lKG" secondAttribute="leading" constant="15" id="0y9-nR-iWL"/>
                                                 <constraint firstItem="x8N-6b-Adp" firstAttribute="top" secondItem="vKF-BP-lKG" secondAttribute="topMargin" constant="6" id="4Xu-BV-17N"/>
+                                                <constraint firstItem="Jp2-bR-gN0" firstAttribute="centerX" secondItem="vKF-BP-lKG" secondAttribute="centerX" multiplier="1.5" id="T2h-zZ-1aj"/>
                                                 <constraint firstItem="Jp2-bR-gN0" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="x8N-6b-Adp" secondAttribute="trailing" constant="8" id="X8p-4P-BOG"/>
                                                 <constraint firstAttribute="trailing" secondItem="Jp2-bR-gN0" secondAttribute="trailing" constant="15" id="ZJc-84-M8w"/>
+                                                <constraint firstItem="x8N-6b-Adp" firstAttribute="centerX" secondItem="vKF-BP-lKG" secondAttribute="centerX" multiplier="0.5" id="aiV-Nw-uAb"/>
                                                 <constraint firstItem="Jp2-bR-gN0" firstAttribute="centerY" secondItem="x8N-6b-Adp" secondAttribute="centerY" id="i3w-k0-lTa"/>
                                                 <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="x8N-6b-Adp" secondAttribute="bottom" priority="999" constant="6" id="utm-wC-jiS"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="0y9-nR-iWL"/>
+                                                    <exclude reference="ZJc-84-M8w"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
@@ -209,6 +222,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="y4D-69-Ukj"/>
                     </view>
+                    <navigationItem key="navigationItem" id="mXZ-yp-OtF">
+                        <barButtonItem key="backBarButtonItem" title=" " id="66A-yo-kM0"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="tblSettings" destination="hbW-W3-Cxn" id="XWn-7j-E9P"/>
                     </connections>
@@ -265,13 +281,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Folder Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hef-H7-Mi8">
-                                <rect key="frame" x="32" y="70" width="256" height="36"/>
+                                <rect key="frame" x="16" y="70" width="288" height="36"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="36" id="hFo-fp-A2T"/>
+                                    <constraint firstAttribute="height" constant="36" id="hFo-fp-A2T">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="40"/>
+                                    </constraint>
                                 </constraints>
                                 <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="RussoOne" family="Russo One" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                 <connections>
                                     <outlet property="delegate" destination="z7w-Co-kFb" id="Vb1-8a-RKm"/>
@@ -281,10 +299,12 @@
                                 <rect key="frame" x="32" y="131" width="256" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="P50-6l-eYa"/>
+                                    <constraint firstAttribute="height" constant="40" id="P50-6l-eYa">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="44"/>
+                                    </constraint>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
-                                <color key="tintColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" name="RussoOne" family="Russo One" pointSize="20"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="titleEdgeInsets" minX="0.0" minY="100" maxX="0.0" maxY="100"/>
                                 <state key="normal" title="ADD FOLDER NAME"/>
                                 <connections>
@@ -298,13 +318,15 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="hef-H7-Mi8" firstAttribute="top" secondItem="nyd-fK-D5c" secondAttribute="top" constant="50" id="1C4-aK-Xx2"/>
-                            <constraint firstItem="vE6-8M-s1o" firstAttribute="centerX" secondItem="hef-H7-Mi8" secondAttribute="centerX" id="1Sh-Vc-BAm"/>
                             <constraint firstItem="hef-H7-Mi8" firstAttribute="centerX" secondItem="n6f-gJ-9oX" secondAttribute="centerX" id="FYZ-TU-Z3c"/>
                             <constraint firstItem="vE6-8M-s1o" firstAttribute="top" secondItem="hef-H7-Mi8" secondAttribute="bottom" constant="25" id="RBK-x6-UM8"/>
-                            <constraint firstItem="hef-H7-Mi8" firstAttribute="width" secondItem="n6f-gJ-9oX" secondAttribute="width" multiplier="0.8" id="ezr-BE-aag"/>
-                            <constraint firstItem="vE6-8M-s1o" firstAttribute="width" secondItem="hef-H7-Mi8" secondAttribute="width" id="fZg-WH-iir"/>
+                            <constraint firstItem="hef-H7-Mi8" firstAttribute="width" secondItem="n6f-gJ-9oX" secondAttribute="width" constant="-96" id="ezr-BE-aag">
+                                <variation key="heightClass=regular-widthClass=compact" constant="-32"/>
+                            </constraint>
                             <constraint firstItem="nyd-fK-D5c" firstAttribute="bottom" secondItem="Lwk-Hd-kUH" secondAttribute="bottom" id="gmz-rb-Lmd"/>
                             <constraint firstItem="Lwk-Hd-kUH" firstAttribute="top" secondItem="vE6-8M-s1o" secondAttribute="bottom" id="iPN-Dr-cfH"/>
+                            <constraint firstItem="vE6-8M-s1o" firstAttribute="trailing" secondItem="hef-H7-Mi8" secondAttribute="trailing" constant="-16" id="oET-hu-UcP"/>
+                            <constraint firstItem="vE6-8M-s1o" firstAttribute="leading" secondItem="hef-H7-Mi8" secondAttribute="leading" constant="16" id="oPT-GB-a8e"/>
                             <constraint firstItem="Lwk-Hd-kUH" firstAttribute="leading" secondItem="nyd-fK-D5c" secondAttribute="leading" constant="8" id="ocH-B2-9BJ"/>
                             <constraint firstItem="nyd-fK-D5c" firstAttribute="trailing" secondItem="Lwk-Hd-kUH" secondAttribute="trailing" constant="8" id="tQk-VN-v2S"/>
                         </constraints>

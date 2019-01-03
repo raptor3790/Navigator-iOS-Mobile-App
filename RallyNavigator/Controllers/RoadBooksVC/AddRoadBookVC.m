@@ -27,19 +27,33 @@
     self.title = @"";
 
     // Adjust font size for labels & buttons
-    UIFont* font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:SCREEN_WIDTH == 320 ? 20 : 24];
+    CGFloat fontSize = 20;
+    if (SCREEN_WIDTH == 375) {
+        fontSize = 24;
+    } else if (SCREEN_WIDTH == 414) {
+        fontSize = 26;
+    } else if (SCREEN_WIDTH >= 768) {
+        fontSize = 32;
+    }
+    UIFont* font = [UIFont fontWithName:@"RussoOne" size:fontSize];
+    UIFont* fontSmall = [UIFont fontWithName:@"RussoOne" size:fontSize - 2];
     _recordLabel.font = font;
     _continueLabel.font = font;
     _btnStartRecording.titleLabel.font = font;
     _btnSelectRoadbook.titleLabel.font = font;
+    _logoLabel.font = fontSmall;
 
     // Custom placeholder
     NSAttributedString* str
         = [[NSAttributedString alloc] initWithString:@"Enter Roadbook Name" attributes:@{ NSForegroundColorAttributeName : [UIColor darkGrayColor] }];
     self.txtRoadBookName.attributedPlaceholder = str;
+    self.txtRoadBookName.font = fontSmall;
 
     // Add Setting menu
-    UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(@"drawer") style:UIBarButtonItemStyleDone target:self action:@selector(btnDrawerAction:)];
+    UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(iPadDevice ? @"drawer_x" : @"drawer")
+                                                                  style:UIBarButtonItemStyleDone
+                                                                 target:self
+                                                                 action:@selector(btnDrawerAction:)];
     self.navigationItem.rightBarButtonItem = btnDrawer;
 }
 
@@ -81,8 +95,8 @@
 {
     button.layer.masksToBounds = YES;
     button.layer.cornerRadius = 5.0;
-    button.layer.borderWidth = 2;
-    button.layer.borderColor = [[UIColor redColor] CGColor];
+    button.layer.borderWidth = iPadDevice ? 3 : 2;
+    button.layer.borderColor = UIColor.redColor.CGColor;
 }
 
 #pragma mark - Orientation Delegate Methods
@@ -137,8 +151,6 @@
     vc.delegate = self;
     
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
-    [nav setNavigationBarHidden:YES animated:NO];
-
     [self presentViewController:nav animated:YES completion:nil];
 }
 

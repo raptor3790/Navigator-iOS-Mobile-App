@@ -58,6 +58,8 @@ typedef enum {
 {
     [super viewWillAppear:animated];
 
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    
     objUser = GET_USER_OBJ;
 
     [self setUpVC];
@@ -254,7 +256,6 @@ typedef enum {
     case SettingsCellTypeTitle: {
         cell = [tableView dequeueReusableCellWithIdentifier:@"idSettingsNavigationCell"];
         if (SCREEN_WIDTH >= 768) {
-            [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:32.0f]];
             [cell.closeButton setImage:[UIImage imageNamed:@"cross_x"] forState:UIControlStateNormal];
             cell.closeButton.contentEdgeInsets = UIEdgeInsetsZero;
         }
@@ -377,11 +378,17 @@ typedef enum {
         }
     }
 
-    if (indexPath.row == SettingsCellTypeNewRecording || indexPath.row == SettingsCellTypeSave || indexPath.row == SettingsCellTypeOverlayTrack) {
+    if (indexPath.row == SettingsCellTypeTitle || indexPath.row == SettingsCellTypeNewRecording || indexPath.row == SettingsCellTypeSave || indexPath.row == SettingsCellTypeOverlayTrack) {
         if (SCREEN_WIDTH >= 768) {
             [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:32]];
         } else {
             [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:26]];
+        }
+    } else if (cell.titleLabel) {
+        if (SCREEN_WIDTH >= 768) {
+            [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:26]];
+        } else {
+            [cell.titleLabel setFont:[cell.titleLabel.font fontWithSize:18]];
         }
     }
 

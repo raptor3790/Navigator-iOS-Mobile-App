@@ -50,7 +50,10 @@
     _btnAddFolder.hidden = _isAddRouteHidden || _isOverlayTrack;
 
     if (!_isOverlayTrack) {
-        UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(@"drawer") style:UIBarButtonItemStyleDone target:self action:@selector(btnSettingsClicked:)];
+        UIBarButtonItem* btnDrawer = [[UIBarButtonItem alloc] initWithImage:Set_Local_Image(iPadDevice ? @"drawer_x" : @"drawer")
+                                                                      style:UIBarButtonItemStyleDone
+                                                                     target:self
+                                                                     action:@selector(btnSettingsClicked:)];
         self.navigationItem.rightBarButtonItem = btnDrawer;
     }
 
@@ -84,26 +87,24 @@
     if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
         self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
         self.navigationController.navigationBar.translucent = NO;
-        self.navigationController.navigationBar.tintColor = [UIColor lightGrayColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:
-                                                     @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+        self.navigationController.navigationBar.tintColor = UIColor.lightGrayColor;
+        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : UIColor.lightGrayColor }];
 
-        self.view.backgroundColor = [UIColor blackColor];
-        _tblRoadBooks.backgroundColor = [UIColor blackColor];
+        self.view.backgroundColor = UIColor.blackColor;
+        _tblRoadBooks.backgroundColor = UIColor.blackColor;
 
-        ((MJRefreshNormalHeader*)_tblRoadBooks.mj_header).stateLabel.textColor = [UIColor lightGrayColor];
+        ((MJRefreshNormalHeader*)_tblRoadBooks.mj_header).stateLabel.textColor = UIColor.lightGrayColor;
         ((MJRefreshNormalHeader*)_tblRoadBooks.mj_header).activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
     } else {
         self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
         self.navigationController.navigationBar.translucent = NO;
-        self.navigationController.navigationBar.tintColor = [UIColor blackColor];
-        [self.navigationController.navigationBar setTitleTextAttributes:
-                                                     @{ NSForegroundColorAttributeName : [UIColor blackColor] }];
+        self.navigationController.navigationBar.tintColor = UIColor.blackColor;
+        [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : UIColor.blackColor }];
 
-        self.view.backgroundColor = [UIColor whiteColor];
-        _tblRoadBooks.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
+        _tblRoadBooks.backgroundColor = UIColor.whiteColor;
 
-        ((MJRefreshNormalHeader*)_tblRoadBooks.mj_header).stateLabel.textColor = [UIColor blackColor];
+        ((MJRefreshNormalHeader*)_tblRoadBooks.mj_header).stateLabel.textColor = UIColor.blackColor;
         ((MJRefreshNormalHeader*)_tblRoadBooks.mj_header).activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
     }
 
@@ -415,8 +416,6 @@
     vc.delegate = self;
 
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
-    [nav setNavigationBarHidden:YES animated:NO];
-
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -494,7 +493,7 @@
                 CDSyncData* objRoadBook = arrRoadBooks[indexPath.row];
                 strRoadbookId = [NSString stringWithFormat:@"%ld", (long)[objRoadBook.routeIdentifier doubleValue]];
             }
-            
+
             if ([self.delegate respondsToSelector:@selector(didPickRoadbookWithId:)]) {
                 [self.delegate didPickRoadbookWithId:strRoadbookId];
             }
