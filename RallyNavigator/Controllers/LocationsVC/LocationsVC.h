@@ -40,7 +40,6 @@ typedef enum
 @property (weak, nonatomic) IBOutlet MGLMapView *mapBoxView;
 @property (weak, nonatomic) IBOutlet UIButton *btnViewPreference;
 @property (weak, nonatomic) IBOutlet UIButton *btnMapType;
-@property (weak, nonatomic) IBOutlet UIButton *btnChangeView;
 
 @property (strong, nonatomic) NSString *strFolderId;
 @property (strong, nonatomic) NSString *strRouteIdentifier;

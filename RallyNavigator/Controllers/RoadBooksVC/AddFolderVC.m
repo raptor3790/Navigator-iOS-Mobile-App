@@ -30,7 +30,7 @@
     }
     _btnAdd.titleLabel.font = [UIFont fontWithName:@"RussoOne" size:fontSize];
 
-    NSAttributedString* str = [[NSAttributedString alloc] initWithString:@"Enter Folder Name" attributes:@{ NSForegroundColorAttributeName : [UIColor darkGrayColor] }];
+    NSAttributedString* str = [[NSAttributedString alloc] initWithString:@"ENTER FOLDER NAME" attributes:@{ NSForegroundColorAttributeName : [UIColor darkGrayColor] }];
     self.txtFolder.attributedPlaceholder = str;
     self.txtFolder.font = [UIFont fontWithName:@"RussoOne" size:fontSize - 2];
 }

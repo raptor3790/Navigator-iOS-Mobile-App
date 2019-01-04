@@ -254,42 +254,42 @@ typedef enum {
 - (BOOL)validateInput
 {
     if ([_strEmail stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
-        [AlertManager alert:@"" title:@"Please Enter Email Address" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Email Address" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (![[_strEmail stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isValidEmail]) {
-        [AlertManager alert:@"" title:@"Please Enter Valid Email Address" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Valid Email Address" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if ([_strUsername stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
-        [AlertManager alert:@"" title:@"Please Enter User Name" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter User Name" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (![[_strUsername stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isValidName]) {
-        [AlertManager alert:@"" title:@"Please Enter Valid User Name" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Valid User Name" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if ([_strPassword stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
-        [AlertManager alert:@"" title:@"Please Enter Password" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Password" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (![_strPassword isValidPassword]) {
-        [AlertManager alert:@"" title:@"Password Must Be Between 6-32 Characters" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Password Must Be Between 6-32 Characters" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if ([_strConfirmPassword stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length == 0) {
-        [AlertManager alert:@"" title:@"Please Enter Confirm Password" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Confirm Password" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (![_strPassword isEqualToString:_strConfirmPassword]) {
-        [AlertManager alert:@"" title:@"Password and Confirm Password must be same" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Password and Confirm Password must be same" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 

@@ -399,7 +399,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ihx-RC-Tt3">
-                                <rect key="frame" x="137.5" y="30" width="45" height="45"/>
+                                <rect key="frame" x="217.5" y="30" width="45" height="45"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="45" id="phQ-Of-EiM"/>
@@ -413,30 +413,17 @@
                                     <action selector="btnMapStyleChanged:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dPF-BA-mDM"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aXQ-Yy-JXU">
-                                <rect key="frame" x="217.5" y="30" width="45" height="45"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="45" id="4tL-JB-JdS"/>
-                                    <constraint firstAttribute="width" constant="45" id="E6b-Ep-fDL"/>
-                                </constraints>
-                                <state key="normal" image="icon_map_app_logo"/>
-                                <connections>
-                                    <action selector="btnChangeView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="r7u-EW-cKx"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="CXz-oH-YQc" firstAttribute="top" secondItem="BH5-S8-Zrl" secondAttribute="top" id="0Sd-KD-ks2"/>
-                            <constraint firstItem="8GE-m5-cIH" firstAttribute="leading" secondItem="f7h-IU-G5S" secondAttribute="trailing" multiplier="1/4" constant="-22.5" id="1CL-rE-Fyi"/>
                             <constraint firstItem="f7h-IU-G5S" firstAttribute="top" secondItem="gdk-Rj-aDF" secondAttribute="top" id="7fW-t9-QVO"/>
                             <constraint firstItem="BH5-S8-Zrl" firstAttribute="bottom" secondItem="CXz-oH-YQc" secondAttribute="bottom" id="9rD-V5-AOw"/>
                             <constraint firstItem="BH5-S8-Zrl" firstAttribute="trailing" secondItem="gdk-Rj-aDF" secondAttribute="trailing" id="Bg0-mJ-pBi"/>
                             <constraint firstItem="ihx-RC-Tt3" firstAttribute="top" secondItem="BH5-S8-Zrl" secondAttribute="top" constant="10" id="C28-Bp-Yyf"/>
-                            <constraint firstItem="aXQ-Yy-JXU" firstAttribute="leading" secondItem="f7h-IU-G5S" secondAttribute="trailing" multiplier="3/4" constant="-22.5" id="L4B-rN-1Of"/>
                             <constraint firstItem="olW-hB-TRv" firstAttribute="leading" secondItem="BH5-S8-Zrl" secondAttribute="leading" id="NEX-lh-eG9"/>
                             <constraint firstItem="olW-hB-TRv" firstAttribute="trailing" secondItem="BH5-S8-Zrl" secondAttribute="trailing" id="OGl-nw-hGS"/>
-                            <constraint firstItem="aXQ-Yy-JXU" firstAttribute="top" secondItem="ihx-RC-Tt3" secondAttribute="top" id="TaD-LW-FRV"/>
+                            <constraint firstItem="8GE-m5-cIH" firstAttribute="centerX" secondItem="BH5-S8-Zrl" secondAttribute="centerX" multiplier="0.5" id="QlJ-bE-4Vx"/>
                             <constraint firstItem="f7h-IU-G5S" firstAttribute="bottom" secondItem="gdk-Rj-aDF" secondAttribute="bottom" constant="-145" id="VYX-lc-J5q"/>
                             <constraint firstItem="f7h-IU-G5S" firstAttribute="trailing" secondItem="gdk-Rj-aDF" secondAttribute="trailing" id="WPS-YZ-R1s"/>
                             <constraint firstItem="gdk-Rj-aDF" firstAttribute="leading" secondItem="BH5-S8-Zrl" secondAttribute="leading" id="YSh-NX-0bo"/>
@@ -445,7 +432,7 @@
                             <constraint firstItem="gdk-Rj-aDF" firstAttribute="top" secondItem="BH5-S8-Zrl" secondAttribute="top" id="glU-gZ-n0H"/>
                             <constraint firstItem="8GE-m5-cIH" firstAttribute="top" secondItem="BH5-S8-Zrl" secondAttribute="top" constant="10" id="j00-PC-1r9"/>
                             <constraint firstItem="olW-hB-TRv" firstAttribute="top" secondItem="gdk-Rj-aDF" secondAttribute="bottom" id="jpf-4b-tqS"/>
-                            <constraint firstItem="ihx-RC-Tt3" firstAttribute="centerX" secondItem="BH5-S8-Zrl" secondAttribute="centerX" id="lm4-ui-8Qt"/>
+                            <constraint firstItem="ihx-RC-Tt3" firstAttribute="centerX" secondItem="BH5-S8-Zrl" secondAttribute="centerX" multiplier="1.5" id="lm4-ui-8Qt"/>
                             <constraint firstItem="olW-hB-TRv" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="mtw-jd-1Wu"/>
                             <constraint firstItem="f7h-IU-G5S" firstAttribute="leading" secondItem="gdk-Rj-aDF" secondAttribute="leading" id="oR4-4c-m9N"/>
                             <constraint firstItem="BH5-S8-Zrl" firstAttribute="trailing" secondItem="CXz-oH-YQc" secondAttribute="trailing" id="sVC-PZ-Xqk"/>
@@ -459,7 +446,6 @@
                         <outlet property="bottomBtnAddWayPoint" destination="YcJ-tq-o6a" id="8ra-mR-DYf"/>
                         <outlet property="btnAdd" destination="aua-nd-hIE" id="vJE-Nw-4jv"/>
                         <outlet property="btnCamera" destination="Qfp-ze-kXZ" id="4p5-sQ-WPY"/>
-                        <outlet property="btnChangeView" destination="aXQ-Yy-JXU" id="XTE-be-Kri"/>
                         <outlet property="btnMapType" destination="ihx-RC-Tt3" id="thc-d9-a1I"/>
                         <outlet property="btnRecording" destination="uei-L8-04O" id="9G8-Le-k2s"/>
                         <outlet property="btnText" destination="dAY-xg-SlT" id="Bq0-Sj-fV5"/>
@@ -870,21 +856,21 @@
                                         <variation key="heightClass=regular" hidden="NO"/>
                                     </imageView>
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QTs-gM-z1H">
-                                        <rect key="frame" x="0.0" y="85" width="304" height="2"/>
-                                        <color key="backgroundColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <rect key="frame" x="0.0" y="85" width="304" height="4"/>
+                                        <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="2" id="ID1-Xu-bch"/>
+                                            <constraint firstAttribute="height" constant="4" id="ID1-Xu-bch"/>
                                         </constraints>
                                         <variation key="heightClass=regular" hidden="NO"/>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RECORD NEW ROADBOOK" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="h8o-3V-T9O">
-                                        <rect key="frame" x="24" y="99" width="256" height="23"/>
+                                        <rect key="frame" x="25.5" y="101" width="253.5" height="23.5"/>
                                         <fontDescription key="fontDescription" name="RussoOne" family="Russo One" pointSize="20"/>
                                         <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Roadbook Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dst-2G-o7q">
-                                        <rect key="frame" x="16" y="134" width="272" height="36"/>
+                                        <rect key="frame" x="16" y="136.5" width="272" height="36"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="ifk-G8-ax3">
@@ -899,7 +885,7 @@
                                         </connections>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XHH-il-CUi">
-                                        <rect key="frame" x="32" y="182" width="240" height="40"/>
+                                        <rect key="frame" x="32" y="184.5" width="240" height="40"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="QJm-Fe-hLg">
@@ -915,20 +901,20 @@
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z7g-A0-j2K">
-                                        <rect key="frame" x="0.0" y="234" width="304" height="2"/>
+                                        <rect key="frame" x="0.0" y="236.5" width="304" height="2"/>
                                         <color key="backgroundColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="wiP-so-4qx"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CONTINUE RECORDING EXISTING ROADBOOK" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="2J8-r6-mBr">
-                                        <rect key="frame" x="33.5" y="248" width="237" height="46"/>
+                                        <rect key="frame" x="36.5" y="250.5" width="231.5" height="47"/>
                                         <fontDescription key="fontDescription" name="RussoOne" family="Russo One" pointSize="20"/>
                                         <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Til-0L-MHT">
-                                        <rect key="frame" x="32" y="306" width="240" height="40"/>
+                                        <rect key="frame" x="32" y="309.5" width="240" height="40"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" name="RussoOne" family="Russo One" pointSize="20"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -939,15 +925,15 @@
                                         </connections>
                                     </button>
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kkL-5E-GqS">
-                                        <rect key="frame" x="0.0" y="358" width="304" height="2"/>
-                                        <color key="backgroundColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <rect key="frame" x="0.0" y="361.5" width="304" height="4"/>
+                                        <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="2" id="qlh-q2-gZb"/>
+                                            <constraint firstAttribute="height" constant="4" id="qlh-q2-gZb"/>
                                         </constraints>
                                         <variation key="heightClass=regular" hidden="NO"/>
                                     </view>
                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="748" verticalCompressionResistancePriority="748" text="ROADBOOK AVAILABLE IN MY ROADBOOKS FOLDER ON DESKTOP COMPUTER FOR FINAL EDITING, PDF PRINT PRODUCTION AND SHARING TO MOBILE APP" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="TY2-xV-VfW">
-                                        <rect key="frame" x="0.0" y="372" width="304" height="129.5"/>
+                                        <rect key="frame" x="8" y="377.5" width="288.5" height="123.5"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="999" constant="120" id="t9c-i3-PAH"/>
                                         </constraints>
@@ -957,7 +943,7 @@
                                         <variation key="heightClass=regular" hidden="NO"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="www.rallynavigator.com" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vbQ-fa-SF8">
-                                        <rect key="frame" x="54.5" y="513.5" width="195.5" height="18.5"/>
+                                        <rect key="frame" x="67" y="513" width="170" height="19"/>
                                         <fontDescription key="fontDescription" name="RussoOne" family="Russo One" pointSize="16"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -1337,7 +1323,6 @@
         <image name="camera" width="96" height="78"/>
         <image name="cameraIcon" width="120" height="120"/>
         <image name="folder_icon" width="42" height="34"/>
-        <image name="icon_map_app_logo" width="90" height="89"/>
         <image name="previewIcon" width="15.737705230712891" height="15.737705230712891"/>
         <image name="recordIcon" width="120" height="120"/>
         <image name="smallCamera" width="39" height="39"/>

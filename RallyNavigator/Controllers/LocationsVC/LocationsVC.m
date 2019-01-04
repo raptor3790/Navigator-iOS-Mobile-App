@@ -240,12 +240,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
     [_mapBoxView setUserTrackingMode:MGLUserTrackingModeFollow animated:NO];
 
-    _btnChangeView.layer.cornerRadius = CGRectGetWidth(_btnChangeView.frame) / 2.0f;
-    _btnChangeView.clipsToBounds = YES;
-    _btnChangeView.layer.borderColor = UIColor.lightGrayColor.CGColor;
-    _btnChangeView.layer.borderWidth = 2.0f;
-
-    _btnViewPreference.layer.cornerRadius = CGRectGetWidth(_btnChangeView.frame) / 2.0f;
+    _btnViewPreference.layer.cornerRadius = CGRectGetHeight(_btnViewPreference.frame) / 2.0f;
     _btnViewPreference.clipsToBounds = YES;
     _btnViewPreference.layer.borderColor = UIColor.lightGrayColor.CGColor;
     _btnViewPreference.layer.borderWidth = 2.0f;
@@ -256,12 +251,19 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                                                                  action:@selector(btnDrawerAction:)];
     self.navigationItem.rightBarButtonItem = btnDrawer;
 
+    UIImage* toggleIcon = Set_Local_Image(@"icon_map_app_logo");
+    UIBarButtonItem* btnToggleMap = [[UIBarButtonItem alloc] initWithImage:[toggleIcon imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(btnToggelMapClicked:)];
+    self.navigationItem.leftBarButtonItem = btnToggleMap;
+
     [self setUpVC];
     [self callWSToUpdate];
 
     dispatch_async(dispatch_get_main_queue(), ^{
 
-        [self btnChangeView:nil];
+        [self btnToggelMapClicked:nil];
         [self btnTogglePreferrenceClicked:nil];
         if (self.isFirstTime) {
             [self.mapBoxView setZoomLevel:16 animated:NO];
@@ -301,7 +303,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : UIColor.blackColor }];
     }
 
-    self.navigationItem.leftBarButtonItem = NULL;
     self.navigationItem.hidesBackButton = YES;
 
     if (arrAllLocations.count > 0) {
@@ -962,7 +963,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     _bottomBtnAddWayPoint.constant = kbSize.height - offset;
     [self.view layoutIfNeeded];
     [_btnMapType setHidden:YES];
-    [_btnChangeView setHidden:YES];
     [_btnViewPreference setHidden:YES];
 }
 
@@ -970,7 +970,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 {
     _bottomBtnAddWayPoint.constant = 0;
     [self.view layoutIfNeeded];
-    [_btnChangeView setHidden:NO];
     _btnMapType.hidden = _currentViewType == ViewTypeListView;
     _btnViewPreference.hidden = _currentViewType == ViewTypeListView;
 }
@@ -1749,7 +1748,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                 [self managePolyline];
                 self->isAddedWayPointForPolyline = YES;
 
-                if (self->isAutoPhotoEnabled && self->imgCaptured == nil && self.sessionRunning) {
+                if (self->isAutoPhotoEnabled && self->imgCaptured == nil && self.isSessionRunning) {
                     [self capturePhoto];
                 } else if (!self->isAutoPhotoEnabled) {
                     [self playAudio:@"beep1_02" fileType:@"mp3"];
@@ -2263,12 +2262,27 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         }
 
         if (self->isBack) {
-            [AlertManager alert:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
-                          title:@"Roadbook saved"
-                      imageName:@"ic_success"
-                      onConfirm:^{
-                          [self.navigationController popViewControllerAnimated:YES];
-                      }];
+            [AlertManager showWithImage:@"ic_success"
+                                 labels:@[
+                                     [AlertManager labelWithText:@"Roadbook saved"
+                                                           color:UIColor.whiteColor
+                                                            size:1],
+                                     [AlertManager labelWithText:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
+                                                           color:UIColor.lightGrayColor
+                                                            size:0],
+                                     [AlertManager labelWithText:@"www.rallynavigator.com"
+                                                           color:UIColor.whiteColor
+                                                            size:-1]
+                                 ]
+                             textFields:@[]
+                                buttons:@[
+                                    [AlertManager buttonWithTitle:@"OK"
+                                                           action:^(NSArray<NSString*>* _Nonnull values) {
+                                                               [self.navigationController popViewControllerAnimated:YES];
+                                                           }
+                                                        isDefault:YES
+                                                     needValidate:NO]
+                                ]];
         }
     });
 }
@@ -2387,7 +2401,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 #pragma mark - Button Click Events
 
-- (IBAction)btnChangeView:(UIButton*)sender
+- (IBAction)btnToggelMapClicked:(id)sender
 {
     switch (_currentViewType) {
     case ViewTypeListView: {
@@ -2488,12 +2502,27 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         isBack = YES;
         [self handleAddWP:nil];
     } else {
-        [AlertManager alert:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
-                      title:@"Roadbook saved"
-                  imageName:@"ic_success"
-                  onConfirm:^{
-                      [self.navigationController popViewControllerAnimated:YES];
-                  }];
+        [AlertManager showWithImage:@"ic_success"
+                             labels:@[
+                                 [AlertManager labelWithText:@"Roadbook saved"
+                                                       color:UIColor.whiteColor
+                                                        size:1],
+                                 [AlertManager labelWithText:@"Roadbook available in My Roadbooks folder on desktop computer for final editing, PDF print production and Sharing to Mobile app"
+                                                       color:UIColor.lightGrayColor
+                                                        size:0],
+                                 [AlertManager labelWithText:@"www.rallynavigator.com"
+                                                       color:UIColor.whiteColor
+                                                        size:-1]
+                             ]
+                         textFields:@[]
+                            buttons:@[
+                                [AlertManager buttonWithTitle:@"OK"
+                                                       action:^(NSArray<NSString*>* _Nonnull values) {
+                                                           [self.navigationController popViewControllerAnimated:YES];
+                                                       }
+                                                    isDefault:YES
+                                                 needValidate:NO]
+                            ]];
     }
 }
 
@@ -3782,6 +3811,10 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 - (void)capturePhoto
 {
+    if (_sessionQueue == NULL) {
+        return;
+    }
+
     @autoreleasepool {
         AVCaptureVideoOrientation videoPreviewLayerVideoOrientation = self.previewView.videoPreviewLayer.connection.videoOrientation;
 
@@ -4042,23 +4075,34 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [self.view endEditing:YES];
 
     if (arrRemainingTracks.count > 0) {
-        [AlertManager choose:@"Do you want to save changes for this route?"
-                       title:@"Save Changes"
-                     buttons:@[
-                         [AlertButton withTitle:@"SAVE"
-                                         action:^{
-                                             [self btnStopAndSaveClicked];
-                                         }
-                                      isDefault:YES],
-                         [AlertButton withTitle:@"DON'T SAVE"
-                                         action:^{
-                                             [self.navigationController popViewControllerAnimated:YES];
-                                         }
-                                      isDefault:NO],
-                         [AlertButton withTitle:@"CANCEL"
-                                         action:NULL
-                                      isDefault:NO]
-                     ]];
+        [AlertManager showWithImage:NULL
+                             labels:@[
+                                 [AlertManager labelWithText:@"Save Changes"
+                                                       color:UIColor.whiteColor
+                                                        size:1],
+                                 [AlertManager labelWithText:@"Do you want to save changes for this route?"
+                                                       color:UIColor.lightGrayColor
+                                                        size:0]
+                             ]
+                         textFields:@[]
+                            buttons:@[
+                                [AlertManager buttonWithTitle:@"SAVE"
+                                                       action:^(NSArray<NSString*>* _Nonnull values) {
+                                                           [self btnStopAndSaveClicked];
+                                                       }
+                                                    isDefault:YES
+                                                 needValidate:NO],
+                                [AlertManager buttonWithTitle:@"DON'T SAVE"
+                                                       action:^(NSArray<NSString*>* _Nonnull values) {
+                                                           [self.navigationController popViewControllerAnimated:YES];
+                                                       }
+                                                    isDefault:NO
+                                                 needValidate:NO],
+                                [AlertManager buttonWithTitle:@"CANCEL"
+                                                       action:NULL
+                                                    isDefault:NO
+                                                 needValidate:NO]
+                            ]];
     } else {
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -4110,7 +4154,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 - (void)didPickRoadbookWithId:(NSString*)strRoadbookId
 {
     if (_currentViewType == ViewTypeListView) {
-        [self btnChangeView:nil];
+        [self btnToggelMapClicked:nil];
     }
 
     BOOL isConnectionAvailable = [[WebServiceConnector alloc] checkNetConnection];

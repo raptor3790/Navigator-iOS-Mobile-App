@@ -10,34 +10,75 @@ import Foundation
 import UIKit
 import SwiftEntryKit
 
+@objc @objcMembers class AlertLabel: NSObject {
+    var text: String!
+    var color = UIColor.white
+    var font: UIFont?
+
+    public init(text: String, color: UIColor, font: UIFont?) {
+        super.init()
+
+        self.text = text.uppercased()
+        self.color = color
+        self.font = font
+    }
+}
+
+@objc @objcMembers class AlertTextField: NSObject {
+    var text: String?
+    var placeHolder: String?
+    var font: UIFont
+    var image: UIImage?
+    var isSecure: Bool
+    var keyboardType = UIKeyboardType.default
+    var contentType: UITextContentType?
+    var capitalization = UITextAutocapitalizationType.sentences
+    var autoCorrection = UITextAutocorrectionType.default
+    var validation: ((_ text: String) -> Bool)?
+    weak var delegate: UITextFieldDelegate?
+
+    public init(text: String?, placeHolder: String?, font: UIFont, image: UIImage? = nil, isSecure: Bool = false, keyboardType: UIKeyboardType, contentType: UITextContentType?, capitalization: UITextAutocapitalizationType, autoCorrection: UITextAutocorrectionType, validation: ((_ text: String) -> Bool)?, delegate: UITextFieldDelegate?) {
+        self.text = text
+        self.placeHolder = placeHolder?.uppercased()
+        self.font = font
+        self.image = image
+        self.isSecure = isSecure
+        self.keyboardType = keyboardType
+        self.contentType = contentType
+        self.capitalization = capitalization
+        self.autoCorrection = autoCorrection
+        self.validation = validation
+        self.delegate = delegate
+    }
+}
+
 @objc @objcMembers class AlertButton: NSObject {
     var title: String!
-    var action: (() -> Void)?
-    var isDefault = true
+    var action: ((_ values: [String]) -> Void)?
+    var font: UIFont
+    var color: UIColor
+    var needValidate: Bool
 
-    public init(title: String, action: (() -> Void)? = nil, isDefault: Bool = false) {
+    public init(title: String, action: ((_ values: [String]) -> Void)?, font: UIFont, color: UIColor, needValidate: Bool) {
+        self.font = font
+        self.color = color
+        self.needValidate = needValidate
+
         super.init()
 
         self.title = title.uppercased()
         self.action = action
-        self.isDefault = isDefault
-    }
-
-    public static func with(title: String, action: (() -> Void)? = nil, isDefault: Bool = false) -> AlertButton {
-        return AlertButton(title: title, action: action, isDefault: isDefault)
     }
 }
 
 @objc @objcMembers class AlertManager: NSObject {
-    private var isDarkTheme: Bool = false
-
-    private static var buttonFont: UIFont {
-        return messageFont
+    private static var smallFont: UIFont {
+        return mediumFont.withSize(mediumFont.pointSize - 2)
     }
-    private static var titleFont: UIFont {
-        return messageFont.withSize(messageFont.pointSize + 4)
+    private static var largeFont: UIFont {
+        return mediumFont.withSize(mediumFont.pointSize + 4)
     }
-    private static var messageFont: UIFont {
+    private static var mediumFont: UIFont {
         let width = CGFloat.minimum(UIScreen.main.bounds.width, UIScreen.main.bounds.height);
 
         var fontSize: CGFloat = 14
@@ -45,7 +86,7 @@ import SwiftEntryKit
         case 0..<375: fontSize = 14
         case 375..<500: fontSize = 17
         case 500..<1000: fontSize = 24
-        default: fontSize = 34
+        default: fontSize = 32
         }
         return UIFont(name: "RussoOne", size: fontSize) ?? UIFont.systemFont(ofSize: fontSize)
     }
@@ -80,20 +121,95 @@ import SwiftEntryKit
         attributes.exitAnimation = .init(fade: .init(from: 1, to: 0, duration: 0.2))
         attributes.popBehavior = .animated(animation: .init(translate: .init(duration: 0.65, spring: .init(damping: 0.8, initialVelocity: 0))))
         attributes.positionConstraints.size = .init(width: .offset(value: 24), height: .intrinsic)
-//        attributes.positionConstraints.maxSize = .sizeToWidth
         attributes.positionConstraints.maxSize = .init(width: .constant(value: maxWidth), height: .intrinsic)
 
         return attributes
+    }
+
+    public static func label(text: String, color: UIColor, size: Int) -> AlertLabel {
+        if size > 0 {
+            return AlertLabel(text: text, color: color, font: largeFont)
+        } else if size < 0 {
+            return AlertLabel(text: text, color: color, font: smallFont)
+        } else {
+            return AlertLabel(text: text, color: color, font: mediumFont)
+        }
+    }
+
+    public static func button(title: String, action: ((_ values: [String]) -> Void)?, isDefault: Bool, needValidate: Bool) -> AlertButton {
+        if isDefault {
+            return AlertButton(title: title, action: action, font: smallFont, color: .white, needValidate: needValidate)
+        } else {
+            return AlertButton(title: title, action: action, font: smallFont, color: .lightGray, needValidate: needValidate)
+        }
+    }
+
+    public static func email(text: String?, placeHolder: String?, validate: ((_ text: String) -> Bool)?, delegate: UITextFieldDelegate?) -> AlertTextField {
+        return AlertTextField(
+            text: text,
+            placeHolder: placeHolder,
+            font: smallFont,
+            image: UIImage(named: "ic_email_w"),
+            keyboardType: .emailAddress,
+            contentType: .emailAddress,
+            capitalization: .none,
+            autoCorrection: .no,
+            validation: validate,
+            delegate: delegate
+        )
+    }
+
+    public static func decimal(text: String?, placeHolder: String?, validate: ((_ text: String) -> Bool)?, delegate: UITextFieldDelegate?) -> AlertTextField {
+        return AlertTextField(
+            text: text,
+            placeHolder: placeHolder,
+            font: smallFont,
+            keyboardType: .decimalPad,
+            contentType: nil,
+            capitalization: .none,
+            autoCorrection: .no,
+            validation: validate,
+            delegate: delegate
+        )
+    }
+
+    public static func password(text: String?, placeHolder: String?, validate: ((_ text: String) -> Bool)?, delegate: UITextFieldDelegate?) -> AlertTextField {
+        return AlertTextField(
+            text: text,
+            placeHolder: placeHolder,
+            font: smallFont,
+            isSecure: true,
+            keyboardType: .default,
+            contentType: nil,
+            capitalization: .sentences,
+            autoCorrection: .default,
+            validation: validate,
+            delegate: delegate
+        )
+    }
+
+    public static func text(text: String?, placeHolder: String?, validate: ((_ text: String) -> Bool)?, delegate: UITextFieldDelegate?) -> AlertTextField {
+        return AlertTextField(
+            text: text,
+            placeHolder: placeHolder,
+            font: smallFont,
+            keyboardType: .default,
+            contentType: nil,
+            capitalization: .sentences,
+            autoCorrection: .default,
+            validation: validate,
+            delegate: delegate
+        )
     }
 
     public static func dismiss() {
         SwiftEntryKit.dismiss()
     }
 
-    public static func toast(_ message: String, title: String? = nil, image: String? = nil) {
+    public static func toast(title: String?, message: String?, image: String?) {
         DispatchQueue.main.async {
-            let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: buttonFont, color: .white))
-            let description = EKProperty.LabelContent(text: message, style: .init(font: buttonFont.withSize(buttonFont.pointSize - 2), color: .lightGray))
+            let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: mediumFont, color: .white))
+            let description = EKProperty.LabelContent(text: message ?? "", style: .init(font: smallFont, color: .lightGray))
             var imageContent: EKProperty.ImageContent?
             if let imageName = image {
                 imageContent = .init(image: UIImage(named: imageName)!, size: CGSize(width: 35, height: 35))
@@ -119,164 +235,38 @@ import SwiftEntryKit
         }
     }
 
-    public static func alert(_ message: String, title: String? = nil, imageName: String? = nil, onConfirm: (() -> Void)?) {
-        DispatchQueue.main.async {
-            var image: EKProperty.ImageContent?
-            if let imageName = imageName {
-                image = EKProperty.ImageContent(imageName: imageName, size: CGSize(width: 25, height: 25), contentMode: .scaleAspectFit)
-            }
-            let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: titleFont, color: .white, alignment: .center))
-            let description = EKProperty.LabelContent(text: message.uppercased(), style: .init(font: messageFont, color: .lightGray, alignment: .center))
-
-            let simpleMessage = EKSimpleMessage(image: image, title: title, description: description)
-
-            let okButtonLabel = EKProperty.LabelContent(text: "OK", style: .init(font: buttonFont, color: .white))
-            let okButton = EKProperty.ButtonContent(label: okButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                onConfirm?()
-                SwiftEntryKit.dismiss()
-            }
-            let buttonsBarContent = EKProperty.ButtonBarContent(with: okButton, separatorColor: .red, expandAnimatedly: false)
-
-            let alertMessage = EKAlertMessage(simpleMessage: simpleMessage, buttonBarContent: buttonsBarContent)
-            let contentView = EKAlertMessageView(with: alertMessage)
-
-            var attributes = ekAttributes
-            attributes.screenInteraction = .absorbTouches
-            attributes.entryInteraction = .absorbTouches
-
-            SwiftEntryKit.display(entry: contentView, using: attributes)
-        }
+    public static func alert(_ message: String?, title: String? = nil, imageName: String? = nil, onConfirm: (() -> Void)?) {
+        AlertManager.show(
+            image: imageName,
+            labels: [
+                AlertManager.label(text: title ?? "", color: .white, size: 1),
+                AlertManager.label(text: message ?? "", color: .lightGray, size: 0),
+            ],
+            buttons: [
+                AlertManager.button(title: "OK", action: { _ in onConfirm?() }, isDefault: true, needValidate: false)
+            ])
     }
 
-    public static func confirm(_ message: String, title: String? = nil, negative: String? = "CANCEL", positive: String? = "OKAY", onNegative: (() -> Void)? = nil, onPositive: (() -> Void)? = nil) {
-        DispatchQueue.main.async {
-            let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: titleFont, color: .white, alignment: .center))
-            let description = EKProperty.LabelContent(text: message.uppercased(), style: .init(font: messageFont, color: .lightGray, alignment: .center))
-
-            let simpleMessage = EKSimpleMessage(title: title, description: description)
-
-            let cancelButtonLabel = EKProperty.LabelContent(text: negative?.uppercased() ?? "CANCEL", style: .init(font: buttonFont, color: .lightGray))
-            let cancelButton = EKProperty.ButtonContent(label: cancelButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                onNegative?()
-                SwiftEntryKit.dismiss()
-            }
-
-            let okButtonLabel = EKProperty.LabelContent(text: positive?.uppercased() ?? "OK", style: .init(font: buttonFont, color: .white))
-            let okButton = EKProperty.ButtonContent(label: okButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                onPositive?()
-                SwiftEntryKit.dismiss()
-            }
-            let buttonsBarContent = EKProperty.ButtonBarContent(with: cancelButton, okButton, separatorColor: .red, expandAnimatedly: false)
-
-            let alertMessage = EKAlertMessage(simpleMessage: simpleMessage, buttonBarContent: buttonsBarContent)
-            let contentView = EKAlertMessageView(with: alertMessage)
-
-            var attributes = ekAttributes
-            attributes.screenInteraction = .absorbTouches
-            attributes.entryInteraction = .absorbTouches
-
-            SwiftEntryKit.display(entry: contentView, using: attributes)
-        }
+    public static func confirm(_ message: String?, title: String? = nil, negative: String, positive: String, onNegative: (() -> Void)? = nil, onPositive: (() -> Void)? = nil) {
+        AlertManager.show(
+            labels: [
+                AlertManager.label(text: title ?? "", color: .white, size: 1),
+                AlertManager.label(text: message ?? "", color: .lightGray, size: 0),
+            ],
+            buttons: [
+                AlertManager.button(title: negative, action: { _ in onNegative?() }, isDefault: false, needValidate: false),
+                AlertManager.button(title: positive, action: { _ in onPositive?() }, isDefault: true, needValidate: false),
+            ])
     }
 
-    public static func choose(_ message: String, title: String? = nil, buttons: [AlertButton]) {
-        DispatchQueue.main.async {
-            let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: titleFont, color: .white, alignment: .center))
-            let description = EKProperty.LabelContent(text: message.uppercased(), style: .init(font: messageFont, color: .lightGray, alignment: .center))
-
-            let simpleMessage = EKSimpleMessage(title: title, description: description)
-
-            let tempButtonLabel = EKProperty.LabelContent(text: "", style: .init(font: buttonFont, color: .lightGray))
-            let tempButton = EKProperty.ButtonContent(label: tempButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                SwiftEntryKit.dismiss()
+    public static func show(image: String? = nil, labels: [AlertLabel] = [], textFields: [AlertTextField] = [], buttons: [AlertButton] = []) {
+        let block = {
+            var imageContent: EKProperty.ImageContent?
+            if let image = image {
+                imageContent = EKProperty.ImageContent(imageName: image, size: CGSize(width: 25, height: 25), contentMode: .scaleAspectFit)
             }
 
-            var buttonsBarContent = EKProperty.ButtonBarContent(with: tempButton, separatorColor: .red, expandAnimatedly: false)
-            buttonsBarContent.content = buttons.map { button in
-                let buttonLabel = EKProperty.LabelContent(text: button.title!, style: .init(font: buttonFont, color: button.isDefault ? .white : .lightGray))
-                return EKProperty.ButtonContent(label: buttonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                    button.action?()
-                    SwiftEntryKit.dismiss()
-                }
-            }
-
-            let alertMessage = EKAlertMessage(simpleMessage: simpleMessage, buttonBarContent: buttonsBarContent)
-            let contentView = EKAlertMessageView(with: alertMessage)
-
-            var attributes = ekAttributes
-            attributes.screenInteraction = .absorbTouches
-            attributes.entryInteraction = .absorbTouches
-
-            SwiftEntryKit.display(entry: contentView, using: attributes)
-        }
-    }
-
-    public static func inputEmail(_ message: String, title: String? = nil, extra: String? = nil, suggestions: [String]? = [], placeHolder: String? = nil, image: String? = nil, negative: String? = "CANCEL", positive: String? = "SUBMIT", confirmed: ((_ text: String?) -> Void)? = nil) {
-        DispatchQueue.main.async {
-            let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: titleFont, color: .white, alignment: .center))
-            let description = EKProperty.LabelContent(text: message.uppercased(), style: .init(font: messageFont, color: .lightGray, alignment: .center))
-            let extra = EKProperty.LabelContent(text: extra?.uppercased() ?? "", style: .init(font: messageFont, color: .white, alignment: .center))
-
-            let emailPlaceholder = EKProperty.LabelContent(text: placeHolder ?? "EMAIL ADDRESS", style: .init(font: buttonFont, color: .lightGray))
-            let textField = EKProperty.TextFieldContent(
-                keyboardType: .emailAddress,
-                placeholder: emailPlaceholder,
-                textStyle: .init(font: buttonFont, color: .white),
-                leadingImage: image == nil ? nil : UIImage(named: image!),
-                bottomBorderColor: .clear)
-
-            let cancelButtonLabel = EKProperty.LabelContent(text: negative?.uppercased() ?? "CANCEL", style: .init(font: buttonFont, color: .lightGray))
-            let cancelButton = EKProperty.ButtonContent(label: cancelButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                SwiftEntryKit.dismiss()
-            }
-
-            let okButtonLabel = EKProperty.LabelContent(text: positive?.uppercased() ?? "SEND", style: .init(font: buttonFont, color: .white))
-            let okButton = EKProperty.ButtonContent(label: okButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                confirmed?(textField.textContent)
-            }
-            let buttonsBarContent = EKProperty.ButtonBarContent(with: cancelButton, okButton, separatorColor: .red, expandAnimatedly: false)
-
-            let contentView = FormMessageView(with: [title, description, extra], textFieldsContent: [textField], buttonBarContent: buttonsBarContent, suggestions: suggestions ?? [])
-
-            var attributes = ekAttributes
-            attributes.screenInteraction = .absorbTouches
-            attributes.entryInteraction = .absorbTouches
-            if !extra.text.isEmpty {
-                attributes.positionConstraints.maxSize = .sizeToWidth
-            }
-            attributes.positionConstraints.keyboardRelation = .bind(offset: .init(bottom: 15, screenEdgeResistance: 0))
-            attributes.lifecycleEvents.didAppear = {
-                contentView.becomeFirstResponder(with: 0)
-            }
-
-            SwiftEntryKit.display(entry: contentView, using: attributes, presentInsideKeyWindow: true)
-        }
-    }
-
-    public static func inputDecimal(_ message: String, title: String? = nil, placeHolder: String? = nil, defaultValue: String? = nil, negative: String? = "CANCEL", positive: String? = "SUBMIT", confirmed: ((_ text: String?) -> Void)? = nil) {
-        DispatchQueue.main.async {
-            let title = EKProperty.LabelContent(text: title?.uppercased() ?? "", style: .init(font: titleFont, color: .white, alignment: .center))
-            let description = EKProperty.LabelContent(text: message.uppercased(), style: .init(font: messageFont, color: .lightGray, alignment: .center))
-
-            let placeHolderContent = EKProperty.LabelContent(text: placeHolder ?? "", style: .init(font: buttonFont, color: .lightGray))
-            let textField = EKProperty.TextFieldContent(
-                keyboardType: .decimalPad,
-                placeholder: placeHolderContent,
-                textStyle: .init(font: buttonFont, color: .white),
-                bottomBorderColor: .clear)
-
-            let cancelButtonLabel = EKProperty.LabelContent(text: negative?.uppercased() ?? "CANCEL", style: .init(font: buttonFont, color: .lightGray))
-            let cancelButton = EKProperty.ButtonContent(label: cancelButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                SwiftEntryKit.dismiss()
-            }
-
-            let okButtonLabel = EKProperty.LabelContent(text: positive?.uppercased() ?? "SEND", style: .init(font: buttonFont, color: .white))
-            let okButton = EKProperty.ButtonContent(label: okButtonLabel, backgroundColor: .clear, highlightedBackgroundColor: UIColor.white.withAlphaComponent(0.1)) {
-                confirmed?(textField.textContent)
-            }
-            let buttonsBarContent = EKProperty.ButtonBarContent(with: cancelButton, okButton, separatorColor: .red, expandAnimatedly: false)
-
-            let contentView = FormMessageView(with: [title, description], textFieldsContent: [textField], buttonBarContent: buttonsBarContent)
+            let contentView = FormMessageView(image: imageContent, labels: labels, textFields: textFields, buttons: buttons)
 
             var attributes = ekAttributes
             attributes.screenInteraction = .absorbTouches
@@ -287,6 +277,14 @@ import SwiftEntryKit
             }
 
             SwiftEntryKit.display(entry: contentView, using: attributes, presentInsideKeyWindow: true)
+        }
+
+        if Thread.isMainThread {
+            block()
+        } else {
+            DispatchQueue.main.async {
+                block()
+            }
         }
     }
 }

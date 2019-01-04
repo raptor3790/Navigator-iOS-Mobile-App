@@ -45,7 +45,7 @@
 
     // Custom placeholder
     NSAttributedString* str
-        = [[NSAttributedString alloc] initWithString:@"Enter Roadbook Name" attributes:@{ NSForegroundColorAttributeName : [UIColor darkGrayColor] }];
+        = [[NSAttributedString alloc] initWithString:@"ENTER ROADBOOK NAME" attributes:@{ NSForegroundColorAttributeName : [UIColor darkGrayColor] }];
     self.txtRoadBookName.attributedPlaceholder = str;
     self.txtRoadBookName.font = [UIFont fontWithName:@"RussoOne" size:fontSize - 2];
 

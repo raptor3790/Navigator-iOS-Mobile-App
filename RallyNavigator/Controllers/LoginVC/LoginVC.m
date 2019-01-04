@@ -161,17 +161,17 @@ static const int HEIGHT_SOCIAL_LOGIN_CELL = 80;
 - (BOOL)validateUserInput
 {
     if (_strEmail.length == 0) {
-        [AlertManager alert:@"" title:@"Please Enter Email Address" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Email Address" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (![_strEmail isValidEmail]) {
-        [AlertManager alert:@"" title:@"Please Enter Valid Email Address" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Valid Email Address" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
     if (_strPassword.length == 0) {
-        [AlertManager alert:@"" title:@"Please Enter Password" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please Enter Password" imageName:@"ic_error" onConfirm:NULL];
         return NO;
     }
 
@@ -457,18 +457,36 @@ static const int HEIGHT_SOCIAL_LOGIN_CELL = 80;
 {
     [self.view endEditing:YES];
 
-    [AlertManager inputEmail:@"Please enter your email address to reset your password"
-                       title:@"Forgot password?"
-                       extra:NULL
-                 suggestions:NULL
-                 placeHolder:NULL
-                       image:@"ic_email_w"
-                    negative:@"CANCEL"
-                    positive:@"SEND"
-                   confirmed:^(NSString* _Nullable email) {
-                       [self.view endEditing:YES];
-                       [self resetPasswordForEmailID:email];
-                   }];
+    [AlertManager showWithImage:NULL
+                         labels:@[
+                             [AlertManager labelWithText:@"Forgot password?"
+                                                   color:UIColor.whiteColor
+                                                    size:1],
+                             [AlertManager labelWithText:@"Please enter your email address to reset your password"
+                                                   color:UIColor.lightGrayColor
+                                                    size:0]
+                         ]
+                     textFields:@[
+                         [AlertManager emailWithText:NULL
+                                         placeHolder:@"Email Address"
+                                            validate:^BOOL(NSString* _Nonnull email) {
+                                                return !email.isEmpty && email.isValidEmail;
+                                            }
+                                            delegate:NULL]
+                     ]
+                        buttons:@[
+                            [AlertManager buttonWithTitle:@"CANCEL"
+                                                   action:NULL
+                                                isDefault:NO
+                                             needValidate:NO],
+                            [AlertManager buttonWithTitle:@"SEND"
+                                                   action:^(NSArray<NSString*>* _Nonnull values) {
+                                                       [self.view endEditing:YES];
+                                                       [self resetPasswordForEmailID:values.firstObject];
+                                                   }
+                                                isDefault:YES
+                                             needValidate:YES],
+                        ]];
 }
 
 - (void)resetPasswordForEmailID:(NSString*)strEmail

@@ -110,7 +110,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     }
     @catch (NSException *exception)
     {
-//        [AlertManager alert:@"" title:exception.description imageName:@"ic_error"];
+//        [AlertManager alert:NULL title:exception.description imageName:@"ic_error"];
     }
 }
 

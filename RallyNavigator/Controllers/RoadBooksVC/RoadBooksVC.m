@@ -460,6 +460,14 @@
 
 - (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
+    if ([arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
+        CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
+        
+        if (![objRoadBook.editable boolValue]) {
+            return 0;
+        }
+    }
+    
     return 105.0f;
 }
 
@@ -509,11 +517,6 @@
             if ([arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
                 CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
 
-                if (![objRoadBook.editable boolValue]) {
-                    [AlertManager alert:@"" title:@"This route can not be edited" imageName:@"ic_error" onConfirm:NULL];
-                    return;
-                }
-
                 if ([objRoadBook.units isEqualToString:@"kilometers"]) {
                     locationVC.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
                 } else {
@@ -526,6 +529,11 @@
             } else {
                 CDSyncData* objRoadBook = arrRoadBooks[indexPath.row];
 
+                if (![objRoadBook.isEdit boolValue]) {
+                    [AlertManager alert:NULL title:@"This route can not be edited" imageName:@"ic_error" onConfirm:NULL];
+                    return;
+                }
+                
                 if ([objRoadBook.distanceUnit isEqualToString:@"Kilometers"]) {
                     locationVC.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
                 } else {

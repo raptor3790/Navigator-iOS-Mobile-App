@@ -311,7 +311,7 @@
 
     if (isRecording)
     {
-        [AlertManager alert:@"" title:@"Please stop recorder" imageName:@"ic_error" onConfirm:NULL];
+        [AlertManager alert:NULL title:@"Please stop recorder" imageName:@"ic_error" onConfirm:NULL];
         return;
     }
 
