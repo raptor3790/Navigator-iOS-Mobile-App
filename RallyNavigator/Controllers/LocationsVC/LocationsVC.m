@@ -15,8 +15,6 @@
 #import "AVCamPhotoCaptureDelegate.h"
 #import "TrojanAudioRecorder.h"
 #import "UIViewController+MJPopupViewController.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "Locations.h"
 #import "RouteDetails.h"
 #import "Waypoints.h"
@@ -4138,9 +4136,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                  positive:@"YES"
                onNegative:NULL
                onPositive:^{
-                   FBSDKLoginManager* login = [[FBSDKLoginManager alloc] init];
-                   [login logOut];
-
                    [[GIDSignIn sharedInstance] signOut];
 
                    [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];

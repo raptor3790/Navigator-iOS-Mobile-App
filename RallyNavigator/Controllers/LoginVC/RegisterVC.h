@@ -8,19 +8,13 @@
 
 #import "BaseVC.h"
 
-@interface RegisterVC : BaseVC <UITableViewDataSource, UITableViewDelegate>
+@interface RegisterVC : UITableViewController
 
 @property (assign, nonatomic) LoginType loginType;
 
-@property (strong, nonatomic) NSString *strEmail;
-@property (strong, nonatomic) NSString *strUsername;
-@property (strong, nonatomic) NSString *strPassword;
-@property (strong, nonatomic) NSString *strConfirmPassword;
-
-@property (assign, nonatomic) NSInteger currentTextFieldTag;
-
-@property (weak, nonatomic) IBOutlet UITableView *tblRegister;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *heightLogo;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomTblRegister;
+@property (weak, nonatomic) IBOutlet UITextField *emailText;
+@property (weak, nonatomic) IBOutlet UITextField *userNameText;
+@property (weak, nonatomic) IBOutlet UITextField *passwordText;
+@property (weak, nonatomic) IBOutlet UITextField *confirmPasswordText;
 
 @end

@@ -1,20 +1,10 @@
 PODS:
-  - AWSCore (2.8.1)
-  - AWSS3 (2.8.1):
-    - AWSCore (= 2.8.1)
-  - Bolts (1.9.0):
-    - Bolts/AppLinks (= 1.9.0)
-    - Bolts/Tasks (= 1.9.0)
-  - Bolts/AppLinks (1.9.0):
-    - Bolts/Tasks
-  - Bolts/Tasks (1.9.0)
+  - AWSCore (2.8.2)
+  - AWSS3 (2.8.2):
+    - AWSCore (= 2.8.2)
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
   - Fabric (1.9.0)
-  - FBSDKCoreKit (4.39.0):
-    - Bolts (~> 1.9)
-  - FBSDKLoginKit (4.39.0):
-    - FBSDKCoreKit
   - GoogleSignIn (4.4.0):
     - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
@@ -42,7 +32,6 @@ DEPENDENCIES:
   - AWSS3
   - Crashlytics
   - Fabric
-  - FBSDKLoginKit
   - GoogleSignIn
   - Mapbox-iOS-SDK
   - MJRefresh
@@ -54,11 +43,8 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AWSCore
     - AWSS3
-    - Bolts
     - Crashlytics
     - Fabric
-    - FBSDKCoreKit
-    - FBSDKLoginKit
     - GoogleSignIn
     - GoogleToolboxForMac
     - GTMSessionFetcher
@@ -70,13 +56,10 @@ SPEC REPOS:
     - SwiftEntryKit
 
 SPEC CHECKSUMS:
-  AWSCore: f17db38a5f8bceb217a19d58d8755bbb6f5ddb3c
-  AWSS3: 7b92a900fa54ce386e562d81c9d51724e70178a0
-  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  AWSCore: b6448752e992345082d7bad29d86e4839b72b4ba
+  AWSS3: e364e6c60d972da4110f2c379def6b716e6f1262
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
-  FBSDKCoreKit: 1e3981faefab8c88edfaa9eecd94aab02d99a9bc
-  FBSDKLoginKit: 30ba5039a2c53d65a75103889bc2deebdacd5a1f
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
@@ -87,6 +70,6 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftEntryKit: cb0e8d6b61552e374813a304a29b7ba51ea53128
 
-PODFILE CHECKSUM: 8e7deb4117dbb75bbe9b0e98ae6ce4d53673c479
+PODFILE CHECKSUM: 9368290a5bd7db3b2876929fec7e397d77ac1ae2
 
 COCOAPODS: 1.6.0.beta.2

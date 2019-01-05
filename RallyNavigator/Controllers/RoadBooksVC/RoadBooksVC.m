@@ -19,8 +19,6 @@
 #import "Route.h"
 #import "Folders.h"
 #import "RouteDetails.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Crashlytics/Crashlytics.h>
 
 @interface RoadBooksVC () <SettingsVCDelegate, AddFolderVCDelegate, UIScrollViewDelegate> {
@@ -74,6 +72,7 @@
 {
     [super viewWillAppear:animated];
 
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"objectRefreshed" object:nil];
@@ -364,9 +363,6 @@
                  positive:@"YES"
                onNegative:NULL
                onPositive:^{
-                   FBSDKLoginManager* login = [[FBSDKLoginManager alloc] init];
-                   [login logOut];
-
                    [[GIDSignIn sharedInstance] signOut];
                    [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
                    [self.navigationController popToRootViewControllerAnimated:YES];
@@ -528,11 +524,6 @@
                 locationVC.strRouteName = objRoadBook.name;
             } else {
                 CDSyncData* objRoadBook = arrRoadBooks[indexPath.row];
-
-                if (![objRoadBook.isEdit boolValue]) {
-                    [AlertManager alert:NULL title:@"This route can not be edited" imageName:@"ic_error" onConfirm:NULL];
-                    return;
-                }
                 
                 if ([objRoadBook.distanceUnit isEqualToString:@"Kilometers"]) {
                     locationVC.currentDistanceUnitsType = DistanceUnitsTypeKilometers;

@@ -11,8 +11,6 @@
 #import "AddRoadBookVC.h"
 #import "SettingsVC.h"
 #import "LocationsVC.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface AddRoadBookVC () <SettingsVCDelegate>
 
@@ -64,8 +62,8 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.navigationController.navigationBar.translucent = NO;
     self.navigationController.navigationBar.tintColor = [UIColor lightGrayColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:
-                                                 @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 
     self.navigationItem.hidesBackButton = YES;
 
@@ -103,9 +101,6 @@
                  positive:@"YES"
                onNegative:NULL
                onPositive:^{
-                   FBSDKLoginManager* login = [[FBSDKLoginManager alloc] init];
-                   [login logOut];
-
                    [[GIDSignIn sharedInstance] signOut];
                    [DefaultsValues setBooleanValueToUserDefaults:NO ForKey:kLogIn];
                    [self.navigationController popToRootViewControllerAnimated:YES];
@@ -122,7 +117,7 @@
     vc.currentOverlay = OverlayStatusNotApplicable;
     vc.isRecording = NO;
     vc.delegate = self;
-    
+
     NavController* nav = [[NavController alloc] initWithRootViewController:vc];
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -150,21 +145,20 @@
     LocationsVC* vc = loadViewController(StoryBoard_Main, kIDLocationsVC);
     vc.isFirstTime = YES;
     vc.strRouteName = strRoadBookName;
-    
-    User *objUser = GET_USER_OBJ;
+
+    User* objUser = GET_USER_OBJ;
     NSDictionary* jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
     Config* objConfig = [[Config alloc] initWithDictionary:jsonDict];
-    
+
     if ([objConfig.unit isEqualToString:@"Kilometers"]) {
         vc.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
     } else {
         vc.currentDistanceUnitsType = DistanceUnitsTypeMiles;
     }
-    
+
     vc.strFolderId = _strFolderId;
-    
+
     [self.navigationController pushViewController:vc animated:NO];
 }
-
 
 @end

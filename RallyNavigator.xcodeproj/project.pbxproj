@@ -69,7 +69,6 @@
 		E4645E3920EB462000AFF9A2 /* LocationArrayHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = E4645E3820EB462000AFF9A2 /* LocationArrayHandler.m */; };
 		E466A7681FFB7F1C00C6443D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E466A7671FFB7F1C00C6443D /* GoogleService-Info.plist */; };
 		E466A76B1FFB9CB000C6443D /* RegisterVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E466A76A1FFB9CB000C6443D /* RegisterVC.m */; };
-		E466A76F1FFBAC0C00C6443D /* RegisterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E466A76E1FFBAC0C00C6443D /* RegisterCell.m */; };
 		E469898C2044134100513992 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E469898B2044134100513992 /* StoreKit.framework */; };
 		E471B2B21FECC94E00E0A228 /* BaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E471B2B11FECC94E00E0A228 /* BaseVC.m */; };
 		E471B2E81FECC9E300E0A228 /* Function.m in Sources */ = {isa = PBXBuildFile; fileRef = E471B2B71FECC9E300E0A228 /* Function.m */; };
@@ -216,8 +215,6 @@
 		E466A7671FFB7F1C00C6443D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E466A7691FFB9CB000C6443D /* RegisterVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterVC.h; sourceTree = "<group>"; };
 		E466A76A1FFB9CB000C6443D /* RegisterVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterVC.m; sourceTree = "<group>"; };
-		E466A76D1FFBAC0C00C6443D /* RegisterCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterCell.h; sourceTree = "<group>"; };
-		E466A76E1FFBAC0C00C6443D /* RegisterCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterCell.m; sourceTree = "<group>"; };
 		E469898B2044134100513992 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		E46D6D141FF0B8B8005FA067 /* Test.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Test.gpx; sourceTree = "<group>"; };
 		E471B2AE1FECC8F600E0A228 /* RallyNavigator.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RallyNavigator.pch; sourceTree = "<group>"; };
@@ -641,15 +638,6 @@
 			path = LocationArrayHandler;
 			sourceTree = "<group>";
 		};
-		E466A76C1FFBABF400C6443D /* RegisterCell */ = {
-			isa = PBXGroup;
-			children = (
-				E466A76D1FFBAC0C00C6443D /* RegisterCell.h */,
-				E466A76E1FFBAC0C00C6443D /* RegisterCell.m */,
-			);
-			path = RegisterCell;
-			sourceTree = "<group>";
-		};
 		E471B2AF1FECC93F00E0A228 /* BaseVC */ = {
 			isa = PBXGroup;
 			children = (
@@ -778,7 +766,6 @@
 			isa = PBXGroup;
 			children = (
 				E4FC931B200620BA00D2C1F0 /* SettingsCell */,
-				E466A76C1FFBABF400C6443D /* RegisterCell */,
 				E43D30611FF60ECA00A64480 /* LocationCell */,
 				E43D30641FF60ECB00A64480 /* RoadBooksCell */,
 				E4532D291FECE01B00ABD304 /* GPSSettingsCell */,
@@ -994,14 +981,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RallyNavigator/Pods-RallyNavigator-resources.sh",
-				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
 				"${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SVProgressHUD.bundle",
@@ -1118,7 +1103,6 @@
 				66751D7D21DC76CC002C07EB /* FormMessageView.swift in Sources */,
 				E4AE51641FF658BC00F13F5F /* RoadBooks.m in Sources */,
 				E4FC932820062E5500D2C1F0 /* Rotation.m in Sources */,
-				E466A76F1FFBAC0C00C6443D /* RegisterCell.m in Sources */,
 				E436264A2028281B00353968 /* CDRoute.m in Sources */,
 				E450770A1FFA1A890071B4D0 /* Settings.m in Sources */,
 				E471B2FA1FECC9E300E0A228 /* UITableView+Placeholder.m in Sources */,
@@ -1240,6 +1224,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

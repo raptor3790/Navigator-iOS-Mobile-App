@@ -11,7 +11,6 @@ target 'RallyNavigator' do
   # Pods for RallyNavigator
   pod 'SVProgressHUD'
   pod 'MJRefresh'
-  pod 'FBSDKLoginKit'
   pod 'GoogleSignIn'
   pod 'AWSS3'
   pod 'SDWebImage'

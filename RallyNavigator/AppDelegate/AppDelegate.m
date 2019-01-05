@@ -14,7 +14,6 @@
 #import "Waypoints.h"
 #import "Backgroundimage.h"
 #import "VoiceNote.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "RoadBooksVC.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
@@ -52,9 +51,6 @@
 
     // Google Login Configuration
     [GIDSignIn sharedInstance].clientID = @"1047391793931-ke1vikkcqhhkatgf8o8rd09o14h68uip.apps.googleusercontent.com";
-
-    // Facebook Login Configuration
-    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 
     return YES;
 }
@@ -868,40 +864,11 @@
 
 - (void)applicationWillTerminate:(UIApplication*)application {}
 
-- (BOOL)application:(UIApplication*)application
-            openURL:(NSURL*)url
-            options:(NSDictionary<UIApplicationOpenURLOptionsKey, id>*)options
+- (BOOL)application:(UIApplication*)application openURL:(NSURL*)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id>*)options
 {
-
-    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                                  openURL:url
-                                                        sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
-                                                               annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
-
-    BOOL handled2 = [[GIDSignIn sharedInstance] handleURL:url
-                                        sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
-                                               annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
-
-    // Add any custom logic here.
-    return handled || handled2;
-}
-
-- (BOOL)application:(UIApplication*)application
-              openURL:(NSURL*)url
-    sourceApplication:(NSString*)sourceApplication
-           annotation:(id)annotation
-{
-
-    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                                  openURL:url
-                                                        sourceApplication:sourceApplication
-                                                               annotation:annotation];
-
-    BOOL handled2 = [[GIDSignIn sharedInstance] handleURL:url
-                                        sourceApplication:sourceApplication
-                                               annotation:annotation];
-    // Add any custom logic here.
-    return handled || handled2;
+    return [[GIDSignIn sharedInstance] handleURL:url
+                               sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                      annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
 }
 
 #pragma mark - Loader View Set Up

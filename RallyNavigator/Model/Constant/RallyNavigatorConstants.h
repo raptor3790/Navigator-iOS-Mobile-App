@@ -16,8 +16,7 @@
 typedef enum
 {
     LoginTypeNormal = 0,
-    LoginTypeGoogle,
-    LoginTypeFacebook
+    LoginTypeGoogle
 }LoginType;
 
 typedef enum

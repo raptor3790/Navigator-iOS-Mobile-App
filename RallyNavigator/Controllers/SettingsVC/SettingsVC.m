@@ -14,8 +14,6 @@
 #import "HowToUseVC.h"
 #import "RoadBooksVC.h"
 #import "LocationsVC.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Crashlytics/Crashlytics.h>
 
 typedef enum {

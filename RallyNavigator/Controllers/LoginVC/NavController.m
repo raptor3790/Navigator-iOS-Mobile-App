@@ -24,49 +24,4 @@
     [super didReceiveMemoryWarning];
 }
 
-//#pragma mark - Handle Orientation
-//
-//- (BOOL)shouldAutorotate
-//{
-//    if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kLogIn])
-//    {
-//        User *objUser = GET_USER_OBJ;
-//        
-//        if(objUser.config != nil)
-//        {
-//            NSDictionary *jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
-//            Config *objConfig = [[Config alloc] initWithDictionary:jsonDict];
-//            
-//            if (![objConfig.rotation.value boolValue])
-//            {
-//                [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
-//                return [[UIDevice currentDevice] orientation] == UIInterfaceOrientationPortrait;
-//            }
-//        }
-//    }
-//    
-//    return YES;
-//}
-//
-//- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-//{
-//    if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kLogIn])
-//    {
-//        User *objUser = GET_USER_OBJ;
-//        
-//        if(objUser.config != nil)
-//        {
-//            NSDictionary *jsonDict = [RallyNavigatorConstants convertJsonStringToObject:objUser.config];
-//            Config *objConfig = [[Config alloc] initWithDictionary:jsonDict];
-//            
-//            if (![objConfig.rotation.value boolValue])
-//            {
-//                return UIInterfaceOrientationMaskPortrait;
-//            }
-//        }
-//    }
-//    
-//    return UIInterfaceOrientationMaskAll;
-//}
-
 @end
