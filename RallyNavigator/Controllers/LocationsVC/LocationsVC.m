@@ -327,8 +327,8 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     }
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeHidden:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardHidden:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -946,19 +946,18 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 #pragma mark - KeyBoard Handling Methods
 
-- (void)keyboardWillShow:(NSNotification*)notification
+- (void)onKeyboardShow:(NSNotification*)notification
 {
     if (isRecordingStarted) {
         [self btnRecordClicked:nil];
     }
 
-    NSDictionary* userInfo = [notification userInfo];
+    NSDictionary* userInfo = notification.userInfo;
     CGSize kbSize = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 
-    UIView* bottomView = _btnAdd.superview.superview;
     CGFloat offset = 75;
-    if (bottomView) {
-        offset = bottomView.frame.size.height;
+    if (iPhoneDevice && SCREEN_HEIGHT == 812) {
+        offset += 34;
     }
     _bottomBtnAddWayPoint.constant = kbSize.height - offset;
     [self.view layoutIfNeeded];
@@ -966,7 +965,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     [_btnViewPreference setHidden:YES];
 }
 
-- (void)keyboardWillBeHidden:(NSNotification*)notification
+- (void)onKeyboardHidden:(NSNotification*)notification
 {
     _bottomBtnAddWayPoint.constant = 0;
     [self.view layoutIfNeeded];
