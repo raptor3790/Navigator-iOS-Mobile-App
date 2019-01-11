@@ -21,9 +21,8 @@
 #import "RouteDetails.h"
 #import <Crashlytics/Crashlytics.h>
 
-@interface RoadBooksVC () <SettingsVCDelegate, AddFolderVCDelegate, UIScrollViewDelegate> {
+@interface RoadBooksVC () <SettingsVCDelegate, AddFolderVCDelegate> {
     BOOL isLoaded;
-    BOOL isPullToRefresh;
 
     NSString* strRoadBookId;
 
@@ -75,13 +74,9 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"objectRefreshed" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SYNC_STARTED" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SYNC_COMPLETE" object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerAction:) name:@"objectRefreshed" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncStarted:) name:@"SYNC_STARTED" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncCompleted:) name:@"SYNC_COMPLETE" object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(triggerAction:) name:@"objectRefreshed" object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(syncStarted:) name:@"SYNC_STARTED" object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(syncCompleted:) name:@"SYNC_COMPLETE" object:nil];
 
     if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kIsNightView]) {
         self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
@@ -108,6 +103,15 @@
     }
 
     [self getRoadBooks];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+
+    [NSNotificationCenter.defaultCenter removeObserver:self name:@"objectRefreshed" object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:@"SYNC_STARTED" object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:@"SYNC_COMPLETE" object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -159,10 +163,11 @@
                            showLoader:NO];
 }
 
-- (IBAction)handleMyRoadBooksResponse:(id)sender
+- (void)handleMyRoadBooksResponse:(id)sender
 {
     if ([self isHeaderRefreshingForTableView:_tblRoadBooks]) {
         [_tblRoadBooks.mj_header endRefreshing];
+        [AppContext checkForSyncData];
     }
 
     [self fetchRoadBooks];
@@ -177,13 +182,12 @@
 
 #pragma mark - Sync Bar Handler
 
-- (IBAction)syncStarted:(id)sender
+- (void)syncStarted:(id)sender
 {
     dispatch_async(dispatch_get_main_queue(), ^{
 
         CGFloat synced = (CGFloat)AppContext.syncedWayPoints;
         CGFloat total = (CGFloat)AppContext.totalWayPoints;
-
         CGFloat percentage = synced / total;
 
         self.lblSync.text = [NSString stringWithFormat:@"Saving Roadbooks to Server - %d%%", ((int)(percentage * 100))];
@@ -196,11 +200,10 @@
     });
 }
 
-- (IBAction)syncCompleted:(id)sender
+- (void)syncCompleted:(id)sender
 {
     _lblSync.text = @"Saved to www.RallyNavigator.com";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-
         self.heightLblSync.constant = 0.0f;
         [UIView animateWithDuration:0.5
                          animations:^{
@@ -229,11 +232,7 @@
     NSDictionary* dictResponse = [sender responseDict];
 
     if ([[dictResponse valueForKey:SUCCESS_STATUS] boolValue]) {
-        //        [CoreDataAdaptor deleteDataInCoreDB:NSStringFromClass([CDSyncData class])
-        //                              withCondition:[NSString stringWithFormat:@"routeIdentifier = %@", strRoadBookId]];
-        //        [CoreDataHelper save];
         [self getMyRoadBooksWithLoader:YES];
-        //        [_tblRoadBooks reloadData];
     } else {
         [self showErrorInObject:self forDict:[sender responseDict]];
     }
@@ -369,37 +368,6 @@
                }];
 }
 
-#pragma mark - UIScrollView Delegate
-
-- (void)scrollViewDidScroll:(UIScrollView*)scrollView
-{
-    if (scrollView.contentOffset.y < 0) {
-        if (scrollView.contentOffset.y >= -30 && _heightLblSync.constant == 0.0f) {
-            isPullToRefresh = YES;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                self.heightLblSync.constant = 30.0f;
-                [UIView animateWithDuration:0.5
-                                 animations:^{
-                                     [self.view layoutIfNeeded];
-                                 }];
-            });
-        }
-    }
-
-    if (scrollView.contentOffset.y >= 0 && isPullToRefresh) {
-        if (scrollView.contentOffset.y <= 30) {
-            isPullToRefresh = !isPullToRefresh;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                self.heightLblSync.constant = 0.0f;
-                [UIView animateWithDuration:0.5
-                                 animations:^{
-                                     [self.view layoutIfNeeded];
-                                 }];
-            });
-        }
-    }
-}
-
 #pragma mark - Button Click Events
 
 - (IBAction)btnSettingsClicked:(id)sender
@@ -458,12 +426,12 @@
 {
     if ([arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
         CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
-        
+
         if (![objRoadBook.editable boolValue]) {
             return 0;
         }
     }
-    
+
     return 105.0f;
 }
 
@@ -524,7 +492,7 @@
                 locationVC.strRouteName = objRoadBook.name;
             } else {
                 CDSyncData* objRoadBook = arrRoadBooks[indexPath.row];
-                
+
                 if ([objRoadBook.distanceUnit isEqualToString:@"Kilometers"]) {
                     locationVC.currentDistanceUnitsType = DistanceUnitsTypeKilometers;
                 } else {

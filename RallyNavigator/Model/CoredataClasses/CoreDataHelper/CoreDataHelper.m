@@ -1,25 +1,26 @@
+
+
 //
 //  MMPCoreDataHelper.h
 //
 
-
 #import "CoreDataHelper.h"
 
-NSString * const CoreDataErrorDomain = @"org.narola.coredata";
-NSString * const DataAccessSaveErrorNotification = @"MMPDataAccessSaveErrorNotification";
-NSString * const DataAccessDidSaveNotification = @"MMPDataAccessDidSaveNotification";
+NSString* const CoreDataErrorDomain = @"org.narola.coredata";
+NSString* const DataAccessSaveErrorNotification = @"MMPDataAccessSaveErrorNotification";
+NSString* const DataAccessDidSaveNotification = @"MMPDataAccessDidSaveNotification";
 
 @interface CoreDataHelper () {
 }
 
-@property (nonatomic, strong) NSManagedObjectContext *managedObjectContextForBackgroundWriter;
-@property (nonatomic, strong) NSManagedObjectContext *managedObjectContextForMainThread;
+@property (nonatomic, strong) NSManagedObjectContext* managedObjectContextForBackgroundWriter;
+@property (nonatomic, strong) NSManagedObjectContext* managedObjectContextForMainThread;
 
 @end
 
 @implementation CoreDataHelper
 
-static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext";
+static NSString* const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext";
 
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
@@ -38,15 +39,15 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
 
 - (instancetype)initSingletonInstance
 {
-     return [super init];
+    return [super init];
 }
 
-- (NSString *)appName
+- (NSString*)appName
 {
-    return @"RallyNavigator";//[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+    return @"RallyNavigator"; //[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
 }
 
-- (NSString *)databaseName
+- (NSString*)databaseName
 {
     @synchronized(self)
     {
@@ -56,27 +57,26 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
     return _databaseName;
 }
 
-- (NSString *)modelName {
-    @synchronized(self) {
+- (NSString*)modelName
+{
+    @synchronized(self)
+    {
         if (!_modelName)
             _modelName = [[self appName] copy];
     }
     return _modelName;
 }
 
-- (NSManagedObjectModel *)managedObjectModel
+- (NSManagedObjectModel*)managedObjectModel
 {
     @synchronized(self)
     {
-        if (!_managedObjectModel)
-        {
-            NSURL *modelURL = [[NSBundle mainBundle] URLForResource:[self modelName] withExtension:@"momd"];
-            if (!modelURL)
-            {
+        if (!_managedObjectModel) {
+            NSURL* modelURL = [[NSBundle mainBundle] URLForResource:[self modelName] withExtension:@"momd"];
+            if (!modelURL) {
                 modelURL = [[NSBundle mainBundle] URLForResource:[self modelName] withExtension:@"mom"];
             }
-            if (!modelURL)
-            {
+            if (!modelURL) {
                 NSLog(@"[ERROR] Unable to find model with name: %@", [self modelName]);
             }
             _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
@@ -85,82 +85,95 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
     return _managedObjectModel;
 }
 
-- (BOOL)isOSX {
-    if (NSClassFromString(@"UIDevice")) return NO;
+- (BOOL)isOSX
+{
+    if (NSClassFromString(@"UIDevice"))
+        return NO;
     return YES;
 }
 
-- (void)createApplicationSupportDirIfNeeded:(NSURL *)url {
-    if ([[NSFileManager defaultManager] fileExistsAtPath:url.absoluteString]) return;
-    
+- (void)createApplicationSupportDirIfNeeded:(NSURL*)url
+{
+    if ([[NSFileManager defaultManager] fileExistsAtPath:url.absoluteString])
+        return;
+
     [[NSFileManager defaultManager] createDirectoryAtURL:url
-                             withIntermediateDirectories:YES attributes:nil error:nil];
+                             withIntermediateDirectories:YES
+                                              attributes:nil
+                                                   error:nil];
 }
 
-- (NSURL *)applicationDocumentsDirectory {
+- (NSURL*)applicationDocumentsDirectory
+{
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
                                                    inDomains:NSUserDomainMask] lastObject];
 }
 
-- (NSURL *)applicationSupportDirectory {
+- (NSURL*)applicationSupportDirectory
+{
     return [[[[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory
                                                     inDomains:NSUserDomainMask] lastObject]
-            URLByAppendingPathComponent:[self appName]];
+        URLByAppendingPathComponent:[self appName]];
 }
 
-- (NSString *)applicationDocumentsDirectoryAsString
+- (NSString*)applicationDocumentsDirectoryAsString
 {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     return basePath;
 }
 
-- (NSString *)applicationSupportDirectoryAsString
+- (NSString*)applicationSupportDirectoryAsString
 {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString* basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     return basePath;
 }
 
-- (NSURL *)sqliteStoreURL {
-    NSURL *directory = [self isOSX] ? self.applicationSupportDirectory : self.applicationDocumentsDirectory;
-    NSURL *databaseDir = [directory URLByAppendingPathComponent:[self databaseName]];
-    
+- (NSURL*)sqliteStoreURL
+{
+    NSURL* directory = [self isOSX] ? self.applicationSupportDirectory : self.applicationDocumentsDirectory;
+    NSURL* databaseDir = [directory URLByAppendingPathComponent:[self databaseName]];
+
     [self createApplicationSupportDirIfNeeded:directory];
     return databaseDir;
 }
 
-- (NSString *)sqliteStorePath {
+- (NSString*)sqliteStorePath
+{
     return [[self applicationDocumentsDirectoryAsString] stringByAppendingPathComponent:[self databaseName]];
 }
 
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinatorWithStoreType:(NSString *const)storeType
-                                                                 storeURL:(NSURL *)storeURL {
-    
-    NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    
-    NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES,
-                               NSInferMappingModelAutomaticallyOption: @YES };
-    
-    NSError *error = nil;
+- (NSPersistentStoreCoordinator*)persistentStoreCoordinatorWithStoreType:(NSString* const)storeType
+                                                                storeURL:(NSURL*)storeURL
+{
+
+    NSPersistentStoreCoordinator* coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+
+    NSDictionary* options = @{ NSMigratePersistentStoresAutomaticallyOption : @YES,
+        NSInferMappingModelAutomaticallyOption : @YES };
+
+    NSError* error = nil;
     if (![coordinator addPersistentStoreWithType:storeType configuration:nil URL:storeURL options:options error:&error])
         NSLog(@"ERROR WHILE CREATING PERSISTENT STORE COORDINATOR! %@, %@", error, [error userInfo]);
-    
+
     return coordinator;
 }
 
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
+- (NSPersistentStoreCoordinator*)persistentStoreCoordinator
 {
-    @synchronized(self) {
+    @synchronized(self)
+    {
         if (!_persistentStoreCoordinator)
             _persistentStoreCoordinator = [self persistentStoreCoordinatorWithStoreType:NSSQLiteStoreType storeURL:[self sqliteStoreURL]];
     }
     return _persistentStoreCoordinator;
 }
 
-- (NSManagedObjectContext *)managedObjectContextForBackgroundWriter
+- (NSManagedObjectContext*)managedObjectContextForBackgroundWriter
 {
-    @synchronized(self) {
+    @synchronized(self)
+    {
         if (!_managedObjectContextForBackgroundWriter) {
             _managedObjectContextForBackgroundWriter = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
             [_managedObjectContextForBackgroundWriter setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
@@ -169,9 +182,10 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
     return _managedObjectContextForBackgroundWriter;
 }
 
-- (NSManagedObjectContext *)managedObjectContextForMainThread
+- (NSManagedObjectContext*)managedObjectContextForMainThread
 {
-    @synchronized(self) {
+    @synchronized(self)
+    {
         if (!_managedObjectContextForMainThread) {
             _managedObjectContextForMainThread = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
             _managedObjectContextForMainThread.parentContext = [self managedObjectContextForBackgroundWriter];
@@ -180,48 +194,44 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
     return _managedObjectContextForMainThread;
 }
 
-- (NSManagedObjectContext *)managedObjectContext
+- (NSManagedObjectContext*)managedObjectContext
 {
     if ([NSThread isMainThread]) {
         return [self managedObjectContextForMainThread];
     } else {
-        
-        NSThread *currentThread = [NSThread currentThread];
-        NSMutableDictionary *threadDictionary = [currentThread threadDictionary];
-        
-        NSManagedObjectContext *managedObjectContextForCurrentThread = [threadDictionary objectForKey:MP_PERTHREADKEY_MOC];
-        
+
+        NSThread* currentThread = [NSThread currentThread];
+        NSMutableDictionary* threadDictionary = [currentThread threadDictionary];
+
+        NSManagedObjectContext* managedObjectContextForCurrentThread = [threadDictionary objectForKey:MP_PERTHREADKEY_MOC];
+
         if (managedObjectContextForCurrentThread == nil) {
             managedObjectContextForCurrentThread = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
             managedObjectContextForCurrentThread.parentContext = [self managedObjectContextForMainThread];
             [threadDictionary setObject:managedObjectContextForCurrentThread forKey:MP_PERTHREADKEY_MOC];
         }
-        
-        return managedObjectContextForCurrentThread;        
+
+        return managedObjectContextForCurrentThread;
     }
 }
 
 - (void)saveContextForMainThread
 {
-    NSError *error;
+    NSError* error;
     if ([[self managedObjectContextForMainThread] save:&error]) {
         // save to background writer
         [[self managedObjectContextForBackgroundWriter] performBlock:^{
-            NSError *error;
+            NSError* error;
             if (![[self managedObjectContextForBackgroundWriter] save:&error]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:DataAccessSaveErrorNotification
-                                                                    object:nil
-                                                                  userInfo:@{@"error" : error}];
+                [NSNotificationCenter.defaultCenter postNotificationName:DataAccessSaveErrorNotification object:nil userInfo:@{ @"error" : error }];
             } else {
-                [[NSNotificationCenter defaultCenter] postNotificationName:DataAccessDidSaveNotification
-                                                                    object:nil
-                                                                  userInfo:nil];
+                [NSNotificationCenter.defaultCenter postNotificationName:DataAccessDidSaveNotification object:nil userInfo:nil];
             }
         }];
     } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:DataAccessSaveErrorNotification
-                                                            object:nil
-                                                          userInfo:@{@"error" : error}];
+        [NSNotificationCenter.defaultCenter postNotificationName:DataAccessSaveErrorNotification
+                                                          object:nil
+                                                        userInfo:@{ @"error" : error }];
     }
 }
 
@@ -230,16 +240,14 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
     if ([NSThread isMainThread]) {
         [self saveContextForMainThread];
     } else {
-        NSError *error;
+        NSError* error;
         if ([[self managedObjectContext] save:&error]) {
             // save to main thread
             [[self managedObjectContextForMainThread] performBlock:^{
                 [self saveContextForMainThread];
             }];
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:DataAccessSaveErrorNotification
-                                                                object:nil
-                                                              userInfo:@{@"error" : error}];
+            [NSNotificationCenter.defaultCenter postNotificationName:DataAccessSaveErrorNotification object:nil userInfo:@{ @"error" : error }];
         }
     }
 }
@@ -253,13 +261,13 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
 
 - (id)_createObjectOfEntity:(Class)entityClass
 {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass)
+    NSManagedObjectContext* managedObjectContext = [self managedObjectContext];
+    NSEntityDescription* entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass)
                                               inManagedObjectContext:managedObjectContext];
-    
-    NSManagedObject *managedObject = [[NSManagedObject alloc] initWithEntity:entity
+
+    NSManagedObject* managedObject = [[NSManagedObject alloc] initWithEntity:entity
                                               insertIntoManagedObjectContext:managedObjectContext];
-	return managedObject;
+    return managedObject;
 }
 
 + (id)createObjectOfEntity:(Class)entityClass
@@ -267,213 +275,208 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
     return [[CoreDataHelper instance] _createObjectOfEntity:entityClass];
 }
 
-- (NSEntityDescription *)_entityDescriptionOf:(Class)entityClass
+- (NSEntityDescription*)_entityDescriptionOf:(Class)entityClass
 {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
+    NSManagedObjectContext* managedObjectContext = [self managedObjectContext];
     return [NSEntityDescription entityForName:NSStringFromClass(entityClass)
-                                              inManagedObjectContext:managedObjectContext];
+                       inManagedObjectContext:managedObjectContext];
 }
 
-+ (NSEntityDescription *)entityDescriptionOf:(Class)entityClass
++ (NSEntityDescription*)entityDescriptionOf:(Class)entityClass
 {
     return [[CoreDataHelper instance] _entityDescriptionOf:entityClass];
 }
 
-- (void)_deleteObject:(NSManagedObject *)object
+- (void)_deleteObject:(NSManagedObject*)object
 {
     [[self managedObjectContext] deleteObject:object];
 }
 
-+ (void)deleteObject:(NSManagedObject *)object
++ (void)deleteObject:(NSManagedObject*)object
 {
     [[CoreDataHelper instance] _deleteObject:object];
 }
 
-- (void)_deleteObjectsOfEntity:(Class)entityClass withPredicate:(NSPredicate *)predicate
+- (void)_deleteObjectsOfEntity:(Class)entityClass withPredicate:(NSPredicate*)predicate
 {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass) inManagedObjectContext:managedObjectContext];
-    if (predicate)
-    {
+    NSManagedObjectContext* managedObjectContext = [self managedObjectContext];
+
+    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription* entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass) inManagedObjectContext:managedObjectContext];
+    if (predicate) {
         [fetchRequest setPredicate:predicate];
     }
     [fetchRequest setEntity:entity];
-    
-    NSError *error;
-    NSArray *items = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    
-    for (NSManagedObject *managedObject in items)
-    {
-    	[managedObjectContext deleteObject:managedObject];
+
+    NSError* error;
+    NSArray* items = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+
+    for (NSManagedObject* managedObject in items) {
+        [managedObjectContext deleteObject:managedObject];
     }
-    
-    if (![managedObjectContext save:&error])
-    {
-    	NSLog(@"[ERROR] Error deleting %@ - error:%@", NSStringFromClass(entityClass), error);
+
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"[ERROR] Error deleting %@ - error:%@", NSStringFromClass(entityClass), error);
     }
 }
 
-+ (void)deleteObjectsOfEntity:(Class)entityClass withPredicate:(NSPredicate *)predicate
++ (void)deleteObjectsOfEntity:(Class)entityClass withPredicate:(NSPredicate*)predicate
 {
     [[CoreDataHelper instance] _deleteObjectsOfEntity:entityClass withPredicate:predicate];
 }
 
-+ (NSArray *)distinctValueFromEntity:(Class)entityClass
-                       withPredicate:(NSPredicate *)predicate
-                       attributeName:(NSString*)attributeName
-                               error:(NSError **)error
++ (NSArray*)distinctValueFromEntity:(Class)entityClass
+                      withPredicate:(NSPredicate*)predicate
+                      attributeName:(NSString*)attributeName
+                              error:(NSError**)error
 {
-    return  [[CoreDataHelper instance] _distinctValueFromEntity:entityClass withPredicate:predicate attributeName:attributeName error:error];
+    return [[CoreDataHelper instance] _distinctValueFromEntity:entityClass withPredicate:predicate attributeName:attributeName error:error];
 }
 
-- (NSArray *)_distinctValueFromEntity:(Class)entityClass
-                       withPredicate:(NSPredicate *)predicate
+- (NSArray*)_distinctValueFromEntity:(Class)entityClass
+                       withPredicate:(NSPredicate*)predicate
                        attributeName:(NSString*)attributeName
-                               error:(NSError **)error
+                               error:(NSError**)error
 {
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass(entityClass)];
-    
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass) inManagedObjectContext:[self managedObjectContext]];
-    
-    
+    NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass(entityClass)];
+
+    NSEntityDescription* entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass) inManagedObjectContext:[self managedObjectContext]];
+
     fetchRequest.predicate = predicate;
     // Required! Unless you set the resultType to NSDictionaryResultType, distinct can't work.
     // All objects in the backing store are implicitly distinct, but two dictionaries can be duplicates.
     // Since you only want distinct names, only ask for the 'name' property.
     fetchRequest.resultType = NSDictionaryResultType;
-//    fetchRequest.propertiesToFetch = [NSArray arrayWithObjects:[[entity propertiesByName] objectForKey:attributeName], @"name", nil];
+    //    fetchRequest.propertiesToFetch = [NSArray arrayWithObjects:[[entity propertiesByName] objectForKey:attributeName], @"name", nil];
     fetchRequest.propertiesToFetch = [NSArray arrayWithObject:[[entity propertiesByName] objectForKey:attributeName]];
     fetchRequest.returnsDistinctResults = YES;
-    
+
     // Now it should yield an NSArray of distinct values in dictionaries.
-    NSArray *dictionaries = [[self managedObjectContext] executeFetchRequest:fetchRequest error:nil];
-    return  dictionaries;
+    NSArray* dictionaries = [[self managedObjectContext] executeFetchRequest:fetchRequest error:nil];
+    return dictionaries;
 }
 
 #pragma mark - Utilities
 // Utilities adapted from https://github.com/supermarin/ObjectiveRecord
 
-+ (NSPredicate *)predicateFromDictionary:(NSDictionary *)dict
++ (NSPredicate*)predicateFromDictionary:(NSDictionary*)dict
 {
-    NSMutableArray *subpredicates = [NSMutableArray array];
+    NSMutableArray* subpredicates = [NSMutableArray array];
     for (NSString* key in dict) {
         [subpredicates addObject:[NSPredicate predicateWithFormat:@"%K = %@", key, [dict objectForKey:key]]];
     }
-    
+
     return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
 }
 
-+ (NSPredicate *)predicateFromObject:(id)condition {
++ (NSPredicate*)predicateFromObject:(id)condition
+{
     return [self predicateFromObject:condition arguments:NULL];
 }
 
-+ (NSPredicate *)predicateFromObject:(id)condition arguments:(va_list)arguments
++ (NSPredicate*)predicateFromObject:(id)condition arguments:(va_list)arguments
 {
     if ([condition isKindOfClass:[NSPredicate class]])
         return condition;
-    
+
     if ([condition isKindOfClass:[NSString class]])
         return [NSPredicate predicateWithFormat:condition arguments:arguments];
-    
+
     if ([condition isKindOfClass:[NSDictionary class]])
         return [self predicateFromDictionary:condition];
-    
+
     return nil;
 }
 
-+ (NSSortDescriptor *)sortDescriptorFromDictionary:(NSDictionary *)dict
++ (NSSortDescriptor*)sortDescriptorFromDictionary:(NSDictionary*)dict
 {
     BOOL isAscending = ![[[dict.allValues objectAtIndex:0] uppercaseString] isEqualToString:@"DESC"];
     return [NSSortDescriptor sortDescriptorWithKey:[dict.allKeys objectAtIndex:0]
                                          ascending:isAscending];
 }
 
-+ (NSSortDescriptor *)sortDescriptorFromString:(NSString *)order
++ (NSSortDescriptor*)sortDescriptorFromString:(NSString*)order
 {
-    NSArray *result = [order componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSMutableArray *components = [NSMutableArray array];
-    for (NSString *string in result) {
+    NSArray* result = [order componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSMutableArray* components = [NSMutableArray array];
+    for (NSString* string in result) {
         if (string.length > 0) {
             [components addObject:string];
         }
     }
-    
-    NSString *key = [components firstObject];
-    NSString *value = [components count] > 1 ? components[1] : @"ASC";
-    
-    return [self sortDescriptorFromDictionary:@{key: value}];
-    
+
+    NSString* key = [components firstObject];
+    NSString* value = [components count] > 1 ? components[1] : @"ASC";
+
+    return [self sortDescriptorFromDictionary:@{ key : value }];
 }
 
-+ (NSSortDescriptor *)sortDescriptorFromObject:(id)order
++ (NSSortDescriptor*)sortDescriptorFromObject:(id)order
 {
     if ([order isKindOfClass:[NSSortDescriptor class]])
         return order;
-    
+
     if ([order isKindOfClass:[NSString class]])
         return [self sortDescriptorFromString:order];
-    
+
     if ([order isKindOfClass:[NSDictionary class]])
         return [self sortDescriptorFromDictionary:order];
-    
+
     return nil;
 }
 
-+ (NSArray *)sortDescriptorsFromObject:(id)order
++ (NSArray*)sortDescriptorsFromObject:(id)order
 {
     if (!order) {
         return nil;
     }
-    
+
     if ([order isKindOfClass:[NSString class]])
         order = [order componentsSeparatedByString:@","];
-    
+
     if ([order isKindOfClass:[NSArray class]]) {
-        NSMutableArray *ret = [NSMutableArray array];
+        NSMutableArray* ret = [NSMutableArray array];
         for (id object in order) {
             [ret addObject:[self sortDescriptorFromObject:object]];
         }
         return ret;
     }
-    
-    return @[[self sortDescriptorFromObject:order]];
+
+    return @[ [self sortDescriptorFromObject:order] ];
 }
 
-+ (id)objectWithID:(NSManagedObjectID *)objectID
++ (id)objectWithID:(NSManagedObjectID*)objectID
 {
     return [[[CoreDataHelper instance] managedObjectContext] objectWithID:objectID];
 }
 
 #pragma mark - Query producing multiple objects
 
-+ (NSArray *)objectsOfEntity:(Class)entityClass
-                       where:(id)condition
-                       order:(id)order
-                       limit:(NSNumber *)numberOfRecords
-                      offset:(NSNumber *)fromRecordNum
-                       error:(NSError **)error
++ (NSArray*)objectsOfEntity:(Class)entityClass
+                      where:(id)condition
+                      order:(id)order
+                      limit:(NSNumber*)numberOfRecords
+                     offset:(NSNumber*)fromRecordNum
+                      error:(NSError**)error
 {
     return [CoreDataHelper objectsOfEntity:entityClass
-                                withPredicate:[CoreDataHelper predicateFromObject:condition]
-                              sortDescriptors:[CoreDataHelper sortDescriptorsFromObject:order]
-                                   fetchLimit:numberOfRecords
-                                  fetchOffset:fromRecordNum
-                                        error:error];
+                             withPredicate:[CoreDataHelper predicateFromObject:condition]
+                           sortDescriptors:[CoreDataHelper sortDescriptorsFromObject:order]
+                                fetchLimit:numberOfRecords
+                               fetchOffset:fromRecordNum
+                                     error:error];
 }
 
-- (NSArray *)_objectsOfEntity:(Class)entityClass
-                withPredicate:(NSPredicate *)predicate
-              sortDescriptors:(NSArray *)sortDescriptors
-                   fetchLimit:(NSNumber *)fetchLimit
-                  fetchOffset:(NSNumber *)fetchOffset
-                        error:(NSError **)error
+- (NSArray*)_objectsOfEntity:(Class)entityClass
+               withPredicate:(NSPredicate*)predicate
+             sortDescriptors:(NSArray*)sortDescriptors
+                  fetchLimit:(NSNumber*)fetchLimit
+                 fetchOffset:(NSNumber*)fetchOffset
+                       error:(NSError**)error
 {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSManagedObjectContext* managedObjectContext = [self managedObjectContext];
+
+    NSFetchRequest* request = [[NSFetchRequest alloc] init];
     [request setEntity:[NSEntityDescription entityForName:NSStringFromClass(entityClass)
                                    inManagedObjectContext:managedObjectContext]];
     if (predicate) {
@@ -488,73 +491,72 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
     if (fetchOffset) {
         [request setFetchOffset:[fetchOffset unsignedIntegerValue]];
     }
-    
+
     return [managedObjectContext executeFetchRequest:request error:error];
 }
 
-+ (NSArray *)objectsOfEntity:(Class)entityClass
-               withPredicate:(NSPredicate *)predicate
-             sortDescriptors:(NSArray *)sortDescriptors
-                  fetchLimit:(NSNumber *)fetchLimit
-                 fetchOffset:(NSNumber *)fetchOffset
-                       error:(NSError **)error
++ (NSArray*)objectsOfEntity:(Class)entityClass
+              withPredicate:(NSPredicate*)predicate
+            sortDescriptors:(NSArray*)sortDescriptors
+                 fetchLimit:(NSNumber*)fetchLimit
+                fetchOffset:(NSNumber*)fetchOffset
+                      error:(NSError**)error
 {
     return [[CoreDataHelper instance] _objectsOfEntity:entityClass
-                                            withPredicate:predicate
-                                          sortDescriptors:sortDescriptors
-                                               fetchLimit:fetchLimit
-                                              fetchOffset:fetchOffset
-                                                    error:error];
+                                         withPredicate:predicate
+                                       sortDescriptors:sortDescriptors
+                                            fetchLimit:fetchLimit
+                                           fetchOffset:fetchOffset
+                                                 error:error];
 }
-
 
 #pragma mark - Aggregate query
 
 + (NSUInteger)countObjectsOfEntity:(Class)entityClass
                              where:(id)condition
-                             error:(NSError **)error
+                             error:(NSError**)error
 {
     return [CoreDataHelper countObjectsOfEntity:entityClass
-                                     withPredicate:[CoreDataHelper predicateFromObject:condition]
-                                             error:error];
+                                  withPredicate:[CoreDataHelper predicateFromObject:condition]
+                                          error:error];
 }
 
 - (NSUInteger)_countObjectsOfEntity:(Class)entityClass
-                     withPredicate:(NSPredicate *)predicate
-                             error:(NSError **)error
+                      withPredicate:(NSPredicate*)predicate
+                              error:(NSError**)error
 {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSManagedObjectContext* managedObjectContext = [self managedObjectContext];
+
+    NSFetchRequest* request = [[NSFetchRequest alloc] init];
     [request setEntity:[NSEntityDescription entityForName:NSStringFromClass(entityClass)
                                    inManagedObjectContext:managedObjectContext]];
     [request setIncludesSubentities:NO]; //Omit subentities. Default is YES (i.e. include subentities)
     if (predicate) {
         [request setPredicate:predicate];
     }
-    
+
     NSUInteger count = [managedObjectContext countForFetchRequest:request error:error];
     if (count == NSNotFound) {
         count = 0;
     }
-    
+
     return count;
 }
 
 + (NSUInteger)countObjectsOfEntity:(Class)entityClass
-                     withPredicate:(NSPredicate *)predicate
-                             error:(NSError **)error
+                     withPredicate:(NSPredicate*)predicate
+                             error:(NSError**)error
 {
     return [[CoreDataHelper instance] _countObjectsOfEntity:entityClass
-                                                 withPredicate:predicate
-                                                         error:error];
+                                              withPredicate:predicate
+                                                      error:error];
 }
 
-+ (id)runAggregate:(NSString *)aggregateFunction
++ (id)runAggregate:(NSString*)aggregateFunction
              where:(id)condition
-      forAttribute:(NSString *)attributeName
+      forAttribute:(NSString*)attributeName
           ofEntity:(Class)entityClass
-             error:(NSError **)error
+             error:(NSError**)error
 {
     return [self runAggregate:aggregateFunction
                 withPredicate:[CoreDataHelper predicateFromObject:condition]
@@ -563,53 +565,53 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
                         error:error];
 }
 
-+ (id)runAggregate:(NSString *)aggregateFunction
-     withPredicate:(NSPredicate *)predicate
-      forAttribute:(NSString *)attributeName
++ (id)runAggregate:(NSString*)aggregateFunction
+     withPredicate:(NSPredicate*)predicate
+      forAttribute:(NSString*)attributeName
           ofEntity:(Class)entityClass
-             error:(NSError **)error
+             error:(NSError**)error
 {
     return [[CoreDataHelper instance] _runAggregate:aggregateFunction
-                                         withPredicate:predicate
-                                          forAttribute:attributeName
-                                              ofEntity:entityClass
-                                                 error:error];
+                                      withPredicate:predicate
+                                       forAttribute:attributeName
+                                           ofEntity:entityClass
+                                              error:error];
 }
 
-- (id)_runAggregate:(NSString *)aggregateFunction
-      withPredicate:(NSPredicate *)predicate
-       forAttribute:(NSString *)attributeName
+- (id)_runAggregate:(NSString*)aggregateFunction
+      withPredicate:(NSPredicate*)predicate
+       forAttribute:(NSString*)attributeName
            ofEntity:(Class)entityClass
-              error:(NSError **)error
+              error:(NSError**)error
 {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass(entityClass)
+    NSManagedObjectContext* managedObjectContext = [self managedObjectContext];
+    NSEntityDescription* entityDescription = [NSEntityDescription entityForName:NSStringFromClass(entityClass)
                                                          inManagedObjectContext:managedObjectContext];
-    NSDictionary *attributesByName = [entityDescription attributesByName];
-    NSAttributeDescription *attributeDescription = [attributesByName objectForKey:attributeName];
-    
+    NSDictionary* attributesByName = [entityDescription attributesByName];
+    NSAttributeDescription* attributeDescription = [attributesByName objectForKey:attributeName];
+
     // fetch request
-    
-    NSFetchRequest *fetchRequest = [NSFetchRequest new];
+
+    NSFetchRequest* fetchRequest = [NSFetchRequest new];
     [fetchRequest setEntity:entityDescription];
     [fetchRequest setResultType:NSDictionaryResultType];
     if (predicate) {
         [fetchRequest setPredicate:predicate];
     }
-    
+
     // aggregate expression
-    
-    NSExpression *keyExpression = [NSExpression expressionForKeyPath:attributeName];
-    NSExpression *aggrExpression = [NSExpression expressionForFunction:aggregateFunction
-                                                             arguments:@[keyExpression]];
-    NSExpressionDescription *exprDescription = [NSExpressionDescription new];
+
+    NSExpression* keyExpression = [NSExpression expressionForKeyPath:attributeName];
+    NSExpression* aggrExpression = [NSExpression expressionForFunction:aggregateFunction
+                                                             arguments:@[ keyExpression ]];
+    NSExpressionDescription* exprDescription = [NSExpressionDescription new];
     [exprDescription setName:attributeName];
     [exprDescription setExpression:aggrExpression];
     [exprDescription setExpressionResultType:[attributeDescription attributeType]];
-    
-    [fetchRequest setPropertiesToFetch:@[exprDescription]];
-    
-    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:error];
+
+    [fetchRequest setPropertiesToFetch:@[ exprDescription ]];
+
+    NSArray* results = [managedObjectContext executeFetchRequest:fetchRequest error:error];
     if (!*error) {
         if ([results count] > 0) {
             return [[results objectAtIndex:0] valueForKey:attributeName];
@@ -626,35 +628,35 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
 
 #pragma mark - Query producing NSFetchedResultsController
 
-+ (NSFetchedResultsController *)fetchedResultsControllerForEntity:(Class)entityClass
-                                                            where:(id)condition
-                                                            order:(id)order
-                                                            limit:(NSNumber *)numberOfRecords
-                                                           offset:(NSNumber *)fromRecordNum
-                                               sectionNameKeyPath:(NSString *)sectionNameKeyPath
-                                                        cacheName:(NSString *)cacheName
++ (NSFetchedResultsController*)fetchedResultsControllerForEntity:(Class)entityClass
+                                                           where:(id)condition
+                                                           order:(id)order
+                                                           limit:(NSNumber*)numberOfRecords
+                                                          offset:(NSNumber*)fromRecordNum
+                                              sectionNameKeyPath:(NSString*)sectionNameKeyPath
+                                                       cacheName:(NSString*)cacheName
 {
     return [CoreDataHelper fetchedResultsControllerForEntity:entityClass
-                                                  withPredicate:[CoreDataHelper predicateFromObject:condition]
-                                                sortDescriptors:[CoreDataHelper sortDescriptorsFromObject:order]
-                                                     fetchLimit:numberOfRecords
-                                                    fetchOffset:fromRecordNum
-                                             sectionNameKeyPath:sectionNameKeyPath
-                                                      cacheName:cacheName];
+                                               withPredicate:[CoreDataHelper predicateFromObject:condition]
+                                             sortDescriptors:[CoreDataHelper sortDescriptorsFromObject:order]
+                                                  fetchLimit:numberOfRecords
+                                                 fetchOffset:fromRecordNum
+                                          sectionNameKeyPath:sectionNameKeyPath
+                                                   cacheName:cacheName];
 }
 
-- (NSFetchedResultsController *)_fetchedResultsControllerForEntity:(Class)entityClass
-                                                    withPredicate:(NSPredicate *)predicate
-                                                  sortDescriptors:(NSArray *)sortDescriptors
-                                                       fetchLimit:(NSNumber *)fetchLimit
-                                                      fetchOffset:(NSNumber *)fetchOffset
-                                               sectionNameKeyPath:(NSString *)sectionNameKeyPath
-                                                        cacheName:(NSString *)cacheName
+- (NSFetchedResultsController*)_fetchedResultsControllerForEntity:(Class)entityClass
+                                                    withPredicate:(NSPredicate*)predicate
+                                                  sortDescriptors:(NSArray*)sortDescriptors
+                                                       fetchLimit:(NSNumber*)fetchLimit
+                                                      fetchOffset:(NSNumber*)fetchOffset
+                                               sectionNameKeyPath:(NSString*)sectionNameKeyPath
+                                                        cacheName:(NSString*)cacheName
 {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass)
+    NSManagedObjectContext* managedObjectContext = [self managedObjectContext];
+
+    NSFetchRequest* fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription* entity = [NSEntityDescription entityForName:NSStringFromClass(entityClass)
                                               inManagedObjectContext:managedObjectContext];
     [fetchRequest setEntity:entity];
     if (predicate) {
@@ -675,21 +677,21 @@ static NSString * const MP_PERTHREADKEY_MOC = @"MPPerThreadManagedObjectContext"
                                                           cacheName:cacheName];
 }
 
-+ (NSFetchedResultsController *)fetchedResultsControllerForEntity:(Class)entityClass
-                                                    withPredicate:(NSPredicate *)predicate
-                                                  sortDescriptors:(NSArray *)sortDescriptors
-                                                       fetchLimit:(NSNumber *)fetchLimit
-                                                      fetchOffset:(NSNumber *)fetchOffset
-                                               sectionNameKeyPath:(NSString *)sectionNameKeyPath
-                                                        cacheName:(NSString *)cacheName
++ (NSFetchedResultsController*)fetchedResultsControllerForEntity:(Class)entityClass
+                                                   withPredicate:(NSPredicate*)predicate
+                                                 sortDescriptors:(NSArray*)sortDescriptors
+                                                      fetchLimit:(NSNumber*)fetchLimit
+                                                     fetchOffset:(NSNumber*)fetchOffset
+                                              sectionNameKeyPath:(NSString*)sectionNameKeyPath
+                                                       cacheName:(NSString*)cacheName
 {
     return [[CoreDataHelper instance] _fetchedResultsControllerForEntity:entityClass
-                                                              withPredicate:predicate
-                                                            sortDescriptors:sortDescriptors
-                                                                 fetchLimit:fetchLimit
-                                                                fetchOffset:fetchOffset
-                                                         sectionNameKeyPath:sectionNameKeyPath
-                                                                  cacheName:cacheName];
+                                                           withPredicate:predicate
+                                                         sortDescriptors:sortDescriptors
+                                                              fetchLimit:fetchLimit
+                                                             fetchOffset:fetchOffset
+                                                      sectionNameKeyPath:sectionNameKeyPath
+                                                               cacheName:cacheName];
 }
 
 #endif

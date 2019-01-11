@@ -23,12 +23,14 @@
 #define Server_URL      @"https://rallynavigator-staging.herokuapp.com/api"
 #define ServerPath      @"/v1/"
 #define BUCKET_NAME     @"new-staging-rallynavigator"
+#define URLUploadImage  @"https://new-staging-rallynavigator.s3.amazonaws.com/"
 
 #else
 
 #define Server_URL      @"https://www.rallynavigator.com/api"
 #define ServerPath      @"/v1/"
 #define BUCKET_NAME     @"rallynavigator"
+#define URLUploadImage  @"https://rallynavigator.s3.amazonaws.com/"
 
 #endif
 
@@ -40,8 +42,6 @@
 #define NoNetwork @"No internet connection."
 
 
-//#define URLUploadImage @"https://rallynavigator.s3.amazonaws.com/"
-#define URLUploadImage @"https://new-staging-rallynavigator.s3.amazonaws.com/"
 
 #define URLLogin [NSString stringWithFormat:@"%@auth/sign_in",BASE_URL]
 #define URLSignUp [NSString stringWithFormat:@"%@auth/sign_up",BASE_URL]

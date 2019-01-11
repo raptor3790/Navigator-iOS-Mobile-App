@@ -214,7 +214,6 @@
         [self.navigationController setViewControllers:controllers animated:YES];
 
     } else {
-
         NSDictionary* dicResponse = [sender responseDict];
         BOOL isStatusFalse = [dicResponse objectForKey:SUCCESS_STATUS] && ![[dicResponse valueForKey:SUCCESS_STATUS] boolValue];
         if (isStatusFalse && [dicResponse objectForKey:ERROR_CODE]) {
@@ -258,11 +257,6 @@
 }
 
 #pragma mark - UITableView Delegate Methods
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
-{
-    return 1;
-}
 
 - (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {

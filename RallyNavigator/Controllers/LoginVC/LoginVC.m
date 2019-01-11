@@ -65,11 +65,6 @@
 
 #pragma mark - UITableView Delegate Methods
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
-{
-    return 1;
-}
-
 - (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     BOOL portrait = UIScreen.mainScreen.bounds.size.width < UIScreen.mainScreen.bounds.size.height;

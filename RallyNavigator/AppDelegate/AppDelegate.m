@@ -1,3 +1,5 @@
+
+
 //
 //  AppDelegate.m
 //  RallyNavigator
@@ -23,10 +25,10 @@
     CDSyncData* objSyncData;
     NetworkStatus currentNetworkStatus;
 
-    void (^_normalImgCompletionHandler)(BOOL completed);
+    void (^_normalImageCompletionHandler)(BOOL completed);
     void (^_normalAudioCompletionHandler)(BOOL completed);
 
-    void (^_imgCompletionHandler)(BOOL completed);
+    void (^imageCompleteHandler)(BOOL completed);
     void (^_audioCompletionHandler)(BOOL completed);
 }
 @end
@@ -39,8 +41,8 @@
         [NSThread sleepForTimeInterval:2.0];
     }
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForReachability) name:kReachabilityChangedNotification object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:kReachabilityChangedNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(checkForReachability) name:kReachabilityChangedNotification object:nil];
 
     [self setUpAWSS3];
     [self progressView];
@@ -76,7 +78,6 @@
             NSArray* arrCDUser = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:@"isActive = 0"]] all];
             _totalWayPoints = arrCDUser.count;
             _syncedWayPoints = 0;
-            //                NSLog(@"Web Service 1");
             [self checkForSyncData];
         }
     } else {
@@ -88,13 +89,7 @@
 
 - (void)checkForSyncData
 {
-    //    dispatch_async(dispatch_get_main_queue(), ^{
-
-    //        NSLog(@"CALLEEDD");
-
     NSArray* arrCDUser = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:@"isActive = 0"]] all];
-
-    //        NSLog(@"%ld", arrCDUser.count);
 
     if (!_isWebServiceIsCalling) {
         _isWebServiceIsCalling = YES;
@@ -103,7 +98,7 @@
     }
 
     if (arrCDUser.count > 0 && currentNetworkStatus != NotReachable) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SYNC_STARTED" object:self];
+        [NSNotificationCenter.defaultCenter postNotificationName:@"SYNC_STARTED" object:self];
         objSyncData = [arrCDUser firstObject];
 
         if ([objSyncData.isEdit boolValue]) {
@@ -128,19 +123,17 @@
         _totalWayPoints = 0;
         _syncedWayPoints = 0;
         _isWebServiceIsCalling = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SYNC_COMPLETE" object:self];
+        [NSNotificationCenter.defaultCenter postNotificationName:@"SYNC_COMPLETE" object:self];
     }
     //    });
 }
 
-- (IBAction)handleRouteDetailsResponse:(id)sender
+- (void)handleRouteDetailsResponse:(id)sender
 {
     NSDictionary* dic = [sender responseDict];
 
     if ([dic valueForKey:RouteKey] && [[dic valueForKey:SUCCESS_STATUS] boolValue]) {
-        //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self processForData];
-        //        });
     } else {
         [self checkForSyncData];
     }
@@ -153,22 +146,17 @@
             if (success) {
                 if (self->objSyncData.voiceData.length > 0) {
                     [self saveAudioOverServer:^(BOOL success) {
-                        //                        NSLog(@"Uploaded Both");
                         if (success) {
                             [self uploadData];
                         } else {
-                            //                            NSLog(@"Audio Upload Failed");
                             [self checkForSyncData];
-                            return;
                         }
                     }];
                 } else {
                     [self uploadData];
                 }
             } else {
-                //                NSLog(@"Image Upload Failed");
                 [self checkForSyncData];
-                return;
             }
         }];
     } else if (objSyncData.voiceData.length > 0) {
@@ -176,7 +164,6 @@
             if (success) {
                 [self uploadData];
             } else {
-                //                NSLog(@"Audio Upload Failed");
                 [self checkForSyncData];
                 return;
             }
@@ -188,7 +175,7 @@
 
 - (void)saveImageOverServer:(void (^)(BOOL))handler
 {
-    _normalImgCompletionHandler = [handler copy];
+    _normalImageCompletionHandler = [handler copy];
 
     NSData* data = [[NSData alloc] initWithBase64EncodedString:objSyncData.imageData options:NSDataBase64DecodingIgnoreUnknownCharacters];
     NSString* strCurrentTimeStamp = [NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970] * 1000];
@@ -204,96 +191,73 @@
     NSString* savedImagePath = [documentsDirectory stringByAppendingPathComponent:@"Hello.jpg"];
     [data writeToFile:savedImagePath atomically:YES];
 
-    AWSS3TransferManagerUploadRequest* uploadRequest = [AWSS3TransferManagerUploadRequest new];
-    uploadRequest.body = [NSURL fileURLWithPath:savedImagePath];
-    uploadRequest.key = strFilePath;
-    uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
-    uploadRequest.bucket = BUCKET_NAME;
-    AWSS3TransferManager* transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    AWSS3TransferUtility* transferUtility = [AWSS3TransferUtility defaultS3TransferUtility];
+    [transferUtility uploadFile:[NSURL fileURLWithPath:savedImagePath]
+                         bucket:BUCKET_NAME
+                            key:strFilePath
+                    contentType:@"image/jpeg"
+                     expression:NULL
+              completionHandler:^(AWSS3TransferUtilityUploadTask* _Nonnull task, NSError* _Nullable error) {
+                  if (error) {
+//                      self->_normalImageCompletionHandler(NO);
+//                      self->_normalImageCompletionHandler = NULL;
+                      return;
+                  }
 
-    [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask* task) {
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-        if (task.error) {
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-                switch (task.error.code) {
-                case AWSS3TransferManagerErrorCancelled:
-                case AWSS3TransferManagerErrorPaused: {
-                } break;
+                          NSString* strJsonData = self->objSyncData.jsonData;
 
-                default:
-                    //                        NSLog(@"Upload failed: [%@]", task.error);
-                    break;
-                }
-            } else {
-                //                NSLog(@"Upload failed: [%@]", task.error);
-            }
+                          if (strJsonData == NULL) {
+                              [self checkForSyncData];
+                              return;
+                          }
 
-            self->_normalImgCompletionHandler(NO);
-            self->_normalImgCompletionHandler = nil;
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                          id object = [RallyNavigatorConstants convertJsonStringToObject:strJsonData];
 
-                    NSString* strJsonData = self->objSyncData.jsonData;
+                          if ([object isKindOfClass:[NSDictionary class]]) {
+                              NSMutableDictionary* dicRoute = [object mutableCopy];
 
-                    if (strJsonData == nil) {
-                        //                        NSLog(@"DATA NIL");
-                        [self checkForSyncData];
-                        return;
-                    }
+                              RouteDetails* objDetails = [[RouteDetails alloc] initWithDictionary:dicRoute];
+                              Waypoints* objRoute = objDetails.waypoints[0];
+                              objRoute.backgroundimage.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
+                              objDetails.waypoints = @[ objRoute ];
 
-                    id object = [RallyNavigatorConstants convertJsonStringToObject:strJsonData];
+                              NSMutableDictionary* dic = [[objDetails dictionaryRepresentation] mutableCopy];
+                              NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:dic];
+                              self->objSyncData.jsonData = strJsonData;
+                              [CoreDataHelper save];
+                          } else if ([object isKindOfClass:[NSArray class]]) {
+                              NSMutableArray* arrOperations = [[NSMutableArray alloc] init];
+                              arrOperations = [object mutableCopy];
 
-                    if ([object isKindOfClass:[NSDictionary class]]) {
-                        //                        NSLog(@"DICTIONARY");
+                              NSUInteger index = 0;
+                              for (NSMutableDictionary* dicOp in arrOperations) {
+                                  if ([dicOp objectForKey:@"op"] && ![[dicOp valueForKey:@"op"] isEqualToString:@"add"]) {
+                                      NSMutableDictionary* dicAddOp = [[arrOperations objectAtIndex:(index - 1)] mutableCopy];
 
-                        NSMutableDictionary* dicRoute = [object mutableCopy];
+                                      Waypoints* objWP = [[Waypoints alloc] initWithDictionary:[dicAddOp valueForKey:@"value"]];
+                                      objWP.backgroundimage.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
+                                      objWP.backgroundimage.backgroundimageIdentifier = -2;
 
-                        RouteDetails* objDetails = [[RouteDetails alloc] initWithDictionary:dicRoute];
-                        Waypoints* objRoute = objDetails.waypoints[0];
-                        objRoute.backgroundimage.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
-                        objDetails.waypoints = @[ objRoute ];
+                                      [dicAddOp setObject:[objWP dictionaryRepresentation] forKey:@"value"];
+                                      [arrOperations replaceObjectAtIndex:(index - 1) withObject:dicAddOp];
+                                      NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:arrOperations];
+                                      self->objSyncData.jsonData = strJsonData;
+                                      [CoreDataHelper save];
 
-                        NSMutableDictionary* dic = [[objDetails dictionaryRepresentation] mutableCopy];
-                        NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:dic];
-                        self->objSyncData.jsonData = strJsonData;
-                        [CoreDataHelper save];
-                    } else if ([object isKindOfClass:[NSArray class]]) {
-                        //                        NSLog(@"ARRAY");
+                                      break;
+                                  }
+                                  index++;
+                              }
+                          }
 
-                        NSMutableArray* arrOperations = [[NSMutableArray alloc] init];
-                        arrOperations = [object mutableCopy];
-
-                        NSUInteger index = 0;
-
-                        for (NSMutableDictionary* dicOp in arrOperations) {
-                            if ([dicOp objectForKey:@"op"]) {
-                                if (![[dicOp valueForKey:@"op"] isEqualToString:@"add"]) {
-                                    NSMutableDictionary* dicAddOp = [[arrOperations objectAtIndex:(index - 1)] mutableCopy];
-
-                                    Waypoints* objWP = [[Waypoints alloc] initWithDictionary:[dicAddOp valueForKey:@"value"]];
-                                    objWP.backgroundimage.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
-                                    objWP.backgroundimage.backgroundimageIdentifier = -2;
-                                    [dicAddOp setObject:[objWP dictionaryRepresentation] forKey:@"value"];
-                                    [arrOperations replaceObjectAtIndex:(index - 1) withObject:dicAddOp];
-                                    NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:arrOperations];
-                                    self->objSyncData.jsonData = strJsonData;
-                                    [CoreDataHelper save];
-                                    break;
-                                }
-                            }
-                            index++;
-                        }
-                    }
-
-                    self->_normalImgCompletionHandler(YES);
-                    self->_normalImgCompletionHandler = nil;
-                }];
-            });
-        }
-
-        return nil;
-    }];
+                          self->_normalImageCompletionHandler(YES);
+                          self->_normalImageCompletionHandler = nil;
+                      }];
+                  });
+              }];
 }
 
 - (void)saveAudioOverServer:(void (^)(BOOL))handler
@@ -314,96 +278,75 @@
     NSString* savedImagePath = [documentsDirectory stringByAppendingPathComponent:@"Hello.m4a"];
     [data writeToFile:savedImagePath atomically:YES];
 
-    AWSS3TransferManagerUploadRequest* uploadRequest = [AWSS3TransferManagerUploadRequest new];
-    uploadRequest.body = [NSURL fileURLWithPath:savedImagePath];
-    uploadRequest.key = strFilePath;
-    uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
-    uploadRequest.bucket = BUCKET_NAME;
-    AWSS3TransferManager* transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    AWSS3TransferUtility* transferUtility = [AWSS3TransferUtility defaultS3TransferUtility];
+    [transferUtility uploadFile:[NSURL fileURLWithPath:savedImagePath]
+                         bucket:BUCKET_NAME
+                            key:strFilePath
+                    contentType:@"video/m4a"
+                     expression:NULL
+              completionHandler:^(AWSS3TransferUtilityUploadTask* _Nonnull task, NSError* _Nullable error) {
+                  if (error) {
+//                      self->_normalAudioCompletionHandler(NO);
+//                      self->_normalAudioCompletionHandler = nil;
+                      return;
+                  }
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-    [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask* task) {
+                          NSString* strJsonData = self->objSyncData.jsonData;
 
-        if (task.error) {
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-                switch (task.error.code) {
-                case AWSS3TransferManagerErrorCancelled:
-                case AWSS3TransferManagerErrorPaused: {
-                } break;
+                          if (strJsonData == NULL) {
+                              [self checkForSyncData];
+                              return;
+                          }
 
-                default:
-                    //                        NSLog(@"Upload failed: [%@]", task.error);
-                    break;
-                }
-            } else {
-                //                NSLog(@"Upload failed: [%@]", task.error);
-            }
+                          id object = [RallyNavigatorConstants convertJsonStringToObject:strJsonData];
 
-            self->_normalAudioCompletionHandler(NO);
-            self->_normalAudioCompletionHandler = nil;
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                          if ([object isKindOfClass:[NSDictionary class]]) {
+                              NSMutableDictionary* dicRoute = [object mutableCopy];
 
-                    NSString* strJsonData = self->objSyncData.jsonData;
+                              RouteDetails* objDetails = [[RouteDetails alloc] initWithDictionary:dicRoute];
+                              Waypoints* objRoute = objDetails.waypoints[0];
+                              objRoute.voiceNote.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
+                              objDetails.waypoints = @[ objRoute ];
 
-                    if (strJsonData == nil) {
-                        //                        NSLog(@"DATA NIL");
-                        [self checkForSyncData];
-                        return;
-                    }
+                              NSMutableDictionary* dic = [[objDetails dictionaryRepresentation] mutableCopy];
+                              NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:dic];
+                              self->objSyncData.jsonData = strJsonData;
+                              [CoreDataHelper save];
 
-                    id object = [RallyNavigatorConstants convertJsonStringToObject:strJsonData];
+                          } else if ([object isKindOfClass:[NSArray class]]) {
 
-                    if ([object isKindOfClass:[NSDictionary class]]) {
-                        //                        NSLog(@"DICTIONARY");
+                              NSMutableArray* arrOperations = [[NSMutableArray alloc] init];
+                              arrOperations = [object mutableCopy];
 
-                        NSMutableDictionary* dicRoute = [object mutableCopy];
+                              NSUInteger index = 0;
 
-                        RouteDetails* objDetails = [[RouteDetails alloc] initWithDictionary:dicRoute];
-                        Waypoints* objRoute = objDetails.waypoints[0];
-                        objRoute.voiceNote.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
-                        objDetails.waypoints = @[ objRoute ];
+                              for (NSMutableDictionary* dicOp in arrOperations) {
+                                  if ([dicOp objectForKey:@"op"]) {
+                                      if (![[dicOp valueForKey:@"op"] isEqualToString:@"add"]) {
+                                          NSMutableDictionary* dicAddOp = [[arrOperations objectAtIndex:(index - 1)] mutableCopy];
 
-                        NSMutableDictionary* dic = [[objDetails dictionaryRepresentation] mutableCopy];
-                        NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:dic];
-                        self->objSyncData.jsonData = strJsonData;
-                        [CoreDataHelper save];
-                    } else if ([object isKindOfClass:[NSArray class]]) {
-                        //                        NSLog(@"ARRAY");
+                                          Waypoints* objWP = [[Waypoints alloc] initWithDictionary:[dicAddOp valueForKey:@"value"]];
+                                          objWP.voiceNote.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
+                                          objWP.voiceNote.voiceNoteIdentifier = -2;
+                                          [dicAddOp setObject:[objWP dictionaryRepresentation] forKey:@"value"];
+                                          [arrOperations replaceObjectAtIndex:(index - 1) withObject:dicAddOp];
+                                          NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:arrOperations];
+                                          self->objSyncData.jsonData = strJsonData;
+                                          [CoreDataHelper save];
+                                          break;
+                                      }
+                                  }
+                                  index++;
+                              }
+                          }
 
-                        NSMutableArray* arrOperations = [[NSMutableArray alloc] init];
-                        arrOperations = [object mutableCopy];
-
-                        NSUInteger index = 0;
-
-                        for (NSMutableDictionary* dicOp in arrOperations) {
-                            if ([dicOp objectForKey:@"op"]) {
-                                if (![[dicOp valueForKey:@"op"] isEqualToString:@"add"]) {
-                                    NSMutableDictionary* dicAddOp = [[arrOperations objectAtIndex:(index - 1)] mutableCopy];
-
-                                    Waypoints* objWP = [[Waypoints alloc] initWithDictionary:[dicAddOp valueForKey:@"value"]];
-                                    objWP.voiceNote.url = [NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath];
-                                    objWP.voiceNote.voiceNoteIdentifier = -2;
-                                    [dicAddOp setObject:[objWP dictionaryRepresentation] forKey:@"value"];
-                                    [arrOperations replaceObjectAtIndex:(index - 1) withObject:dicAddOp];
-                                    NSString* strJsonData = [RallyNavigatorConstants generateJsonStringFromObject:arrOperations];
-                                    self->objSyncData.jsonData = strJsonData;
-                                    [CoreDataHelper save];
-                                    break;
-                                }
-                            }
-                            index++;
-                        }
-                    }
-
-                    self->_normalAudioCompletionHandler(YES);
-                    self->_normalAudioCompletionHandler = nil;
-                }];
-            });
-        }
-
-        return nil;
-    }];
+                          self->_normalAudioCompletionHandler(YES);
+                          self->_normalAudioCompletionHandler = nil;
+                      }];
+                  });
+              }];
 }
 
 - (void)uploadData
@@ -473,7 +416,7 @@
     });
 }
 
-- (IBAction)handleWayPointResponse:(id)sender
+- (void)handleWayPointResponse:(id)sender
 {
     NSDictionary* dic = [sender responseDict];
 
@@ -494,17 +437,14 @@
 
                 NSArray* arrCDUser = [[[CDSyncData query] where:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"routeIdentifier='%ld'", (long)[self->objSyncData.routeIdentifier doubleValue]]]] all];
 
-                if (self.window.rootViewController) {
-                    if ([self.window.rootViewController isKindOfClass:[UINavigationController class]]) {
-                        UINavigationController* nav = (UINavigationController*)self.window.rootViewController;
+                if (self.window.rootViewController && [self.window.rootViewController isKindOfClass:[UINavigationController class]]) {
+                    UINavigationController* nav = (UINavigationController*)self.window.rootViewController;
 
-                        for (id vc in nav.viewControllers) {
-                            if ([vc isKindOfClass:[LocationsVC class]]) {
-                                LocationsVC* l_VC = vc;
-                                if ([l_VC.strRouteIdentifier isEqualToString:strOldRouteId]) {
-                                    l_VC.strRouteIdentifier = strNewRouteId;
-                                }
-                                //                                break;
+                    for (id vc in nav.viewControllers) {
+                        if ([vc isKindOfClass:[LocationsVC class]]) {
+                            LocationsVC* l_VC = vc;
+                            if ([l_VC.strRouteIdentifier isEqualToString:strOldRouteId]) {
+                                l_VC.strRouteIdentifier = strNewRouteId;
                             }
                         }
                     }
@@ -517,9 +457,7 @@
             }
         }
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"objectRefreshed"
-                                                            object:self
-                                                          userInfo:nil];
+        [NSNotificationCenter.defaultCenter postNotificationName:@"objectRefreshed" object:self userInfo:nil];
 
         _syncedWayPoints++;
         [self checkForSyncData];
@@ -619,7 +557,7 @@
     NSDictionary* dic = [RallyNavigatorConstants convertJsonStringToObject:objSyncData.jsonData];
     NSString* strWayPointId = [dic valueForKey:@"wayPointId"];
 
-    _imgCompletionHandler = [handler copy];
+    imageCompleteHandler = [handler copy];
 
     NSData* data = [[NSData alloc] initWithBase64EncodedString:objSyncData.imageData options:NSDataBase64DecodingIgnoreUnknownCharacters];
     NSString* strCurrentTimeStamp = [NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970] * 1000];
@@ -635,55 +573,38 @@
     NSString* savedImagePath = [documentsDirectory stringByAppendingPathComponent:@"Hello.jpg"];
     [data writeToFile:savedImagePath atomically:YES];
 
-    AWSS3TransferManagerUploadRequest* uploadRequest = [AWSS3TransferManagerUploadRequest new];
-    uploadRequest.body = [NSURL fileURLWithPath:savedImagePath];
-    uploadRequest.key = strFilePath;
-    uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
-    uploadRequest.bucket = BUCKET_NAME;
-    AWSS3TransferManager* transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    AWSS3TransferUtility* transferUtility = [AWSS3TransferUtility defaultS3TransferUtility];
+    [transferUtility uploadFile:[NSURL fileURLWithPath:savedImagePath]
+                         bucket:BUCKET_NAME
+                            key:strFilePath
+                    contentType:@"image/jpeg"
+                     expression:NULL
+              completionHandler:^(AWSS3TransferUtilityUploadTask* _Nonnull task, NSError* _Nullable error) {
+                  if (error) {
+                      return;
+                  }
 
-    [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask* task) {
-        if (task.error) {
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-                switch (task.error.code) {
-                case AWSS3TransferManagerErrorCancelled:
-                case AWSS3TransferManagerErrorPaused: {
-                    //                        dispatch_async(dispatch_get_main_queue(), ^{
-                    //
-                    //                        });
-                } break;
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-                default:
-                    //                        NSLog(@"Upload failed: [%@]", task.error);
-                    break;
-                }
-            } else {
-                //                NSLog(@"Upload failed: [%@]", task.error);
-            }
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                          NSMutableDictionary* dicAdd1 =
+                              [self getSaveWayPointDictionaryForOperation:@"replace"
+                                                                     path:[NSString stringWithFormat:@"/waypoints/%@/backgroundimage/id", strWayPointId]
+                                                                    value:[NSNumber numberWithInteger:-2]];
 
-                    NSMutableDictionary* dicAdd1 =
-                        [self getSaveWayPointDictionaryForOperation:@"replace"
-                                                               path:[NSString stringWithFormat:@"/waypoints/%@/backgroundimage/id", strWayPointId]
-                                                              value:[NSNumber numberWithInteger:-2]];
+                          NSMutableDictionary* dicAdd2 =
+                              [self getSaveWayPointDictionaryForOperation:@"replace"
+                                                                     path:[NSString stringWithFormat:@"/waypoints/%@/backgroundimage/url", strWayPointId]
+                                                                    value:[NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath]];
 
-                    NSMutableDictionary* dicAdd2 =
-                        [self getSaveWayPointDictionaryForOperation:@"replace"
-                                                               path:[NSString stringWithFormat:@"/waypoints/%@/backgroundimage/url", strWayPointId]
-                                                              value:[NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath]];
+                          [self.arrEditData addObject:dicAdd1];
+                          [self.arrEditData addObject:dicAdd2];
 
-                    [self.arrEditData addObject:dicAdd1];
-                    [self.arrEditData addObject:dicAdd2];
-
-                    self->_imgCompletionHandler(YES);
-                    self->_imgCompletionHandler = nil;
-                }];
-            });
-        }
-        return nil;
-    }];
+                          self->imageCompleteHandler(YES);
+                          self->imageCompleteHandler = nil;
+                      }];
+                  });
+              }];
 }
 
 - (void)uploadVoiceForEdit:(void (^)(BOOL))handler
@@ -707,52 +628,38 @@
     NSString* savedImagePath = [documentsDirectory stringByAppendingPathComponent:@"Hello.m4a"];
     [data writeToFile:savedImagePath atomically:YES];
 
-    AWSS3TransferManagerUploadRequest* uploadRequest = [AWSS3TransferManagerUploadRequest new];
-    uploadRequest.body = [NSURL fileURLWithPath:savedImagePath];
-    uploadRequest.key = strFilePath;
-    uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
-    uploadRequest.bucket = BUCKET_NAME;
-    AWSS3TransferManager* transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    AWSS3TransferUtility* transferUtility = [AWSS3TransferUtility defaultS3TransferUtility];
+    [transferUtility uploadFile:[NSURL fileURLWithPath:savedImagePath]
+                         bucket:BUCKET_NAME
+                            key:strFilePath
+                    contentType:@"video/m4a"
+                     expression:NULL
+              completionHandler:^(AWSS3TransferUtilityUploadTask* _Nonnull task, NSError* _Nullable error) {
+                  if (error) {
+                      return;
+                  }
 
-    [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask* task) {
-        if (task.error) {
-            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-                switch (task.error.code) {
-                case AWSS3TransferManagerErrorCancelled:
-                case AWSS3TransferManagerErrorPaused: {
-                } break;
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-                default:
-                    //                        NSLog(@"Upload failed: [%@]", task.error);
-                    break;
-                }
-            } else {
-                //                NSLog(@"Upload failed: [%@]", task.error);
-            }
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                          NSMutableDictionary* dicAdd1 =
+                              [self getSaveWayPointDictionaryForOperation:@"replace"
+                                                                     path:[NSString stringWithFormat:@"/waypoints/%@/voiceNote/id", strWayPointId]
+                                                                    value:[NSNumber numberWithInteger:-2]];
 
-                    NSMutableDictionary* dicAdd1 =
-                        [self getSaveWayPointDictionaryForOperation:@"replace"
-                                                               path:[NSString stringWithFormat:@"/waypoints/%@/voiceNote/id", strWayPointId]
-                                                              value:[NSNumber numberWithInteger:-2]];
+                          NSMutableDictionary* dicAdd2 =
+                              [self getSaveWayPointDictionaryForOperation:@"replace"
+                                                                     path:[NSString stringWithFormat:@"/waypoints/%@/voiceNote/url", strWayPointId]
+                                                                    value:[NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath]];
 
-                    NSMutableDictionary* dicAdd2 =
-                        [self getSaveWayPointDictionaryForOperation:@"replace"
-                                                               path:[NSString stringWithFormat:@"/waypoints/%@/voiceNote/url", strWayPointId]
-                                                              value:[NSString stringWithFormat:@"%@%@", URLUploadImage, strFilePath]];
+                          [self.arrEditData addObject:dicAdd1];
+                          [self.arrEditData addObject:dicAdd2];
 
-                    [self.arrEditData addObject:dicAdd1];
-                    [self.arrEditData addObject:dicAdd2];
-
-                    self->_audioCompletionHandler(YES);
-                    self->_audioCompletionHandler = nil;
-                }];
-            });
-        }
-        return nil;
-    }];
+                          self->_audioCompletionHandler(YES);
+                          self->_audioCompletionHandler = nil;
+                      }];
+                  });
+              }];
 }
 
 - (NSMutableDictionary*)getSaveWayPointDictionaryForOperation:(NSString*)strOperation path:(NSString*)strPath value:(id)value
@@ -832,26 +739,9 @@
 
 - (void)setUpAWSS3
 {
-    //    if (![DefaultsValues getBooleanValueFromUserDefaults_ForKey:kLogIn])
-    //    {
-    //        return;
-    //    }
-
-    AWSStaticCredentialsProvider* testprovider = [[AWSStaticCredentialsProvider alloc] initWithAccessKey:@"AKIAJEDWHUWT2SAFLXXA" secretKey:@"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"];
-    AWSServiceConfiguration* configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest2 credentialsProvider:testprovider];
+    AWSStaticCredentialsProvider* credentialsProvider = [[AWSStaticCredentialsProvider alloc] initWithAccessKey:@"AKIAJEDWHUWT2SAFLXXA" secretKey:@"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"];
+    AWSServiceConfiguration* configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest2 credentialsProvider:credentialsProvider];
     AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
-
-    //us-west-2:b6588ff1-3741-4bd7-87cc-4e27c14751ea
-    //    AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSWest2
-    //                                                                                                    identityPoolId:@"us-west-2:b6588ff1-3741-4bd7-87cc-4e27c14751ea"];
-    //    AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest2
-    //                                                                         credentialsProvider:credentialsProvider];
-    //    AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
-
-    // AWS S3 Configration
-    //    AWSS3TransferUtilityConfiguration *objUtilityTranseferConfig = [[AWSS3TransferUtilityConfiguration alloc] init];
-    //    [AWSS3TransferUtility registerS3TransferUtilityWithConfiguration:configuration transferUtilityConfiguration:objUtilityTranseferConfig forKey:@"USWest2AWSS3TransferUtility"];
-    //    _transferUtility = [AWSS3TransferUtility S3TransferUtilityForKey:@"USWest2AWSS3TransferUtility"];
 }
 
 - (void)applicationWillResignActive:(UIApplication*)application {}

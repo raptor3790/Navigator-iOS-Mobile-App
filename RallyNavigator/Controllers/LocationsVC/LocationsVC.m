@@ -324,16 +324,16 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
         [self startCameraSession];
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onKeyboardHidden:) name:UIKeyboardWillHideNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(onKeyboardHidden:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -344,7 +344,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
     if ([self isMovingFromParentViewController]) {
         if (!TARGET_OS_SIMULATOR) {
-            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            [NSNotificationCenter.defaultCenter removeObserver:self];
             [self.session removeObserver:self
                               forKeyPath:@"running"
                                  context:SessionRunningContext];
@@ -447,7 +447,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                            showLoader:NO];
 }
 
-- (IBAction)handleRouteDetailsResponse:(id)sender
+- (void)handleRouteDetailsResponse:(id)sender
 {
     @autoreleasepool {
 
@@ -1165,11 +1165,11 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     self.player.delegate = self;
     self.player.volume = 1.0;
 
-    [[AVAudioSession sharedInstance] setCategory:/*AVAudioSessionCategoryPlayback*/ AVAudioSessionCategoryAmbient error:nil];
-    [[AVAudioSession sharedInstance] setActive:YES error:nil];
-    UInt32 route = kAudioSessionOverrideAudioRoute_Speaker;
-    AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(route), &route);
-    //    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+    AVAudioSession* audioSession = [AVAudioSession sharedInstance];
+
+    [audioSession setCategory:AVAudioSessionCategoryAmbient error:NULL];
+    [audioSession setActive:YES error:NULL];
+    [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:NULL];
 
     [self.player play];
     @try {
@@ -3988,10 +3988,10 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
     [self.session addObserver:self forKeyPath:@"running" options:NSKeyValueObservingOptionNew context:SessionRunningContext];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:self.videoDeviceInput.device];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionRuntimeError:) name:AVCaptureSessionRuntimeErrorNotification object:self.session];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionWasInterrupted:) name:AVCaptureSessionWasInterruptedNotification object:self.session];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionInterruptionEnded:) name:AVCaptureSessionInterruptionEndedNotification object:self.session];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:self.videoDeviceInput.device];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(sessionRuntimeError:) name:AVCaptureSessionRuntimeErrorNotification object:self.session];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(sessionWasInterrupted:) name:AVCaptureSessionWasInterruptedNotification object:self.session];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(sessionInterruptionEnded:) name:AVCaptureSessionInterruptionEndedNotification object:self.session];
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
