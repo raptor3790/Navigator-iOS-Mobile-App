@@ -28,7 +28,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.7</string>
+	<string>2.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -47,7 +47,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>46</string>
+	<string>2</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -76,13 +76,13 @@
 	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Please allow access to use camera</string>
+	<string>Camera is used to Photograph Waypoints</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Please allow access to your location</string>
+	<string>Rally Navigator uses GPS location to Record Roadbook Track</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Please allow access to microphone</string>
+	<string>Microphone is used to record voice notes of Waypoint Details</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please allow access to your photo library</string>
+	<string>Photo Library access is used to add photos to Waypoints</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>russo_one.ttf</string>
