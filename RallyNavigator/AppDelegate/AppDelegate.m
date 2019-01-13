@@ -12,7 +12,6 @@
 #import "AwsConfig.h"
 #import "Reachability.h"
 #import "CDSyncData.h"
-#import "Route.h"
 #import "Waypoints.h"
 #import "Backgroundimage.h"
 #import "VoiceNote.h"

@@ -1584,8 +1584,6 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     if (isPaused) {
         [self focusMapToShowAllMarkersWithAnimate:(_currentPreference != ViewingPreferenceRouteNorthUp)];
 
-        NSLog(@"%ld", poly_Line.pointCount);
-
         if (!isAddedWayPointForPolyline) {
             CLLocationCoordinate2D coord[1];
             coord[0] = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
@@ -3474,7 +3472,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
                         }
 
                         [self playAudio:@"beep1_02" fileType:@"mp3"];
-                        NSString* strWayPointId = [NSString stringWithFormat:@"%ld", ((UIButton*)sender).tag];
+                        NSString* strWayPointId = [NSString stringWithFormat:@"%d", (int)((UIButton*)sender).tag];
                         [self saveDataForUpdatingWayPoint:strWayPointId];
                         [self.tblLocations setScrollEnabled:YES];
                         self->audioEditData = nil;

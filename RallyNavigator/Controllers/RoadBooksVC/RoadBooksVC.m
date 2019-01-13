@@ -15,8 +15,6 @@
 #import "RoadBooks.h"
 #import "CDSyncData.h"
 #import "CDSyncFolders.h"
-#import "Routes.h"
-#import "Route.h"
 #import "Folders.h"
 #import "RouteDetails.h"
 #import <Crashlytics/Crashlytics.h>
@@ -424,7 +422,7 @@
 
 - (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if ([arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
+    if (indexPath.section == MyRoadbooksSectionRoadbooks && [arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
         CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
 
         if (![objRoadBook.editable boolValue]) {
@@ -592,7 +590,7 @@
 
             NSString* strDate = [self convertDateFormatDate:objRoadBook.updatedAt];
             cell.lblDateTime.text = strDate;
-            cell.lblDetails.text = [NSString stringWithFormat:@"%ld Way Points | %ld %@", (NSInteger)floorf([objRoadBook.waypointCount doubleValue] + count), distance, strUnit];
+            cell.lblDetails.text = [NSString stringWithFormat:@"%d Way Points | %d %@", (int)floorf([objRoadBook.waypointCount doubleValue] + count), (int)distance, strUnit];
         } else {
             CDSyncData* objData = arrRoadBooks[indexPath.row];
             cell.lblTitle.text = objData.name;
@@ -616,7 +614,7 @@
 
             NSString* strDate = [self convertDateFormatDate:objData.updatedAt];
             cell.lblDateTime.text = strDate;
-            cell.lblDetails.text = [NSString stringWithFormat:@"%ld Way Points | %ld %@", count /*(NSInteger)floorf(arrTempData.count)*/, (NSInteger)distance, strUnit];
+            cell.lblDetails.text = [NSString stringWithFormat:@"%d Way Points | %d %@", (int)count, (int)distance, strUnit];
         }
         cell.imgIcon.image = Set_Local_Image(@"route_icon");
     } break;
@@ -679,9 +677,13 @@
             return [[NSArray alloc] initWithObjects:delete, nil];
         }
     } else if (indexPath.section == MyRoadbooksSectionRoadbooks) {
-        CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
+        if ([arrRoadBooks[indexPath.row] isKindOfClass:[CDRoutes class]]) {
+            CDRoutes* objRoadBook = arrRoadBooks[indexPath.row];
+            
+            if (![objRoadBook.editable boolValue]) {
+                return @[];
+            }
 
-        if ([objRoadBook.editable boolValue]) {
             UITableViewRowAction* delete =
                 [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive
                                                    title:@""
