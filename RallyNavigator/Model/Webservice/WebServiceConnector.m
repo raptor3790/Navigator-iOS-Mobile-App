@@ -163,11 +163,11 @@
         timeoutInterval:DEFAULT_TIMEOUT];
     if ([DefaultsValues isKeyAvailbaleInDefault:kUserObject]) {
         User* objUser = GET_USER_OBJ;
-
-        NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
-            @"email" : objUser.email };
-
-        [request setAllHTTPHeaderFields:headers];
+        if (objUser.authenticationToken && objUser.email) {
+            NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
+                @"email" : objUser.email };
+            [request setAllHTTPHeaderFields:headers];
+        }
     }
 
     return request;
@@ -198,11 +198,11 @@
         timeoutInterval:DEFAULT_TIMEOUT];
     if ([DefaultsValues isKeyAvailbaleInDefault:kUserObject]) {
         User* objUser = GET_USER_OBJ;
-
-        NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
-            @"email" : objUser.email };
-
-        [request setAllHTTPHeaderFields:headers];
+        if (objUser.authenticationToken && objUser.email) {
+            NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
+                @"email" : objUser.email };
+            [request setAllHTTPHeaderFields:headers];
+        }
     }
     [request setHTTPMethod:@"DELETE"];
 
@@ -225,7 +225,7 @@
 
         NSDictionary* headers;
 
-        if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kLogIn]) {
+        if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kLogIn] && objUser.authenticationToken && objUser.email) {
             headers = @{ @"Content-Type" : @"application/json",
                 @"token" : objUser.authenticationToken,
                 @"email" : objUser.email };
@@ -238,13 +238,12 @@
         //TraceWS(url,dict,@"POST")
         objData = [self dictionaryToPostData:dict];
         if ([DefaultsValues isKeyAvailbaleInDefault:kUserObject]) {
-
             User* objUser = GET_USER_OBJ;
-
-            NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
-                @"email" : objUser.email };
-
-            [request setAllHTTPHeaderFields:headers];
+            if (objUser.authenticationToken && objUser.email) {
+                NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
+                    @"email" : objUser.email };
+                [request setAllHTTPHeaderFields:headers];
+            }
         } else {
             [request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
         }
