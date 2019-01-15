@@ -163,7 +163,7 @@
         timeoutInterval:DEFAULT_TIMEOUT];
     if ([DefaultsValues isKeyAvailbaleInDefault:kUserObject]) {
         User* objUser = GET_USER_OBJ;
-        if (objUser.authenticationToken && objUser.email) {
+        if ((objUser != NULL) && (objUser.authenticationToken != NULL) && (objUser.email != NULL)) {
             NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
                 @"email" : objUser.email };
             [request setAllHTTPHeaderFields:headers];
@@ -198,7 +198,7 @@
         timeoutInterval:DEFAULT_TIMEOUT];
     if ([DefaultsValues isKeyAvailbaleInDefault:kUserObject]) {
         User* objUser = GET_USER_OBJ;
-        if (objUser.authenticationToken && objUser.email) {
+        if ((objUser != NULL) && (objUser.authenticationToken != NULL) && (objUser.email != NULL)) {
             NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
                 @"email" : objUser.email };
             [request setAllHTTPHeaderFields:headers];
@@ -225,10 +225,12 @@
 
         NSDictionary* headers;
 
-        if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kLogIn] && objUser.authenticationToken && objUser.email) {
-            headers = @{ @"Content-Type" : @"application/json",
-                @"token" : objUser.authenticationToken,
-                @"email" : objUser.email };
+        if ([DefaultsValues getBooleanValueFromUserDefaults_ForKey:kLogIn]) {
+            if ((objUser != NULL) && (objUser.authenticationToken != NULL) && (objUser.email != NULL)) {
+                headers = @{ @"Content-Type" : @"application/json",
+                    @"token" : objUser.authenticationToken,
+                    @"email" : objUser.email };
+            }
         } else {
             headers = @{ @"Content-Type" : @"application/json" };
         }
@@ -239,7 +241,7 @@
         objData = [self dictionaryToPostData:dict];
         if ([DefaultsValues isKeyAvailbaleInDefault:kUserObject]) {
             User* objUser = GET_USER_OBJ;
-            if (objUser.authenticationToken && objUser.email) {
+            if ((objUser != NULL) && (objUser.authenticationToken != NULL) && (objUser.email != NULL)) {
                 NSDictionary* headers = @{ @"token" : objUser.authenticationToken,
                     @"email" : objUser.email };
                 [request setAllHTTPHeaderFields:headers];

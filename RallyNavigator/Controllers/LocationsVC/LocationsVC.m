@@ -122,10 +122,9 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     Config* objConfig;
     MGLPointAnnotation* userLocationMarker;
 
-    BOOL isAdd; // defines whether to add location as way point or it will be track point
+//    BOOL isAdd; // defines whether to add location as way point or it will be track point
     BOOL isStart; // defines whether to start recording track
     BOOL isLoaded; // defines whether the old data is loaded
-    BOOL isWSCalling;
     BOOL isCapturing;
     BOOL isAutoPhotoEnabled;
     BOOL isBack;
@@ -134,11 +133,11 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     BOOL isTempWayPointAdded; // Used to identify Tulip Angle
     BOOL isViewLoadFirstTime;
     BOOL isRecordingStarted;
-    BOOL isMapView;
     BOOL isAddWayPointClick;
     BOOL isPaused;
     BOOL isLocationAllowed;
     BOOL isAddedWayPointForPolyline;
+    BOOL isRegisteredAsCaptureObserver;
 
     AVAudioSession* audioSession;
 
@@ -345,9 +344,11 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     if ([self isMovingFromParentViewController]) {
         if (!TARGET_OS_SIMULATOR) {
             [NSNotificationCenter.defaultCenter removeObserver:self];
-            [self.session removeObserver:self
-                              forKeyPath:@"running"
-                                 context:SessionRunningContext];
+            
+            if (isRegisteredAsCaptureObserver) {
+                [self.session removeObserver:self forKeyPath:@"running" context:SessionRunningContext];
+                isRegisteredAsCaptureObserver = NO;
+            }
 
             if ([AppContext.audioPlayer isPlaying]) {
                 [AppContext.audioPlayer stop];
@@ -3985,6 +3986,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     }
 
     [self.session addObserver:self forKeyPath:@"running" options:NSKeyValueObservingOptionNew context:SessionRunningContext];
+    isRegisteredAsCaptureObserver = YES;
 
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:self.videoDeviceInput.device];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(sessionRuntimeError:) name:AVCaptureSessionRuntimeErrorNotification object:self.session];

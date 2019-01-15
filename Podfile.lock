@@ -1,7 +1,7 @@
 PODS:
-  - AWSCore (2.8.2)
-  - AWSS3 (2.8.2):
-    - AWSCore (= 2.8.2)
+  - AWSCore (2.8.3)
+  - AWSS3 (2.8.3):
+    - AWSCore (= 2.8.3)
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
   - Fabric (1.9.0)
@@ -25,7 +25,7 @@ PODS:
     - SDWebImage/Core (= 4.4.3)
   - SDWebImage/Core (4.4.3)
   - SVProgressHUD (2.2.5)
-  - SwiftEntryKit (0.8.6):
+  - SwiftEntryKit (0.8.8):
     - QuickLayout (= 2.1.1)
 
 DEPENDENCIES:
@@ -56,8 +56,8 @@ SPEC REPOS:
     - SwiftEntryKit
 
 SPEC CHECKSUMS:
-  AWSCore: b6448752e992345082d7bad29d86e4839b72b4ba
-  AWSS3: e364e6c60d972da4110f2c379def6b716e6f1262
+  AWSCore: 9e8204b138a59342a88c62142d6d79491d66ce91
+  AWSS3: e8cda749956c0e209012659f8fc54aff492644f8
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
@@ -68,7 +68,7 @@ SPEC CHECKSUMS:
   QuickLayout: 9af2b7fd89a6552828f51a5aba28d1bcdb8b340c
   SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  SwiftEntryKit: cb0e8d6b61552e374813a304a29b7ba51ea53128
+  SwiftEntryKit: c50f25a14772713ded1591c852d1c1dc74c95b9e
 
 PODFILE CHECKSUM: 9368290a5bd7db3b2876929fec7e397d77ac1ae2
 
