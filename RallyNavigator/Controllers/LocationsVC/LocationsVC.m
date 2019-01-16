@@ -122,7 +122,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     Config* objConfig;
     MGLPointAnnotation* userLocationMarker;
 
-//    BOOL isAdd; // defines whether to add location as way point or it will be track point
+    //    BOOL isAdd; // defines whether to add location as way point or it will be track point
     BOOL isStart; // defines whether to start recording track
     BOOL isLoaded; // defines whether the old data is loaded
     BOOL isCapturing;
@@ -344,7 +344,7 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
     if ([self isMovingFromParentViewController]) {
         if (!TARGET_OS_SIMULATOR) {
             [NSNotificationCenter.defaultCenter removeObserver:self];
-            
+
             if (isRegisteredAsCaptureObserver) {
                 [self.session removeObserver:self forKeyPath:@"running" context:SessionRunningContext];
                 isRegisteredAsCaptureObserver = NO;
@@ -1149,7 +1149,11 @@ typedef NS_ENUM(NSInteger, AVCamDepthDataDeliveryMode) {
 
 - (void)playAudio:(NSString*)strFileName fileType:(NSString*)strFileType
 {
-    [self.session stopRunning];
+    @try {
+        [self.session startRunning];
+    } @catch (NSException* exception) {
+    } @finally {
+    }
 
     AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
     NSString* soundFilePath = [[NSBundle mainBundle] pathForResource:strFileName ofType:strFileType];
